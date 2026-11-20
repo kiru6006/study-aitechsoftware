@@ -254,15 +254,27 @@ export const ConceptPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Process Steps */}
+          {/* Process Steps as Visual Bulleted Cards */}
           {concept.application.processSteps.length > 0 && (
-            <div className="space-y-1.5 pt-1">
-              <span className="text-xs font-bold text-[#202124] block">Algorithmic Process Steps:</span>
-              <ol className="space-y-1 pl-4 list-decimal text-xs text-[#5F6368]">
+            <div className="space-y-2 pt-1">
+              <span className="text-xs font-bold text-[#92400E] uppercase tracking-wider block">
+                Algorithmic Process Flow:
+              </span>
+              <div className="space-y-1.5">
                 {concept.application.processSteps.map((step, i) => (
-                  <li key={i} className="leading-snug">{step}</li>
+                  <div
+                    key={i}
+                    className="p-2.5 rounded-lg bg-[#FAF9F5] border border-[#FBBC05]/40 flex items-start gap-2.5"
+                  >
+                    <span className="w-5 h-5 rounded-full bg-[#FEF7E0] border border-[#FBBC05] text-[#C70234] text-[10px] font-bold font-mono flex items-center justify-center shrink-0 mt-0.5">
+                      {i + 1}
+                    </span>
+                    <p className="text-xs text-[#202124] leading-snug">
+                      {step}
+                    </p>
+                  </div>
                 ))}
-              </ol>
+              </div>
             </div>
           )}
 

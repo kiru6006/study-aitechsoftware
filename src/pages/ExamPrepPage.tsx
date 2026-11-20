@@ -190,20 +190,20 @@ export const ExamPrepPage: React.FC = () => {
                     ))}
                   </div>
 
-                  {/* Outline Pills */}
+                  {/* Outline List */}
                   {q.answerOutline && (
-                    <div className="pt-1.5 border-t border-[#FBBC05]/30">
-                      <span className="text-[10px] font-semibold text-[#80868B] uppercase block mb-1">
-                        Logical Flow:
+                    <div className="pt-2 border-t border-[#FBBC05]/30">
+                      <span className="text-[10px] font-semibold text-[#80868B] uppercase block mb-1.5">
+                        Structured Answer Outline:
                       </span>
-                      <div className="flex flex-wrap gap-1">
+                      <div className="space-y-1">
                         {q.answerOutline.map((step, idx) => (
-                          <span
-                            key={idx}
-                            className="text-[10px] px-1.5 py-0.5 rounded bg-[#FEF7E0]/60 text-[#7C2D12] border border-[#FBBC05]/40 font-medium"
-                          >
-                            {idx + 1}. {step}
-                          </span>
+                          <div key={idx} className="flex items-start gap-2 text-xs text-[#202124]">
+                            <span className="w-4 h-4 rounded-full bg-[#FEF7E0] border border-[#FBBC05] text-[#92400E] text-[10px] font-bold font-mono flex items-center justify-center shrink-0 mt-0.5">
+                              {idx + 1}
+                            </span>
+                            <span className="leading-snug">{step}</span>
+                          </div>
                         ))}
                       </div>
                     </div>

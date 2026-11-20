@@ -103,10 +103,13 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
           <span className="font-semibold text-[#202124] text-[11px] uppercase tracking-wider block">
             Implementation Walkthrough:
           </span>
-          <ul className="list-disc pl-4 space-y-1 text-xs">
+          <ul className="space-y-1.5 text-xs">
             {explanation.map((step, idx) => (
-              <li key={idx} className="leading-snug">
-                {step}
+              <li key={idx} className="flex items-start gap-2 leading-snug">
+                <span className="w-4 h-4 rounded-full bg-[#FEF7E0] border border-[#FBBC05] text-[#92400E] text-[10px] font-bold font-mono flex items-center justify-center shrink-0 mt-0.5">
+                  {idx + 1}
+                </span>
+                <span className="text-[#202124]">{step}</span>
               </li>
             ))}
           </ul>

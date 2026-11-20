@@ -8,9 +8,10 @@ import {
   ShieldAlert,
   GraduationCap,
   Sparkles,
-  FileText,
-  CheckCircle,
-  ExternalLink
+  CheckCircle2,
+  FolderOpen,
+  Hash,
+  Eye
 } from 'lucide-react';
 import { getCatalog, getSubjectUnits, getCompletedConcepts } from '../../lib/contentLoader';
 
@@ -19,12 +20,7 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-const STORAGE_KEY = 'subjectlab_nav_state';
-
-interface SavedNavState {
-  expandedSemester: string | null;
-  expandedSubject: string | null;
-}
+const STORAGE_KEY = 'subjectlab_expanded_units';
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const catalog = getCatalog();
@@ -32,76 +28,44 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const completedIds = getCompletedConcepts();
 
-  // Extract params from pathname: /:subjectId/... or /:subjectId/units/:unitId
+  // Extract params from pathname: /:subjectId/...
   const pathParts = location.pathname.split('/').filter(Boolean);
   const currentSubjectId = pathParts[0] || 'ai-cyber-security';
   const currentUnitId = pathParts[1] === 'units' ? pathParts[2] : null;
   const currentConceptId = pathParts[1] === 'concepts' ? pathParts[2] : null;
 
-  // Find semester containing currentSubjectId
-  const currentSemester = catalog.programs[0]?.semesters.find(s =>
-    s.subjectIds.includes(currentSubjectId)
-  );
+  const currentSubject = catalog.subjects[currentSubjectId] || Object.values(catalog.subjects)[0];
+  const units = getSubjectUnits(currentSubject?.id || 'ai-cyber-security');
 
-  // Persistent navigation state
-  const [expandedSemester, setExpandedSemester] = useState<string | null>(() => {
+  // Track expanded units for showing topic bullet points
+  const [expandedUnits, setExpandedUnits] = useState<Record<string, boolean>>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed: SavedNavState = JSON.parse(saved);
-        if (parsed.expandedSemester) return parsed.expandedSemester;
-      }
+      if (saved) return JSON.parse(saved);
     } catch {}
-    return currentSemester ? currentSemester.id : 'sem-3';
+    return { 'unit-1': true };
   });
 
-  const [expandedSubject, setExpandedSubject] = useState<string | null>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed: SavedNavState = JSON.parse(saved);
-        if (parsed.expandedSubject) return parsed.expandedSubject;
-      }
-    } catch {}
-    return currentSubjectId || 'ai-cyber-security';
-  });
-
-  // Save navigation state
   useEffect(() => {
     try {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          expandedSemester,
-          expandedSubject
-        })
-      );
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(expandedUnits));
     } catch {}
-  }, [expandedSemester, expandedSubject]);
+  }, [expandedUnits]);
 
-  // Keep expanded state aligned when route changes
+  // Auto-expand current active unit
   useEffect(() => {
-    if (currentSemester && expandedSemester !== currentSemester.id) {
-      setExpandedSemester(currentSemester.id);
+    if (currentUnitId) {
+      setExpandedUnits(prev => ({ ...prev, [currentUnitId]: true }));
     }
-    if (currentSubjectId && expandedSubject !== currentSubjectId) {
-      setExpandedSubject(currentSubjectId);
-    }
-  }, [currentSubjectId, currentSemester]);
+  }, [currentUnitId]);
 
-  const toggleSemester = (semId: string) => {
-    setExpandedSemester(prev => (prev === semId ? null : semId));
+  const toggleUnit = (uId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setExpandedUnits(prev => ({ ...prev, [uId]: !prev[uId] }));
   };
 
-  const toggleSubject = (subId: string) => {
-    setExpandedSubject(prev => (prev === subId ? null : subId));
-  };
-
-  const handleSubjectClick = (subId: string) => {
-    setExpandedSubject(subId);
-    navigate(`/${subId}`);
-    onClose();
-  };
+  const allSubjects = Object.values(catalog.subjects);
 
   return (
     <>
@@ -113,220 +77,231 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         />
       )}
 
-      {/* 3-Level Sidebar Container */}
+      {/* Subject-First Sidebar Container */}
       <aside
-        className={`fixed top-14 bottom-0 left-0 z-40 w-72 bg-white border-r border-[#C70234]/30 flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-13 bottom-0 left-0 z-40 w-72 bg-white border-r border-[#C70234]/25 flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Top Header Badge */}
-        <div className="p-3 bg-[#FEF7E0] border-b border-[#FBBC05]/40 flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#C70234]" />
-            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-[#92400E]">
-              Academic Curriculum
+        {/* Active Subject Selector Card */}
+        <div className="p-3 bg-[#FEF7E0]/60 border-b border-[#FBBC05]/40 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-[#92400E] flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#C70234]" />
+              Course Curriculum
+            </span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white text-[#C70234] border border-[#C70234]/30 font-semibold">
+              {currentSubject?.code || 'MAI-OL506A-3'}
             </span>
           </div>
-          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white text-[#C70234] border border-[#C70234]/30 font-semibold">
-            {catalog.programs[0]?.name.split(' ')[0] || 'MSc'}
-          </span>
-        </div>
 
-        {/* Dynamic 3-Level Hierarchy Tree */}
-        <nav className="flex-1 overflow-y-auto p-2.5 space-y-1.5 text-xs font-sans">
-          {catalog.programs[0]?.semesters.map(semester => {
-            const isSemExpanded = expandedSemester === semester.id;
-            const hasSubjects = semester.subjectIds && semester.subjectIds.length > 0;
-
-            return (
-              <div
-                key={semester.id}
-                className="rounded-lg border border-[#FBBC05]/40 overflow-hidden bg-white shadow-2xs"
-              >
-                {/* Level 1: Semester Header */}
+          {/* If single subject, show subject card; if multiple, list selector */}
+          <div className="space-y-1">
+            {allSubjects.map(subj => {
+              const isActive = subj.id === currentSubject?.id;
+              return (
                 <button
-                  onClick={() => toggleSemester(semester.id)}
-                  className={`w-full px-2.5 py-2 text-left flex items-center justify-between transition-colors cursor-pointer ${
-                    isSemExpanded
-                      ? 'bg-[#FEF7E0] text-[#92400E] font-bold border-b border-[#FBBC05]/40'
-                      : 'bg-[#FAF9F5] text-[#202124] hover:bg-[#FEF7E0]/50'
+                  key={subj.id}
+                  onClick={() => {
+                    navigate(`/${subj.id}`);
+                    onClose();
+                  }}
+                  className={`w-full text-left p-2 rounded-lg border transition-all cursor-pointer flex items-center justify-between ${
+                    isActive
+                      ? 'bg-white border-[#C70234] shadow-2xs text-[#C70234]'
+                      : 'bg-[#FAF9F5] border-[#DADCE0] text-[#202124] hover:border-[#FBBC05]'
                   }`}
                 >
                   <div className="flex items-center gap-2">
+                    <div className={`w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs ${
+                      isActive ? 'bg-[#C70234] text-white' : 'bg-[#FEF7E0] text-[#92400E]'
+                    }`}>
+                      AI
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-xs font-bold leading-tight line-clamp-1">
+                        {subj.name}
+                      </h3>
+                      <span className="text-[10px] font-mono text-[#5F6368]">
+                        5 Syllabus Units
+                      </span>
+                    </div>
+                  </div>
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#C70234]" />}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Quick Hub Navigation Pills */}
+          <div className="grid grid-cols-4 gap-1 pt-1">
+            <NavLink
+              to={`/${currentSubject.id}`}
+              end
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs'
+                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Subject Overview"
+            >
+              Overview
+            </NavLink>
+            <NavLink
+              to={`/${currentSubject.id}/case-studies`}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs'
+                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Industry Case Studies"
+            >
+              Cases
+            </NavLink>
+            <NavLink
+              to={`/${currentSubject.id}/exam-prep`}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs'
+                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Study Notes & Q&A"
+            >
+              Notes
+            </NavLink>
+            <NavLink
+              to={`/${currentSubject.id}/revision`}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs'
+                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Quick Revision & Flashcards"
+            >
+              Revision
+            </NavLink>
+          </div>
+        </div>
+
+        {/* Units Navigation List */}
+        <div className="px-3 pt-2 pb-1 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-[#92400E]">
+          <span>Syllabus Units</span>
+          <span className="text-[10px] font-mono text-[#5F6368] font-normal">
+            {units.length} Units
+          </span>
+        </div>
+
+        <nav className="flex-1 overflow-y-auto p-2 space-y-1.5 text-xs font-sans">
+          {units.map(unit => {
+            const isUnitActive = currentUnitId === unit.id;
+            const isExpanded = !!expandedUnits[unit.id];
+
+            return (
+              <div
+                key={unit.id}
+                className={`rounded-lg border transition-all overflow-hidden ${
+                  isUnitActive
+                    ? 'border-[#C70234] bg-white shadow-2xs'
+                    : 'border-[#FBBC05]/40 bg-[#FAF9F5] hover:border-[#FBBC05]'
+                }`}
+              >
+                {/* Unit Header Row */}
+                <div
+                  className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${
+                    isUnitActive ? 'bg-[#FEF7E0]/60' : 'hover:bg-[#FEF7E0]/30'
+                  }`}
+                >
+                  <NavLink
+                    to={`/${currentSubject.id}/units/${unit.id}`}
+                    onClick={onClose}
+                    className="flex-1 flex items-center gap-2 pr-1"
+                  >
                     <span
-                      className={`w-5 h-5 rounded text-[10px] flex items-center justify-center font-bold font-mono ${
-                        isSemExpanded
+                      className={`w-5 h-5 rounded text-[10px] flex items-center justify-center font-bold font-mono shrink-0 ${
+                        isUnitActive
                           ? 'bg-[#C70234] text-white'
                           : 'bg-white border border-[#FBBC05] text-[#92400E]'
                       }`}
                     >
-                      S{semester.number}
+                      U{unit.unitNumber}
                     </span>
-                    <span className="text-xs font-semibold">
-                      Semester {semester.number}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    {hasSubjects ? (
-                      <span className="text-[10px] font-mono text-[#5F6368] px-1 bg-white rounded border border-[#DADCE0]">
-                        {semester.subjectIds.length} sub
+                    <div className="flex-1">
+                      <span
+                        className={`font-sans text-xs leading-snug line-clamp-1 block ${
+                          isUnitActive ? 'font-bold text-[#C70234]' : 'font-medium text-[#202124]'
+                        }`}
+                      >
+                        {unit.title}
                       </span>
+                    </div>
+                  </NavLink>
+
+                  <button
+                    onClick={e => toggleUnit(unit.id, e)}
+                    className="p-1 rounded hover:bg-black/5 text-[#5F6368] shrink-0 cursor-pointer"
+                    aria-label="Toggle unit topics"
+                  >
+                    {isExpanded ? (
+                      <ChevronDown className="w-3.5 h-3.5 text-[#C70234]" />
                     ) : (
-                      <span className="text-[10px] text-[#80868B] italic">Upcoming</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     )}
-                    {isSemExpanded ? (
-                      <ChevronDown className="w-3.5 h-3.5 text-[#5F6368]" />
-                    ) : (
-                      <ChevronRight className="w-3.5 h-3.5 text-[#5F6368]" />
-                    )}
-                  </div>
-                </button>
+                  </button>
+                </div>
 
-                {/* Level 2: Subjects under Semester */}
-                {isSemExpanded && (
-                  <div className="p-1.5 space-y-1 bg-white">
-                    {!hasSubjects ? (
-                      <div className="px-2 py-2 text-[11px] text-[#80868B] italic text-center">
-                        Curriculum modules upcoming
-                      </div>
-                    ) : (
-                      semester.subjectIds.map(subId => {
-                        const subjectMeta = catalog.subjects[subId];
-                        const isSubExpanded = expandedSubject === subId;
-                        const subjectUnits = getSubjectUnits(subId);
-                        const isSubActive = currentSubjectId === subId;
+                {/* Bulleted Topics List when expanded */}
+                {isExpanded && (
+                  <div className="p-2 bg-white border-t border-[#FBBC05]/30 space-y-1 pl-3">
+                    {unit.topics.map((topic, tIdx) => (
+                      <div key={topic.id} className="space-y-0.5">
+                        <div className="flex items-start gap-1.5 text-[11px] text-[#5F6368]">
+                          <span className="text-[#C70234] font-bold leading-none mt-1">•</span>
+                          <span className="font-semibold text-[#202124] line-clamp-1">
+                            {topic.title}
+                          </span>
+                        </div>
 
-                        return (
-                          <div
-                            key={subId}
-                            className="rounded-md border border-[#DADCE0]/70 overflow-hidden"
-                          >
-                            {/* Subject Header */}
-                            <div
-                              className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${
-                                isSubActive
-                                  ? 'bg-[#FCE8EF]/70 text-[#C70234]'
-                                  : 'bg-white text-[#202124] hover:bg-[#FAF9F5]'
-                              }`}
-                            >
-                              <button
-                                onClick={() => handleSubjectClick(subId)}
-                                className="flex-1 text-left pr-1"
+                        {/* Concept Bullets */}
+                        <div className="pl-3 space-y-0.5">
+                          {topic.conceptIds.map(cId => {
+                            const isDone = completedIds.includes(cId);
+                            const isConceptActive = currentConceptId === cId;
+
+                            return (
+                              <NavLink
+                                key={cId}
+                                to={`/${currentSubject.id}/concepts/${cId}`}
+                                onClick={onClose}
+                                className={`flex items-center justify-between px-1.5 py-0.5 rounded text-[10.5px] transition-colors ${
+                                  isConceptActive
+                                    ? 'bg-[#FCE8EF] text-[#C70234] font-bold'
+                                    : 'text-[#5F6368] hover:text-[#C70234] hover:bg-[#FAF9F5]'
+                                }`}
                               >
-                                <div className="text-[11px] font-bold line-clamp-1">
-                                  {subjectMeta?.name || subId}
-                                </div>
-                                <div className="text-[10px] font-mono text-[#5F6368]">
-                                  {subjectMeta?.code}
-                                </div>
-                              </button>
-
-                              <button
-                                onClick={() => toggleSubject(subId)}
-                                className="p-1 rounded hover:bg-black/5 text-[#5F6368]"
-                                aria-label="Toggle units"
-                              >
-                                {isSubExpanded ? (
-                                  <ChevronDown className="w-3.5 h-3.5" />
-                                ) : (
-                                  <ChevronRight className="w-3.5 h-3.5" />
+                                <span className="line-clamp-1">
+                                  {cId.replace(/^c\d+-/, '').replace(/-/g, ' ')}
+                                </span>
+                                {isDone && (
+                                  <CheckCircle2 className="w-3 h-3 text-[#188038] shrink-0 ml-1" />
                                 )}
-                              </button>
-                            </div>
-
-                            {/* Level 3: Units under Subject */}
-                            {isSubExpanded && (
-                              <div className="p-1 bg-[#FAF9F5] border-t border-[#DADCE0]/60 space-y-0.5 pl-2">
-                                {/* Quick Navigation for the Subject */}
-                                <div className="py-1 border-b border-[#DADCE0]/40 flex flex-wrap gap-1 mb-1">
-                                  <NavLink
-                                    to={`/${subId}`}
-                                    end
-                                    onClick={onClose}
-                                    className={({ isActive }) =>
-                                      `text-[10px] px-1.5 py-0.5 rounded font-medium ${
-                                        isActive
-                                          ? 'bg-[#C70234] text-white'
-                                          : 'bg-white text-[#5F6368] hover:text-[#202124] border border-[#DADCE0]'
-                                      }`
-                                    }
-                                  >
-                                    Overview
-                                  </NavLink>
-                                  <NavLink
-                                    to={`/${subId}/case-studies`}
-                                    onClick={onClose}
-                                    className={({ isActive }) =>
-                                      `text-[10px] px-1.5 py-0.5 rounded font-medium ${
-                                        isActive
-                                          ? 'bg-[#C70234] text-white'
-                                          : 'bg-white text-[#5F6368] hover:text-[#202124] border border-[#DADCE0]'
-                                      }`
-                                    }
-                                  >
-                                    Cases
-                                  </NavLink>
-                                  <NavLink
-                                    to={`/${subId}/exam-prep`}
-                                    onClick={onClose}
-                                    className={({ isActive }) =>
-                                      `text-[10px] px-1.5 py-0.5 rounded font-medium ${
-                                        isActive
-                                          ? 'bg-[#C70234] text-white'
-                                          : 'bg-white text-[#5F6368] hover:text-[#202124] border border-[#DADCE0]'
-                                      }`
-                                    }
-                                  >
-                                    Study Notes
-                                  </NavLink>
-                                  <NavLink
-                                    to={`/${subId}/revision`}
-                                    onClick={onClose}
-                                    className={({ isActive }) =>
-                                      `text-[10px] px-1.5 py-0.5 rounded font-medium ${
-                                        isActive
-                                          ? 'bg-[#C70234] text-white'
-                                          : 'bg-white text-[#5F6368] hover:text-[#202124] border border-[#DADCE0]'
-                                      }`
-                                    }
-                                  >
-                                    Revision
-                                  </NavLink>
-                                </div>
-
-                                {/* Units List */}
-                                <div className="space-y-0.5">
-                                  {subjectUnits.map(unit => {
-                                    const isUnitActive = currentUnitId === unit.id;
-                                    return (
-                                      <NavLink
-                                        key={unit.id}
-                                        to={`/${subId}/units/${unit.id}`}
-                                        onClick={onClose}
-                                        className={`flex items-center justify-between px-2 py-1.5 rounded text-[11px] font-sans transition-all cursor-pointer ${
-                                          isUnitActive
-                                            ? 'bg-[#FEF7E0] text-[#92400E] font-bold border-l-3 border-[#C70234] shadow-2xs'
-                                            : 'text-[#202124] hover:bg-[#FCE8EF]/50 hover:text-[#C70234]'
-                                        }`}
-                                      >
-                                        <div className="flex items-center gap-1.5">
-                                          <span className="w-4 h-4 rounded-full bg-white border border-[#FBBC05] text-[9px] font-bold text-[#92400E] flex items-center justify-center shrink-0">
-                                            {unit.unitNumber}
-                                          </span>
-                                          <span className="line-clamp-1">{unit.title}</span>
-                                        </div>
-                                        <ChevronRight className="w-3 h-3 text-[#BDC1C6] shrink-0" />
-                                      </NavLink>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })
-                    )}
+                              </NavLink>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
@@ -334,9 +309,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           })}
         </nav>
 
-        {/* Footer info with red & yellow accent */}
+        {/* Footer info */}
         <div className="p-2.5 border-t border-[#FBBC05]/40 bg-[#FAF9F5] text-[10px] text-[#5F6368] flex items-center justify-between">
-          <div className="flex items-center gap-1 text-[#92400E] font-medium">
+          <div className="flex items-center gap-1.5 text-[#92400E] font-medium">
             <span className="w-1.5 h-1.5 rounded-full bg-[#188038]" />
             <span>SubjectLab Active</span>
           </div>

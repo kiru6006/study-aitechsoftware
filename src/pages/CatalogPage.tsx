@@ -53,57 +53,44 @@ export const CatalogPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {catalog.programs.map(program => (
-            <React.Fragment key={program.id}>
-              {program.semesters.map(semester => (
-                <React.Fragment key={semester.id}>
-                  {semester.subjectIds.map(subjectId => {
-                    const subject = catalog.subjects[subjectId];
-                    if (!subject) return null;
+          {Object.values(catalog.subjects).map(subject => (
+            <Link
+              key={subject.id}
+              to={`/${subject.id}`}
+              className="group block bg-white rounded-xl p-4 border border-[#C70234]/25 hover:border-[#C70234]/70 shadow-2xs hover:shadow-xs transition-all"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-[#FEF7E0] text-[#92400E] border border-[#FBBC05]/40">
+                    {subject.code}
+                  </span>
+                  <span className="text-[11px] font-sans font-medium text-[#5F6368]">
+                    Master Curriculum
+                  </span>
+                </div>
+                <span className="p-1 rounded-full text-[#5F6368] group-hover:text-[#C70234] group-hover:bg-[#FCE8EF] transition-colors">
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </div>
 
-                    return (
-                      <Link
-                        key={subject.id}
-                        to={`/${subject.id}`}
-                        className="group block bg-white rounded-xl p-4 border border-[#C70234]/25 hover:border-[#C70234]/70 shadow-2xs hover:shadow-xs transition-all"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-1.5">
-                            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-[#FEF7E0] text-[#92400E] border border-[#FBBC05]/40">
-                              {subject.code}
-                            </span>
-                            <span className="text-[11px] font-sans font-medium text-[#5F6368]">
-                              Semester {subject.semester}
-                            </span>
-                          </div>
-                          <span className="p-1 rounded-full text-[#5F6368] group-hover:text-[#C70234] group-hover:bg-[#FCE8EF] transition-colors">
-                            <ArrowRight className="w-4 h-4" />
-                          </span>
-                        </div>
+              <h3 className="font-serif text-base font-bold text-[#202124] mt-2 group-hover:text-[#C70234] transition-colors">
+                {subject.name}
+              </h3>
 
-                        <h3 className="font-serif text-base font-bold text-[#202124] mt-2 group-hover:text-[#C70234] transition-colors">
-                          {subject.name}
-                        </h3>
+              <p className="mt-1 text-xs text-[#5F6368] font-sans line-clamp-2 leading-relaxed">
+                {subject.description}
+              </p>
 
-                        <p className="mt-1 text-xs text-[#5F6368] font-sans line-clamp-2 leading-relaxed">
-                          {subject.description}
-                        </p>
-
-                        <div className="mt-3 pt-2 border-t border-[#FBBC05]/30 flex items-center justify-between text-[11px] text-[#5F6368]">
-                          <span className="font-medium text-[#202124]">
-                            Master Academic Curriculum
-                          </span>
-                          <span className="text-[#C70234] font-semibold flex items-center gap-1">
-                            <span>Open Subject</span>
-                            <ArrowRight className="w-3 h-3" />
-                          </span>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </React.Fragment>
-              ))}
-            </React.Fragment>
+              <div className="mt-3 pt-2 border-t border-[#FBBC05]/30 flex items-center justify-between text-[11px] text-[#5F6368]">
+                <span className="font-medium text-[#202124]">
+                  5 Official Units • Full Notes & Verified Code
+                </span>
+                <span className="text-[#C70234] font-semibold flex items-center gap-1">
+                  <span>Open Subject</span>
+                  <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

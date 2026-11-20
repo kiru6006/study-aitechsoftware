@@ -14,7 +14,9 @@ import {
   Terminal,
   Layers,
   ShieldCheck,
-  Award
+  Award,
+  Zap,
+  Target
 } from 'lucide-react';
 import {
   getSubjectMetadata,
@@ -52,7 +54,6 @@ export const UnitPage: React.FC = () => {
 
   // Quiz state
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
-  const [showExplanations, setShowExplanations] = useState<Record<string, boolean>>({});
 
   if (!currentUnit) {
     return (
@@ -65,6 +66,48 @@ export const UnitPage: React.FC = () => {
       </div>
     );
   }
+
+  // Unit-specific Key Takeaways for learners
+  const getUnitKeyTakeaways = (): string[] => {
+    switch (currentUnit.unitNumber) {
+      case 1:
+        return [
+          "Evolutionary shift: Transitioning from rigid hand-crafted Expert Systems to statistical Machine Learning & Deep Neural Networks.",
+          "Triad Alignment: Mapping Confidentiality, Integrity, and Availability into quantifiable AI telemetry features.",
+          "Core Paradigms: Comparing Supervised (labels), Unsupervised (clustering anomalies), and Reinforcement Learning (adaptive honeypots).",
+          "Production Hygiene: Preventing train/test data leakage, tuning learning rates, and rapid iteration with Jupyter."
+        ];
+      case 2:
+        return [
+          "Supervised Arsenal: Binary & Multiclass Classification for malware categorization; Regression for risk & dwell-time forecasting.",
+          "Unsupervised Arsenal: PCA to collapse multi-thousand feature dimensions; K-Means & DBSCAN for clustering zero-day behavior.",
+          "Multimodal Security: Convolutional video models for CCTV perimeter security, NLP for threat intelligence, and digital image processing.",
+          "Feature Engineering: Extracting n-grams, entropy ratios, and lexical token distributions from raw telemetry streams."
+        ];
+      case 3:
+        return [
+          "Linear Decision Boundaries: Perceptron algorithm mechanics, hyper-plane weights update rules, and binary email spam filtration.",
+          "Maximum Margin Defense: Support Vector Machines (SVM) with RBF non-linear kernels to defeat visual image spam evasions.",
+          "Phishing Classification: Logistic regression probability calibration and Decision Trees for transparent, auditable URL risk scoring.",
+          "Probabilistic NLP: Multinomial Naive Bayes threat pipeline with Laplace smoothing and bag-of-words tokenization."
+        ];
+      case 4:
+        return [
+          "Identity Gateway Defense: Automated countermeasures against credential stuffing, brute force bursts, and low-and-slow password spraying.",
+          "Risk-Based Authentication (RBA): Computing dynamic account reputation scores from IP entropy, ASN risk, and device velocity.",
+          "Behavioral Keystroke Biometrics: Measuring passive timing dynamics (Hold Time & Flight Time) for non-intrusive continuous verification.",
+          "Biometric Facial Defense: Deep CNN facial embeddings, Euclidean distance matching, and active liveness anti-spoofing verification."
+        ];
+      case 5:
+      default:
+        return [
+          "Extreme Class Imbalance: Overcoming the 99.9% benign vs 0.1% fraudulent transaction challenge via SMOTE and cost-sensitive loss.",
+          "Ensemble Mastery: Bagging (Random Forest variance reduction) vs Boosting (XGBoost/LightGBM iterative error correction).",
+          "Feature Store Pipelines: Engineering rolling 1-hour transaction velocities, geographic deviation, and merchant category heuristics.",
+          "Rigorous Statistical Metrics: Evaluating models using Precision-Recall curves, F1-scores, and cost-weighted confusion matrices instead of misleading raw accuracy."
+        ];
+    }
+  };
 
   // Pre-configured comparison tables per unit
   const getUnitComparison = (): { title: string; a: string; b: string; rows: ComparisonRow[] } => {
@@ -202,16 +245,17 @@ export const UnitPage: React.FC = () => {
 
   const comparison = getUnitComparison();
   const flow = getUnitFlow();
+  const keyTakeaways = getUnitKeyTakeaways();
 
-  // Representative code example for the unit
+  // Primary code example
   const primaryConcept = unitConcepts[0] || allConcepts[0];
   const unitCode = primaryConcept?.application?.codeSnippet?.code || `
-# SubjectLab Unit ${currentUnit.unitNumber} Demonstration
+# SubjectLab Unit ${currentUnit.unitNumber} Demonstration Pipeline
 def security_evaluator(telemetry_vector):
     risk_score = sum(telemetry_vector) / len(telemetry_vector)
-    return "Malicious" if risk_score > 0.75 else "Benign"
+    return "Malicious Threat" if risk_score > 0.75 else "Benign Traffic"
 
-print(security_evaluator([0.9, 0.8, 0.85])) # Output: Malicious
+print(security_evaluator([0.9, 0.8, 0.85])) # Output: Malicious Threat
 `.trim();
 
   const sampleInput = primaryConcept?.application?.inputExample || "Telemetry Vector: [0.92, 0.81, 0.88, 0.95]";
@@ -219,7 +263,7 @@ print(security_evaluator([0.9, 0.8, 0.85])) # Output: Malicious
 
   return (
     <div className="space-y-4 pb-12">
-      {/* Breadcrumb Header with Red & Yellow Accent */}
+      {/* Breadcrumb Header with Red & Yellow Theme */}
       <div className="flex flex-wrap items-center justify-between gap-2 bg-white px-3.5 py-2.5 rounded-xl border border-[#C70234]/30 shadow-xs">
         <div className="flex items-center gap-1.5 text-xs font-sans text-[#5F6368]">
           <Link to={`/${subjectId}`} className="hover:text-[#C70234] font-medium transition-colors">
@@ -237,13 +281,13 @@ print(security_evaluator([0.9, 0.8, 0.85])) # Output: Malicious
           </span>
           {currentUnit.memoryCode && (
             <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#FCE8EF] text-[#C70234] border border-[#C70234]/30 font-semibold">
-              Code: {currentUnit.memoryCode}
+              Mnemonic: {currentUnit.memoryCode}
             </span>
           )}
         </div>
       </div>
 
-      {/* 1. Unit Overview Card */}
+      {/* 1. Unit Overview Card with Structured Bullet Points */}
       <section className="bg-white rounded-xl p-4 sm:p-5 border border-[#C70234]/30 shadow-xs space-y-3">
         <div className="flex items-center gap-2">
           <span className="w-6 h-6 rounded-lg bg-[#C70234] text-white flex items-center justify-center font-bold text-xs">
@@ -263,36 +307,88 @@ print(security_evaluator([0.9, 0.8, 0.85])) # Output: Malicious
           {currentUnit.summary}
         </p>
 
-        {/* 3 Overview Pillars: What will I learn, Why important, Where used */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-2">
-          <div className="p-3 rounded-lg bg-[#FEF7E0]/40 border border-[#FBBC05]/40 space-y-1">
+        {/* Learner Delight: Key Takeaways Card */}
+        <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#FEF7E0]/60 to-[#FFFBEB] border border-[#FBBC05]/60 space-y-2">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-[#92400E]">
+            <Zap className="w-4 h-4 text-[#D97706]" />
+            <span>Essential Cognitive Takeaways (What to Master First):</span>
+          </div>
+          <ul className="space-y-1.5 pl-1">
+            {keyTakeaways.map((point, idx) => (
+              <li key={idx} className="flex items-start gap-2 text-xs text-[#202124] leading-snug">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C70234] shrink-0 mt-1.5" />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* 3 Overview Pillars with Clean Bullet Points */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+          {/* Pillar 1 */}
+          <div className="p-3 rounded-lg bg-[#FAF9F5] border border-[#FBBC05]/40 space-y-2">
             <div className="flex items-center gap-1.5 text-xs font-bold text-[#92400E]">
               <BookOpen className="w-3.5 h-3.5 text-[#D97706]" />
               <span>What Will I Learn?</span>
             </div>
-            <p className="text-[11px] text-[#202124] leading-snug">
-              Master the algorithmic formulation, mathematical proofs, and security architectures defined in Unit {currentUnit.unitNumber}.
-            </p>
+            <ul className="space-y-1 text-[11px] text-[#202124]">
+              <li className="flex items-start gap-1.5 leading-snug">
+                <span className="text-[#C70234] font-bold">•</span>
+                <span>Algorithmic foundations and mathematical bounds for Unit {currentUnit.unitNumber}.</span>
+              </li>
+              <li className="flex items-start gap-1.5 leading-snug">
+                <span className="text-[#C70234] font-bold">•</span>
+                <span>Telemetry feature engineering & noise-reduction procedures.</span>
+              </li>
+              <li className="flex items-start gap-1.5 leading-snug">
+                <span className="text-[#C70234] font-bold">•</span>
+                <span>Hands-on Python scripts with sample inputs & outputs.</span>
+              </li>
+            </ul>
           </div>
 
-          <div className="p-3 rounded-lg bg-[#FCE8EF]/40 border border-[#C70234]/30 space-y-1">
+          {/* Pillar 2 */}
+          <div className="p-3 rounded-lg bg-[#FAF9F5] border border-[#C70234]/30 space-y-2">
             <div className="flex items-center gap-1.5 text-xs font-bold text-[#C70234]">
               <Lightbulb className="w-3.5 h-3.5 text-[#C70234]" />
               <span>Why Is It Important?</span>
             </div>
-            <p className="text-[11px] text-[#202124] leading-snug">
-              Replaces vulnerable manual rule-writing with robust statistical machine learning resilient to zero-day and polymorphic exploits.
-            </p>
+            <ul className="space-y-1 text-[11px] text-[#202124]">
+              <li className="flex items-start gap-1.5 leading-snug">
+                <span className="text-[#FBBC05] font-bold font-mono">✓</span>
+                <span>Replaces vulnerable static signatures with probabilistic generalization.</span>
+              </li>
+              <li className="flex items-start gap-1.5 leading-snug">
+                <span className="text-[#FBBC05] font-bold font-mono">✓</span>
+                <span>Catches zero-day exploits and evasive polymorphic variations.</span>
+              </li>
+              <li className="flex items-start gap-1.5 leading-snug">
+                <span className="text-[#FBBC05] font-bold font-mono">✓</span>
+                <span>Accelerates incident triage from hours to sub-second decisions.</span>
+              </li>
+            </ul>
           </div>
 
-          <div className="p-3 rounded-lg bg-[#E8F0FE]/40 border border-[#1A73E8]/30 space-y-1">
+          {/* Pillar 3 */}
+          <div className="p-3 rounded-lg bg-[#FAF9F5] border border-[#1A73E8]/30 space-y-2">
             <div className="flex items-center gap-1.5 text-xs font-bold text-[#1A73E8]">
               <Briefcase className="w-3.5 h-3.5 text-[#1A73E8]" />
               <span>Where Is It Used?</span>
             </div>
-            <p className="text-[11px] text-[#202124] leading-snug">
-              SOC automated triage, zero-trust enterprise identity defense, high-speed packet inspection, and Tier-1 banking fraud networks.
-            </p>
+            <ul className="space-y-1 text-[11px] text-[#202124]">
+              <li className="flex items-start gap-1.5 leading-snug">
+                <span className="text-[#1A73E8] font-bold">→</span>
+                <span>Tier-1 Banking: Transaction fraud & anti-money laundering engines.</span>
+              </li>
+              <li className="flex items-start gap-1.5 leading-snug">
+                <span className="text-[#1A73E8] font-bold">→</span>
+                <span>SOC Teams: Automated alert correlation & SIEM triage.</span>
+              </li>
+              <li className="flex items-start gap-1.5 leading-snug">
+                <span className="text-[#1A73E8] font-bold">→</span>
+                <span>Identity Gateways: Zero-trust step-up MFA and biometrics.</span>
+              </li>
+            </ul>
           </div>
         </div>
       </section>
@@ -370,7 +466,7 @@ print(security_evaluator([0.9, 0.8, 0.85])) # Output: Malicious
       />
 
       {/* 8. Memory, Revision & Knowledge Check */}
-      <section className="bg-white rounded-xl p-4 sm:p-5 border border-[#C70234]/30 shadow-xs space-y-4">
+      <section className="bg-white rounded-xl p-4 sm:p-5 border border-[#C70234]/30 shadow-xs space-y-3">
         <div className="flex items-center justify-between border-b border-[#FBBC05]/40 pb-2">
           <div className="flex items-center gap-2">
             <HelpCircle className="w-4 h-4 text-[#C70234]" />

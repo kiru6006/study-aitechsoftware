@@ -181,9 +181,12 @@ export const StudyNotes: React.FC<StudyNotesProps> = ({
                 <span className="font-semibold text-[#92400E] block mb-1">
                   Formula & Mathematical Formulation:
                 </span>
-                <ul className="list-disc pl-4 space-y-0.5 text-[#202124]">
+                <ul className="space-y-1 text-[#202124]">
                   {keyFormulas.map((f, i) => (
-                    <li key={i} className="font-mono text-[10.5px]">{f}</li>
+                    <li key={i} className="flex items-start gap-1.5 font-mono text-[10.5px]">
+                      <span className="text-[#D97706] font-bold shrink-0">•</span>
+                      <span>{f}</span>
+                    </li>
                   ))}
                 </ul>
               </div>

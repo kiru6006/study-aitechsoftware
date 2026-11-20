@@ -123,9 +123,12 @@ export const CaseStudiesPage: React.FC = () => {
               <AlertTriangle className="w-4 h-4 text-[#C70234]" />
               <span>Operational Limitations & Regulatory Constraints</span>
             </h3>
-            <ul className="space-y-1.5 text-xs text-[#5F6368] pl-4 list-disc">
+            <ul className="space-y-1.5 text-xs text-[#5F6368]">
               {cs.limitations.map((lim, i) => (
-                <li key={i} className="leading-snug">{lim}</li>
+                <li key={i} className="flex items-start gap-2 leading-snug">
+                  <span className="text-[#C70234] font-bold mt-0.5 shrink-0">•</span>
+                  <span>{lim}</span>
+                </li>
               ))}
             </ul>
           </div>
