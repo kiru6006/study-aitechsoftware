@@ -3,8 +3,15 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   ChevronDown,
   ChevronRight,
+  BookOpen,
+  Layers,
+  ShieldAlert,
+  GraduationCap,
+  Sparkles,
   CheckCircle2,
-  BookOpen
+  FolderOpen,
+  Hash,
+  Eye
 } from 'lucide-react';
 import { getCatalog, getSubjectUnits, getCompletedConcepts } from '../../lib/contentLoader';
 
@@ -21,6 +28,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const completedIds = getCompletedConcepts();
 
+  // Extract params from pathname: /:subjectId/...
   const pathParts = location.pathname.split('/').filter(Boolean);
   const currentSubjectId = pathParts[0] || 'ai-cyber-security';
   const currentUnitId = pathParts[1] === 'units' ? pathParts[2] : null;
@@ -29,6 +37,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const currentSubject = catalog.subjects[currentSubjectId] || Object.values(catalog.subjects)[0];
   const units = getSubjectUnits(currentSubject?.id || 'ai-cyber-security');
 
+  // Track expanded units for showing topic bullet points
   const [expandedUnits, setExpandedUnits] = useState<Record<string, boolean>>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -43,6 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     } catch {}
   }, [expandedUnits]);
 
+  // Auto-expand current active unit
   useEffect(() => {
     if (currentUnitId) {
       setExpandedUnits(prev => ({ ...prev, [currentUnitId]: true }));
@@ -55,73 +65,145 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     setExpandedUnits(prev => ({ ...prev, [uId]: !prev[uId] }));
   };
 
-  const navItemClass = ({ isActive }: { isActive: boolean }) =>
-    `px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors text-center ${
-      isActive
-        ? 'bg-slate-900 text-white font-semibold'
-        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-    }`;
+  const allSubjects = Object.values(catalog.subjects);
 
   return (
     <>
+      {/* Mobile Backdrop */}
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs lg:hidden"
         />
       )}
 
+      {/* Subject-First Sidebar Container */}
       <aside
-        className={`fixed top-14 bottom-0 left-0 z-40 w-72 bg-white border-r border-slate-200/80 flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-13 bottom-0 left-0 z-40 w-72 bg-white border-r border-[#C70234]/25 flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Course Card Header */}
-        <div className="p-4 border-b border-slate-100 space-y-2.5">
+        {/* Active Subject Selector Card */}
+        <div className="p-3 bg-[#FEF7E0]/60 border-b border-[#FBBC05]/40 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-sans font-medium text-slate-500">
-              Active Curriculum
+            <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-[#92400E] flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#C70234]" />
+              Course Curriculum
             </span>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white text-[#C70234] border border-[#C70234]/30 font-semibold">
               {currentSubject?.code || 'MAI-OL506A-3'}
             </span>
           </div>
 
-          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/60">
-            <h2 className="font-serif text-sm font-semibold text-slate-900 leading-snug">
-              {currentSubject?.name || 'AI for Cyber Security'}
-            </h2>
-            <p className="text-[11px] text-slate-500 font-sans mt-0.5">
-              5 syllabus units • Comprehensive study pack
-            </p>
+          {/* If single subject, show subject card; if multiple, list selector */}
+          <div className="space-y-1">
+            {allSubjects.map(subj => {
+              const isActive = subj.id === currentSubject?.id;
+              return (
+                <button
+                  key={subj.id}
+                  onClick={() => {
+                    navigate(`/${subj.id}`);
+                    onClose();
+                  }}
+                  className={`w-full text-left p-2 rounded-lg border transition-all cursor-pointer flex items-center justify-between ${
+                    isActive
+                      ? 'bg-white border-[#C70234] shadow-2xs text-[#C70234]'
+                      : 'bg-[#FAF9F5] border-[#DADCE0] text-[#202124] hover:border-[#FBBC05]'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <div className={`w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs ${
+                      isActive ? 'bg-[#C70234] text-white' : 'bg-[#FEF7E0] text-[#92400E]'
+                    }`}>
+                      AI
+                    </div>
+                    <div>
+                      <h3 className="font-serif text-xs font-bold leading-tight line-clamp-1">
+                        {subj.name}
+                      </h3>
+                      <span className="text-[10px] font-mono text-[#5F6368]">
+                        5 Syllabus Units
+                      </span>
+                    </div>
+                  </div>
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#C70234]" />}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Quick Segment Links */}
-          <div className="grid grid-cols-4 gap-1 p-0.5 bg-slate-100 rounded-lg">
-            <NavLink to={`/${currentSubject.id}`} end onClick={onClose} className={navItemClass}>
+          {/* Quick Hub Navigation Pills */}
+          <div className="grid grid-cols-4 gap-1 pt-1">
+            <NavLink
+              to={`/${currentSubject.id}`}
+              end
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs'
+                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Subject Overview"
+            >
               Overview
             </NavLink>
-            <NavLink to={`/${currentSubject.id}/case-studies`} onClick={onClose} className={navItemClass}>
+            <NavLink
+              to={`/${currentSubject.id}/case-studies`}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs'
+                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Industry Case Studies"
+            >
               Cases
             </NavLink>
-            <NavLink to={`/${currentSubject.id}/exam-prep`} onClick={onClose} className={navItemClass}>
+            <NavLink
+              to={`/${currentSubject.id}/exam-prep`}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs'
+                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Study Notes & Q&A"
+            >
               Notes
             </NavLink>
-            <NavLink to={`/${currentSubject.id}/revision`} onClick={onClose} className={navItemClass}>
+            <NavLink
+              to={`/${currentSubject.id}/revision`}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs'
+                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Quick Revision & Flashcards"
+            >
               Revision
             </NavLink>
           </div>
         </div>
 
         {/* Units Navigation List */}
-        <div className="px-4 pt-3 pb-1.5 flex items-center justify-between text-xs font-medium text-slate-500">
+        <div className="px-3 pt-2 pb-1 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-[#92400E]">
           <span>Syllabus Units</span>
-          <span className="text-[10px] font-mono text-slate-400">
-            {units.length} Modules
+          <span className="text-[10px] font-mono text-[#5F6368] font-normal">
+            {units.length} Units
           </span>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-3 py-1 space-y-1 text-xs">
+        <nav className="flex-1 overflow-y-auto p-2 space-y-1.5 text-xs font-sans">
           {units.map(unit => {
             const isUnitActive = currentUnitId === unit.id;
             const isExpanded = !!expandedUnits[unit.id];
@@ -131,59 +213,68 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 key={unit.id}
                 className={`rounded-lg border transition-all overflow-hidden ${
                   isUnitActive
-                    ? 'border-slate-300 bg-white shadow-2xs'
-                    : 'border-transparent hover:border-slate-200 bg-transparent hover:bg-slate-50'
+                    ? 'border-[#C70234] bg-white shadow-2xs'
+                    : 'border-[#FBBC05]/40 bg-[#FAF9F5] hover:border-[#FBBC05]'
                 }`}
               >
-                {/* Unit Header */}
-                <div className="flex items-center justify-between p-2">
+                {/* Unit Header Row */}
+                <div
+                  className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${
+                    isUnitActive ? 'bg-[#FEF7E0]/60' : 'hover:bg-[#FEF7E0]/30'
+                  }`}
+                >
                   <NavLink
                     to={`/${currentSubject.id}/units/${unit.id}`}
                     onClick={onClose}
-                    className="flex-1 flex items-center gap-2.5 pr-1 min-w-0"
+                    className="flex-1 flex items-center gap-2 pr-1"
                   >
                     <span
-                      className={`w-5 h-5 rounded text-[10px] flex items-center justify-center font-mono font-semibold shrink-0 ${
+                      className={`w-5 h-5 rounded text-[10px] flex items-center justify-center font-bold font-mono shrink-0 ${
                         isUnitActive
-                          ? 'bg-[#9F1239] text-white'
-                          : 'bg-slate-100 text-slate-600'
+                          ? 'bg-[#C70234] text-white'
+                          : 'bg-white border border-[#FBBC05] text-[#92400E]'
                       }`}
                     >
                       U{unit.unitNumber}
                     </span>
-                    <span
-                      className={`truncate text-xs ${
-                        isUnitActive ? 'font-semibold text-slate-900' : 'text-slate-700'
-                      }`}
-                    >
-                      {unit.title}
-                    </span>
+                    <div className="flex-1">
+                      <span
+                        className={`font-sans text-xs leading-snug line-clamp-1 block ${
+                          isUnitActive ? 'font-bold text-[#C70234]' : 'font-medium text-[#202124]'
+                        }`}
+                      >
+                        {unit.title}
+                      </span>
+                    </div>
                   </NavLink>
 
                   <button
                     onClick={e => toggleUnit(unit.id, e)}
-                    className="p-1 rounded text-slate-400 hover:text-slate-700 cursor-pointer transition-colors shrink-0"
+                    className="p-1 rounded hover:bg-black/5 text-[#5F6368] shrink-0 cursor-pointer"
                     aria-label="Toggle unit topics"
                   >
                     {isExpanded ? (
-                      <ChevronDown className="w-3.5 h-3.5" />
+                      <ChevronDown className="w-3.5 h-3.5 text-[#C70234]" />
                     ) : (
                       <ChevronRight className="w-3.5 h-3.5" />
                     )}
                   </button>
                 </div>
 
-                {/* Sub-topics */}
+                {/* Bulleted Topics List when expanded */}
                 {isExpanded && (
-                  <div className="px-3 pb-2.5 pt-1 space-y-1.5 border-t border-slate-100 bg-slate-50/50">
-                    {unit.topics.map(topic => (
+                  <div className="p-2 bg-white border-t border-[#FBBC05]/30 space-y-1 pl-3">
+                    {unit.topics.map((topic, tIdx) => (
                       <div key={topic.id} className="space-y-0.5">
-                        <div className="text-[11px] font-medium text-slate-500 truncate flex items-center gap-1.5">
-                          <span className="w-1 h-1 rounded-full bg-slate-300" />
-                          <span>{topic.title}</span>
+                        <div className="flex items-start gap-1.5 text-[11px] text-[#5F6368]">
+                          <span className="text-[#C70234] font-bold leading-none mt-1">•</span>
+                          <span className="font-semibold text-[#202124] line-clamp-1">
+                            {topic.title}
+                          </span>
                         </div>
 
-                        <div className="pl-2 space-y-0.5">
+                        {/* Concept Bullets */}
+                        <div className="pl-3 space-y-0.5">
                           {topic.conceptIds.map(cId => {
                             const isDone = completedIds.includes(cId);
                             const isConceptActive = currentConceptId === cId;
@@ -193,17 +284,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                                 key={cId}
                                 to={`/${currentSubject.id}/concepts/${cId}`}
                                 onClick={onClose}
-                                className={`flex items-center justify-between px-2 py-1 rounded text-[11px] transition-colors ${
+                                className={`flex items-center justify-between px-1.5 py-0.5 rounded text-[10.5px] transition-colors ${
                                   isConceptActive
-                                    ? 'bg-rose-50 text-[#9F1239] font-medium'
-                                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                                    ? 'bg-[#FCE8EF] text-[#C70234] font-bold'
+                                    : 'text-[#5F6368] hover:text-[#C70234] hover:bg-[#FAF9F5]'
                                 }`}
                               >
-                                <span className="truncate">
+                                <span className="line-clamp-1">
                                   {cId.replace(/^c\d+-/, '').replace(/-/g, ' ')}
                                 </span>
                                 {isDone && (
-                                  <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0 ml-1.5" />
+                                  <CheckCircle2 className="w-3 h-3 text-[#188038] shrink-0 ml-1" />
                                 )}
                               </NavLink>
                             );
@@ -218,13 +309,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           })}
         </nav>
 
-        {/* Footer */}
-        <div className="p-3 border-t border-slate-100 bg-white text-[11px] text-slate-500 flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            <span>SubjectLab v1.0</span>
+        {/* Footer info */}
+        <div className="p-2.5 border-t border-[#FBBC05]/40 bg-[#FAF9F5] text-[10px] text-[#5F6368] flex items-center justify-between">
+          <div className="flex items-center gap-1.5 text-[#92400E] font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#188038]" />
+            <span>SubjectLab Active</span>
           </div>
-          <span className="font-mono text-slate-400">Offline ready</span>
+          <span className="font-mono text-[#C70234] font-semibold">GitHub Pages Ready</span>
         </div>
       </aside>
     </>

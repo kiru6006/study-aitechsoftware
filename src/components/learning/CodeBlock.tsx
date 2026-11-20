@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Terminal, FileCode2 } from 'lucide-react';
+import { Copy, Check, Terminal, Play, FileCode2 } from 'lucide-react';
 
 interface CodeBlockProps {
   language?: string;
@@ -27,15 +27,16 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs my-4">
+    <div className="rounded-xl border border-[#C70234]/30 bg-white overflow-hidden shadow-xs my-3 transition-all hover:border-[#C70234]/60">
       {/* Header bar */}
-      <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900 text-slate-300 text-xs font-sans">
-        <div className="flex items-center gap-2.5">
-          <span className="font-mono font-medium text-[11px] text-slate-400 uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-800">
+      <div className="flex items-center justify-between px-3.5 py-2 bg-[#FEF7E0] border-b border-[#FBBC05]/40 text-xs font-sans">
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#C70234]" />
+          <span className="font-mono font-semibold uppercase text-[11px] tracking-wider text-[#92400E] px-1.5 py-0.5 rounded bg-white/80 border border-[#FBBC05]/60">
             {language}
           </span>
           {caption && (
-            <span className="text-slate-200 text-xs font-medium truncate">
+            <span className="font-medium text-[#202124] text-xs line-clamp-1">
               {caption}
             </span>
           )}
@@ -43,17 +44,17 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
 
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-medium transition-colors cursor-pointer"
-          aria-label="Copy code"
+          className="flex items-center gap-1 px-2.5 py-1 rounded bg-white hover:bg-[#FCE8EF] text-[#C70234] border border-[#C70234]/30 text-[11px] font-medium transition-colors cursor-pointer"
+          aria-label="Copy code to clipboard"
         >
           {copied ? (
             <>
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-emerald-400">Copied</span>
+              <Check className="w-3.5 h-3.5 text-[#188038]" />
+              <span className="text-[#188038]">Copied</span>
             </>
           ) : (
             <>
-              <Copy className="w-3.5 h-3.5 text-slate-400" />
+              <Copy className="w-3.5 h-3.5" />
               <span>Copy</span>
             </>
           )}
@@ -61,7 +62,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       </div>
 
       {/* Code Container */}
-      <div className="bg-[#18181B] text-[#E4E4E7] p-4 font-mono text-xs overflow-x-auto leading-relaxed">
+      <div className="relative bg-[#1E1E2E] text-[#CDD6F4] p-3.5 font-mono text-xs overflow-x-auto leading-relaxed">
         <pre className="m-0 font-mono select-all">
           <code>{code}</code>
         </pre>
@@ -69,26 +70,26 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
 
       {/* Sample Input & Expected Output Panels */}
       {(sampleInput || expectedOutput) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200 border-t border-slate-200 bg-slate-50/50">
+        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#FBBC05]/30 border-t border-[#FBBC05]/30 bg-[#FDFBF7]">
           {sampleInput && (
-            <div className="p-3.5 space-y-1.5">
-              <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-600">
-                <FileCode2 className="w-3.5 h-3.5 text-slate-400" />
-                <span>Sample input:</span>
+            <div className="p-3 space-y-1">
+              <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#92400E]">
+                <FileCode2 className="w-3.5 h-3.5 text-[#D97706]" />
+                <span>Sample Input:</span>
               </div>
-              <pre className="m-0 p-2.5 rounded-lg bg-white border border-slate-200 text-slate-800 font-mono text-[11px] overflow-x-auto whitespace-pre-wrap">
+              <pre className="m-0 p-2 rounded bg-white border border-[#FBBC05]/40 text-[#202124] font-mono text-[11px] overflow-x-auto whitespace-pre-wrap">
                 {sampleInput}
               </pre>
             </div>
           )}
 
           {expectedOutput && (
-            <div className="p-3.5 space-y-1.5">
-              <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-600">
-                <Terminal className="w-3.5 h-3.5 text-slate-400" />
-                <span>Expected output:</span>
+            <div className="p-3 space-y-1">
+              <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#188038]">
+                <Terminal className="w-3.5 h-3.5 text-[#188038]" />
+                <span>Expected Output:</span>
               </div>
-              <pre className="m-0 p-2.5 rounded-lg bg-[#0F172A] border border-slate-800 text-emerald-400 font-mono text-[11px] overflow-x-auto whitespace-pre-wrap">
+              <pre className="m-0 p-2 rounded bg-[#0F172A] border border-[#188038]/40 text-[#34D399] font-mono text-[11px] overflow-x-auto whitespace-pre-wrap">
                 {expectedOutput}
               </pre>
             </div>
@@ -96,19 +97,19 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         </div>
       )}
 
-      {/* Walkthrough list */}
+      {/* Code Explanation list */}
       {explanation && explanation.length > 0 && (
-        <div className="p-3.5 bg-white border-t border-slate-100 space-y-2 text-xs">
-          <span className="font-medium text-slate-700 text-[11px] uppercase tracking-wider block">
+        <div className="p-3 bg-white border-t border-[#DADCE0]/60 space-y-1.5 text-xs text-[#5F6368]">
+          <span className="font-semibold text-[#202124] text-[11px] uppercase tracking-wider block">
             Implementation Walkthrough:
           </span>
-          <ul className="space-y-1.5 text-xs text-slate-600">
+          <ul className="space-y-1.5 text-xs">
             {explanation.map((step, idx) => (
               <li key={idx} className="flex items-start gap-2 leading-snug">
-                <span className="w-4 h-4 rounded bg-slate-100 text-slate-700 font-mono text-[10px] font-semibold flex items-center justify-center shrink-0 mt-0.5">
+                <span className="w-4 h-4 rounded-full bg-[#FEF7E0] border border-[#FBBC05] text-[#92400E] text-[10px] font-bold font-mono flex items-center justify-center shrink-0 mt-0.5">
                   {idx + 1}
                 </span>
-                <span className="text-slate-700">{step}</span>
+                <span className="text-[#202124]">{step}</span>
               </li>
             ))}
           </ul>
