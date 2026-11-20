@@ -1,0 +1,127 @@
+[
+  {
+    "id": "unit-1",
+    "subjectId": "ai-cyber-security",
+    "unitNumber": 1,
+    "title": "Introduction to AI for Cyber Security",
+    "officialTitle": "UNIT I: Introduction to AI for Cyber Security",
+    "hours": 9,
+    "summary": "Explores the fundamental paradigm shift from signature-based defense to data-driven AI systems. Covers cybersecurity data sources, challenges of high-dimensional log data, and the data pipeline.",
+    "memoryCode": "E-L-T-J-C",
+    "memoryCodeMeaning": "Entity logs, Label scarcity, Time-series, JSON parsing, Curse of dimensionality",
+    "topics": [
+      {
+        "id": "u1-t1",
+        "unitId": "unit-1",
+        "title": "Cybersecurity Landscape & Need for AI",
+        "conceptIds": ["c1-ai-vs-traditional-security", "c2-security-data-sources"]
+      },
+      {
+        "id": "u1-t2",
+        "unitId": "unit-1",
+        "title": "Cybersecurity Data Pipeline & Feature Engineering",
+        "conceptIds": ["c3-data-pipeline-challenges", "c4-labeling-imbalance-problem"]
+      }
+    ]
+  },
+  {
+    "id": "unit-2",
+    "subjectId": "ai-cyber-security",
+    "unitNumber": 2,
+    "title": "AI for Cyber Security Arsenal",
+    "officialTitle": "UNIT II: AI for Cyber Security Arsenal",
+    "hours": 9,
+    "summary": "Core algorithms for security analytics: supervised classification for intrusion detection, regression for blast-radius modeling, unsupervised clustering for attacker profiling, and anomaly detection.",
+    "memoryCode": "C-R-D-C-V-N-I",
+    "memoryCodeMeaning": "Classification, Regression, Dimensionality reduction, Clustering, Vectorization, NLP for logs, Isolation forests",
+    "topics": [
+      {
+        "id": "u2-t1",
+        "unitId": "unit-2",
+        "title": "Supervised Methods for Security",
+        "conceptIds": ["c5-supervised-classification-intrusion", "c6-regression-risk-scoring"]
+      },
+      {
+        "id": "u2-t2",
+        "unitId": "unit-2",
+        "title": "Unsupervised Analytics & Anomaly Detection",
+        "conceptIds": ["c7-clustering-attacker-behavior", "c8-isolation-forest-anomaly"]
+      }
+    ]
+  },
+  {
+    "id": "unit-3",
+    "subjectId": "ai-cyber-security",
+    "unitNumber": 3,
+    "title": "Detecting Cyber Security Threats with AI",
+    "officialTitle": "UNIT III: Detecting Cyber Security Threats with AI",
+    "hours": 9,
+    "summary": "Real-world threat detection engines using NLP, feature extraction, and deep learning for phishing email detection, malicious URL/domain identification, and malware classification.",
+    "memoryCode": "P-S-L-D-N-N",
+    "memoryCodeMeaning": "Phishing detection, Spam filtering, Lexical domain analysis, DGA classification, N-gram feature hashing, Neural malware signatures",
+    "topics": [
+      {
+        "id": "u3-t1",
+        "unitId": "unit-3",
+        "title": "Spam & Phishing Detection via NLP",
+        "conceptIds": ["c9-phishing-nlp-detection", "c10-dga-domain-detection"]
+      },
+      {
+        "id": "u3-t2",
+        "unitId": "unit-3",
+        "title": "Malware & Binary Threat Classification",
+        "conceptIds": ["c11-malware-pe-header-analysis", "c12-adversarial-evasion-attacks"]
+      }
+    ]
+  },
+  {
+    "id": "unit-4",
+    "subjectId": "ai-cyber-security",
+    "unitNumber": 4,
+    "title": "Protecting Sensitive Information and Assets",
+    "officialTitle": "UNIT IV: Protecting Sensitive Information and Assets",
+    "hours": 9,
+    "summary": "Identity defense, behavioral biometrics, account reputation scoring, keystroke dynamics, and facial recognition for zero-trust authentication and access protection.",
+    "memoryCode": "A-R-K-F",
+    "memoryCodeMeaning": "Account reputation, Risk-based authentication, Keystroke dynamics, Facial recognition biometric verification",
+    "topics": [
+      {
+        "id": "u4-t1",
+        "unitId": "unit-4",
+        "title": "Account Defense & Behavioral Reputation",
+        "conceptIds": ["c13-account-reputation-scoring", "c14-credential-stuffing-mitigation"]
+      },
+      {
+        "id": "u4-t2",
+        "unitId": "unit-4",
+        "title": "Biometric & Dynamic Authentication",
+        "conceptIds": ["c15-keystroke-dynamics-auth", "c16-facial-biometrics-anti-spoof"]
+      }
+    ]
+  },
+  {
+    "id": "unit-5",
+    "subjectId": "ai-cyber-security",
+    "unitNumber": 5,
+    "title": "Fraud Prevention with AI Solutions",
+    "officialTitle": "UNIT V: Fraud Prevention with AI Solutions",
+    "hours": 9,
+    "summary": "Real-time payment fraud prevention, synthetic identity detection, ensemble learning (Bagging, Random Forests, Gradient Boosted Trees), and model evaluation with extreme class imbalance.",
+    "memoryCode": "M-B-J-S",
+    "memoryCodeMeaning": "Metric selection (PR-AUC), Bagging & ensembles, Joint fraud graphs, Synthetic identity detection",
+    "topics": [
+      {
+        "id": "u5-t1",
+        "unitId": "unit-5",
+        "title": "Ensemble Architectures for Financial Fraud",
+        "conceptIds": ["c17-bagging-boosting-fraud-engines", "c18-graph-analytics-fraud-rings"]
+      },
+      {
+        "id": "u5-t2",
+        "unitId": "unit-5",
+        "title": "Imbalanced Evaluation & Real-Time Production Serving",
+        "conceptIds": ["c19-pr-auc-cost-sensitive-evaluation", "c20-realtime-fraud-scoring-latency"]
+      }
+    ]
+  }
+]

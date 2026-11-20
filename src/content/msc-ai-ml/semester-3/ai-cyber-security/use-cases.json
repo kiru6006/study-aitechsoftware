@@ -1,0 +1,54 @@
+[
+  {
+    "id": "banking-cyber-intelligence",
+    "title": "AI-Powered Banking Cybersecurity Intelligence System",
+    "industry": "Banking",
+    "businessProblem": "A tier-1 commercial retail bank faces multi-vector cyber threats: advanced credential stuffing attacks, targeted spear-phishing campaigns against executive officers, lateral malware movements bypassing traditional antivirus, and fraudulent unauthorized cross-border wire transfers totaling $22M in annual risk.",
+    "relevantConceptIds": [
+      "c1-ai-vs-traditional-security",
+      "c8-isolation-forest-anomaly",
+      "c9-phishing-nlp-detection",
+      "c13-account-reputation-scoring",
+      "c17-bagging-boosting-fraud-engines"
+    ],
+    "unitMapping": [
+      {
+        "unitNumber": 1,
+        "roleInSolution": "Unit I (Foundations): Telemetry ingestion from core banking gateways, Kafka log bus, feature normalization, and handling extreme label scarcity."
+      },
+      {
+        "unitNumber": 2,
+        "roleInSolution": "Unit II (Arsenal): Unsupervised Isolation Forest and GBDT algorithms analyzing internal network flows for stealthy lateral intrusion."
+      },
+      {
+        "unitNumber": 3,
+        "roleInSolution": "Unit III (Threat Detection): Transformer NLP email gateway scanning inbound messages for Business Email Compromise (BEC) and homoglyph domain fraud."
+      },
+      {
+        "unitNumber": 4,
+        "roleInSolution": "Unit IV (Protection & Auth): Continuous behavioral biometrics (keystroke flight times, mouse acceleration) guarding customer web banking sessions."
+      },
+      {
+        "unitNumber": 5,
+        "roleInSolution": "Unit V (Fraud Prevention): Sub-25ms LightGBM ensemble scoring transactions with cost-sensitive weighting to block unauthorized fund movement."
+      }
+    ],
+    "inputData": "1. Inbound corporate email MIME payloads with SPF/DKIM headers.\n2. Core banking transaction events: { card_id, amount, merchant_category, timestamp, geo_coordinates }.\n3. NetFlow telemetry (VPC flows, TCP flags, packet size distributions, byte entropy).\n4. Web session sensor metrics (keystroke dwell times, flight times, mobile device gyroscope jitter).",
+    "stepByStepProcess": [
+      "Step 1: Ingestion & Feature Store - Event streams flow via Apache Kafka into a unified streaming feature store (Feast/Redis).",
+      "Step 2: Boundary Filtration - Known malicious IOCs (IPs, hashes) dropped immediately by deterministic firewalls to conserve compute.",
+      "Step 3: Perimeter Threat Scanning - Email classifier (RoBERTa) scores inbound messages for urgency and brand deception, auto-quarantining phishing lures.",
+      "Step 4: Continuous Behavioral Authentication - Customer web and mobile sessions continuously scored via behavioral biometric models, prompting step-up MFA if flight-time variance spikes.",
+      "Step 5: Core Network Anomaly Detection - Unsupervised Isolation Forests analyze internal server-to-server traffic to detect anomalous lateral movement or credential harvesting.",
+      "Step 6: Real-Time Payment Decisioning - LightGBM fraud engine evaluates fund transfers within a 20ms SLA, declining fraudulent attempts and alerting the Security Operations Center (SOC)."
+    ],
+    "expectedOutput": "1. Phishing Quarantine Decision (Confidence score 0.0 - 1.0).\n2. Continuous Session Trust Score (Frictionless / Step-Up MFA / Session Termination).\n3. Lateral Movement Alert with identified source host, target IP, and anomalous entropy metric.\n4. Real-time Payment Authorization (ALLOW / REVIEW / DECLINE) with SHAP feature contribution explanation.",
+    "practicalApplication": "Deployed in active production environments across 14 million active bank accounts, delivering a 78% reduction in successful account takeovers and preventing $18.4M in fraudulent transfers within the first operational quarter.",
+    "limitations": [
+      "Requires continuous model retraining to prevent concept drift caused by evolving attacker evasion techniques.",
+      "High-throughput inference requires dedicated GPU/ASIC inference accelerators for transformer models.",
+      "Regulatory mandates (e.g. EU AI Act, RBI guidelines) require explainable AI (XAI) outputs such as SHAP or LIME for every declined transaction."
+    ],
+    "relatedExamQuestions": ["q-exam-16m-1", "q-exam-10m-1", "q-exam-5m-1"]
+  }
+]

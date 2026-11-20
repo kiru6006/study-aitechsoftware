@@ -1,0 +1,415 @@
+[
+  {
+    "id": "c1-ai-vs-traditional-security",
+    "subjectId": "ai-cyber-security",
+    "unitId": "unit-1",
+    "title": "AI-Driven vs Traditional Signature-Based Security",
+    "understanding": {
+      "definition": "Traditional cybersecurity relies on static deterministic rules and known signatures (MD5/SHA256 hashes, regex patterns, snort rules). AI-driven security applies statistical learning, behavioral heuristics, and pattern recognition to detect zero-day exploits and polymorphic threats that have never been seen before.",
+      "rationale": "Modern adversaries generate thousands of slightly modified polymorphic variants per hour. Rule-based firewalls and antivirus engines fail because hash matching requires prior human exposure and slow signature generation cycles.",
+      "terminology": [
+        { "term": "Signature", "explanation": "A static footprint or hash identifier representing a known malicious artifact." },
+        { "term": "Heuristic", "explanation": "Rule of thumb or algorithmic calculation measuring threat likelihood." },
+        { "term": "Zero-Day Exploit", "explanation": "An attack targeting an unpatched or previously undisclosed vulnerability." },
+        { "term": "Polymorphism", "explanation": "Malware that automatically encrypts or mutates its executable structure on each infection to defeat static hashes." }
+      ],
+      "markdownContent": "### The Paradigm Shift\nTraditional security operates on the premise that what is malicious is known and cataloged. However, in enterprise environments generating gigabytes of telemetry per second, manual signature authoring suffers from unsustainable lag.\n\n```text\n+-----------------------+-----------------------------+-----------------------------+\n| Dimension             | Traditional Signature       | AI & Machine Learning       |\n+-----------------------+-----------------------------+-----------------------------+\n| Detection Paradigm    | Deterministic pattern match | Probabilistic behavior      |\n| Zero-Day Protection   | Zero (requires prior patch) | High (generalizes patterns) |\n| False Positive Rate   | Near zero for exact hashes  | Non-zero, requires tuning   |\n| Maintenance Overhead  | Manual rule updates daily   | Automated retraining loops  |\n+-----------------------+-----------------------------+-----------------------------+\n```\n\nAI complements traditional security through hybrid defense: fast deterministic blocklists filter known junk at the edge, while ML models evaluate borderline and novel network flows."
+    },
+    "visualization": {
+      "diagramType": "architecture",
+      "diagramTitle": "Signature vs AI Detection Pipeline",
+      "diagramSource": "graph TD\n  Traffic[Incoming Network Payload] --> SigCheck{Known Signature?}\n  SigCheck -->|Yes - Exact Match| Drop[Instant Drop / Quarantine]\n  SigCheck -->|No - Unknown / Polymorphic| MLPipeline[Feature Extraction Engine]\n  MLPipeline --> AnomalyModel[Isolation Forest / GBDT]\n  AnomalyModel -->|Score >= 0.85| SecOpsAlert[Block & Trigger SOC Investigation]\n  AnomalyModel -->|Score < 0.85| Allowed[Allow Traffic]",
+      "explanation": "Traffic passes through high-speed signature checks first to drop known signatures with zero compute overhead. Unmatched packets proceed into the AI pipeline for statistical and behavioral classification."
+    },
+    "application": {
+      "industry": "Banking",
+      "scenario": "Commercial bank perimeter under attack by a newly synthesized polymorphic ransomware variant bypassing antivirus hashes.",
+      "inputExample": "Firewall NetFlow records: destination port 445 (SMB), packet inter-arrival time standard deviation 0.002ms, encrypted payload entropy 7.94.",
+      "processSteps": [
+        "Capture raw packet flow stream at boundary switch.",
+        "Calculate statistical summary metrics: Shannon entropy, bytes per packet, TCP window size jitter.",
+        "Pass normalized feature vector into trained Gradient Boosted Classifier.",
+        "Flag flow as anomalous lateral movement (Anomaly Score: 0.94) within 15 milliseconds."
+      ],
+      "outputExample": "Automated host isolation command dispatched to EDR agent; SMB port quarantined.",
+      "codeSnippet": {
+        "language": "python",
+        "caption": "Extracting Shannon Entropy for High-Entropy Ransomware Payloads",
+        "code": "import math\nfrom collections import Counter\n\ndef calculate_payload_entropy(byte_sequence: bytes) -> float:\n    if not byte_sequence:\n        return 0.0\n    counts = Counter(byte_sequence)\n    length = len(byte_sequence)\n    entropy = -sum((c / length) * math.log2(c / length) for c in counts.values())\n    return entropy # Plaintext < 5.0, Compressed/Encrypted Ransomware > 7.5"
+      },
+      "numericalExample": {
+        "problem": "Calculate Shannon entropy of byte stream with length 4 consisting of bytes [0x00, 0x00, 0xFF, 0xAA].",
+        "formula": "H(X) = -sum(p(x) * log2(p(x)))",
+        "solution": "p(0x00)=2/4=0.5, p(0xFF)=1/4=0.25, p(0xAA)=1/4=0.25.\nH = -[ 0.5 * (-1) + 0.25 * (-2) + 0.25 * (-2) ] = -[-0.5 - 0.5 - 0.5] = 1.5 bits/byte."
+      }
+    },
+    "memory": {
+      "mnemonic": "E-L-T-J-C (Entity, Label, Time, JSON, Curse)",
+      "keywords": ["Polymorphism", "Zero-day", "Shannon Entropy", "Probabilistic Inference", "Generalization"],
+      "comparison": [
+        { "otherConcept": "Heuristic Analysis", "difference": "Heuristics use hardcoded human if-then rules; AI learns high-dimensional decision boundaries automatically from training telemetry." }
+      ],
+      "commonMistakes": [
+        "Confusing False Negative with False Positive in security evaluation.",
+        "Assuming AI models can completely replace firewalls rather than functioning as an ensemble layer."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "AI security is the deployment of machine learning algorithms to detect anomalies, malware, and intrusions based on behavioral patterns rather than static cryptographic signatures.",
+      "fiveMarkAnswer": "**1. Definition**: Deployment of statistical learning to identify novel threats without prior signature records.\n**2. Core Shortcoming of Signatures**: Signature matching fails against zero-day and polymorphic malware because modifying a single bit changes the entire cryptographic hash (MD5/SHA256).\n**3. AI Advantages**: Learns multi-dimensional feature spaces (entropy, packet timing, flow size distributions) to detect attacks by behavioral intent.\n**4. Limitation**: Possibility of false alarms and susceptibility to adversarial perturbations.",
+      "tenMarkAnswer": "**1. Comprehensive Definition**: Detailed contrast between deterministic signature scanning and probabilistic machine learning inference in modern SOC workflows.\n**2. Architectural Pipeline**: Ingestion -> Parsing & Normalization -> Feature Extraction (Entropy, Inter-arrival times, N-grams) -> Model Inference (Supervised vs Unsupervised) -> Alert Triage.\n**3. Real-world Banking Example**: Lateral movement detection across internal microservices using NetFlow clustering.\n**4. Evaluation Trade-offs**: Why precision-recall metrics take precedence over accuracy in extreme class-imbalance security datasets.",
+      "sixteenMarkAnswer": "**Full Examination Blueprint Structure**:\n- **Introduction**: Historical evolution from firewall ACLs to deep learning detection engines.\n- **Theoretical Framework**: Information theory in cybersecurity (Shannon entropy, mutual information for feature selection).\n- **Architectural Diagram**: End-to-end telemetry ingestion, feature store, real-time inference worker, SOC triage queue.\n- **Worked Numerical Comparison**: Latency, storage requirements, and zero-day detection rates across 1 million network events.\n- **Adversarial Security**: Evasion attacks against ML models (fast gradient sign method on feature vectors) and defensive distillation countermeasures.\n- **Conclusion & Future Outlook**: Autonomous SOCs combining large language models for incident summarization with low-latency tree ensembles for packet filtering.",
+      "keyFormulas": [
+        "Shannon Entropy: H(X) = -sum(p(x) * log2(p(x)))",
+        "False Positive Rate (FPR): FP / (FP + TN)"
+      ]
+    },
+    "quiz": [
+      {
+        "id": "q1",
+        "question": "What is the primary vulnerability of cryptographic hash-based malware detection?",
+        "options": [
+          "It is computationally too slow for line-rate inspection.",
+          "Slight structural mutations (polymorphism) completely change the hash.",
+          "It produces high rates of false positives on encrypted traffic.",
+          "It cannot run on distributed cloud environments."
+        ],
+        "correctIndex": 1,
+        "explanation": "Hash algorithms like SHA-256 exhibit the avalanche effect: changing a single byte in the binary results in an entirely different hash, bypassing static blocklists."
+      },
+      {
+        "id": "q2",
+        "question": "An encrypted ransomware payload typically exhibits which Shannon entropy characteristic?",
+        "options": [
+          "Very low entropy (< 2.0) due to compression redundancy.",
+          "Zero entropy because bytes are obfuscated.",
+          "Very high entropy (approaching 8.0 bits/byte) due to uniform byte distribution.",
+          "Negative entropy indicating malicious intent."
+        ],
+        "correctIndex": 2,
+        "explanation": "High-quality encryption algorithms produce ciphertext indistinguishable from random noise, yielding maximum theoretical Shannon entropy of ~8 bits per byte."
+      }
+    ]
+  },
+  {
+    "id": "c8-isolation-forest-anomaly",
+    "subjectId": "ai-cyber-security",
+    "unitId": "unit-2",
+    "title": "Isolation Forest for Cyber Anomaly Detection",
+    "understanding": {
+      "definition": "Isolation Forest is an unsupervised tree ensemble algorithm explicitly designed for anomaly detection. Instead of profiling normal instances like distance-based methods, it isolates anomalies by randomly partitioning features. Anomalies require fewer random splits to isolate because they are few and distinct in feature space.",
+      "rationale": "Traditional clustering (K-Means, GMM) and distance algorithms (k-NN) suffer from O(N^2) complexity and degrade under high dimensionality (curse of dimensionality). Isolation Forest runs in O(t * n * log(n)) linear time, making it suitable for line-rate security telemetry.",
+      "terminology": [
+        { "term": "Isolation Tree (iTree)", "explanation": "A binary tree structure where each internal node splits a randomly selected feature at a random uniform value." },
+        { "term": "Path Length h(x)", "explanation": "The number of edges traversed from the root node to the terminating leaf node for a sample x." },
+        { "term": "Anomaly Score s(x, n)", "explanation": "Normalized metric between 0 and 1 indicating how close the average path length is to the expected average of an anomaly." }
+      ],
+      "markdownContent": "### How Isolation Forest Operates\n1. Normal points are clustered tightly in high-density regions; separating them requires deep nested splits.\n2. Malicious outliers or anomalous network spikes exist in sparse periphery regions; a few random cuts isolate them immediately.\n\n$$\ns(x, n) = 2^{-\\frac{E(h(x))}{c(n)}}\n$$\nWhere $c(n) = 2(\\ln(n - 1) + 0.5772156649) - \\frac{2(n - 1)}{n}$ is the average path length of unsuccessful searches in a Binary Search Tree (BST)."
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "Isolation Tree Partitioning",
+      "diagramSource": "graph TD\n  Root[Root Sample Set] --> Split1{Random Split: PacketSize < 1420}\n  Split1 -->|Left - Anomaly Isolated!| LeafAnomaly[Sample X: Isolated in 1 Split!]\n  Split1 -->|Right| Split2{Random Split: Duration < 4.2s}\n  Split2 --> Split3{Random Split: Port == 80}\n  Split3 --> DenseCluster[Dense Normal Cluster: Depth 12]",
+      "explanation": "Anomalous attacks require shallow traversal depths (depth 1 to 3), while normal traffic clusters require deep partitions (depth 10 to 15)."
+    },
+    "application": {
+      "industry": "Banking",
+      "scenario": "Detecting compromised bank internal service accounts performing credential harvesting during non-business hours.",
+      "inputExample": "Active Directory logs: { auth_count_per_minute: 450, failed_logins: 38, unique_ips_accessed: 85, time_of_day: 03:15 }",
+      "processSteps": [
+        "Normalize multi-source event logs from Kerberos / NTLM domain controllers.",
+        "Extract 12 behavioral features including login velocity and subnet diversity.",
+        "Pass instances through an ensemble of 150 Isolation Trees.",
+        "Calculate mean path length E(h(x)) and compute anomaly score s.",
+        "Instances with s >= 0.75 immediately trigger automated ticket revocation."
+      ],
+      "outputExample": "Anomaly Score: 0.89 (Mean path depth: 2.1 vs normal baseline 9.4). Session killed.",
+      "codeSnippet": {
+        "language": "python",
+        "caption": "Detecting Outliers with Scikit-Learn IsolationForest",
+        "code": "from sklearn.ensemble import IsolationForest\nimport numpy as np\n\n# Features: [requests_per_sec, distinct_endpoints, avg_payload_kb]\nX_train = np.load('normal_baseline_traffic.npy')\n\niso_model = IsolationForest(n_estimators=100, contamination=0.01, random_state=42)\niso_model.fit(X_train)\n\n# Score live security telemetry: -1 indicates anomaly, 1 indicates normal\nlive_vector = np.array([[1200.0, 180.0, 4.5]])\nprediction = iso_model.predict(live_vector)\nanomaly_score = iso_model.decision_function(live_vector)\nprint(f'Prediction: {prediction}, Score: {anomaly_score}')"
+      },
+      "numericalExample": {
+        "problem": "Given expected BST path length c(n) = 10, calculate the anomaly score s(x, n) for a sample with average observed path length E(h(x)) = 3.",
+        "formula": "s(x, n) = 2^(-E(h(x)) / c(n))",
+        "solution": "s = 2^(-3 / 10) = 2^(-0.3) = 1 / (2^0.3) ≈ 1 / 1.2311 ≈ 0.812.\nSince 0.812 > 0.8, the observation is classified as a severe outlier/anomaly."
+      }
+    },
+    "memory": {
+      "mnemonic": "C-R-D-C-V-N-I (Classification, Regression, Dim-Reduction, Clustering, Vectorization, NLP, Isolation-Forest)",
+      "keywords": ["Path Length", "iTree", "Subsampling", "Linear Complexity", "Unsupervised"],
+      "comparison": [
+        { "otherConcept": "One-Class SVM", "difference": "One-Class SVM builds a kernel boundary around normal points (high compute O(N^3)); Isolation Forest partitions outliers directly with O(N) tree cuts." }
+      ],
+      "commonMistakes": [
+        "Confusing contamination parameter: It specifies the expected anomaly proportion, not model confidence.",
+        "Thinking deep path lengths represent attacks; in iTrees, shallow paths represent attacks."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Isolation Forest is an unsupervised tree ensemble that detects anomalies by isolating points using random partitions; anomalies isolate quickly with short path lengths.",
+      "fiveMarkAnswer": "**1. Principle**: Outliers are few and different, meaning they require fewer random partition planes to separate from the rest of the dataset.\n**2. Algorithm Step**: Randomly pick a feature, randomly pick a split value between min and max, repeat recursively until sample is isolated.\n**3. Mathematical Score**: $s(x, n) = 2^{-E(h(x))/c(n)}$. If $s \\to 1$, definite anomaly; if $s < 0.5$, normal instance.\n**4. Key Advantage**: Sub-linear memory and linear execution time $O(t \\cdot n \\log n)$.",
+      "tenMarkAnswer": "**1. Mathematical Formulation**: Define iTree, path length $h(x)$, harmonic number approximation for $c(n)$, and normalize score boundary conditions.\n**2. Architecture Diagram**: Root split down to shallow terminating leaf (anomaly) vs deep terminating cluster (benign).\n**3. Cyber Security Application**: Detection of slow-and-low port scans and data exfiltration spikes in SIEM telemetry.\n**4. Comparison with Local Outlier Factor (LOF)**: Computational scaling differences on massive network flow records.",
+      "sixteenMarkAnswer": "**Full 16-Mark University Response Structure**:\n- **Introduction & Motivation**: Why distance-based metrics break down when handling 100M+ VPC flow logs.\n- **Algorithmic Deep-Dive**: Isolation Tree construction algorithm, subsampling without replacement to prevent masking and swamping.\n- **Anomaly Score Derivation**: Proof of $c(n)$ as expected path length of unsuccessful search in binary search trees.\n- **End-to-End Enterprise SIEM Architecture**: Apache Kafka -> Feature Extraction -> Distributed iForest -> Redis Alert Cache.\n- **Empirical Tuning**: Impact of tree count (n_estimators=100-200), sub-sample size (psi=256), and contamination threshold.\n- **Adversarial Resilience**: How smart attackers evade iTrees through deliberate feature mimicking, and how random feature projection counters this.",
+      "keyFormulas": [
+        "s(x, n) = 2^(-E(h(x)) / c(n))",
+        "c(n) = 2(ln(n - 1) + 0.5772156649) - (2(n - 1) / n)"
+      ]
+    },
+    "quiz": [
+      {
+        "id": "q3",
+        "question": "In an Isolation Forest, what path length characteristic indicates a malicious network anomaly?",
+        "options": [
+          "A very long path length near the maximum tree depth.",
+          "A very short path length, isolating in few splits.",
+          "A path length equal to the average tree height c(n).",
+          "Path length is irrelevant; only leaf node count matters."
+        ],
+        "correctIndex": 1,
+        "explanation": "Because anomalies are few and sparse in feature space, random feature partitioning isolates them within very few splits near the root."
+      }
+    ]
+  },
+  {
+    "id": "c9-phishing-nlp-detection",
+    "subjectId": "ai-cyber-security",
+    "unitId": "unit-3",
+    "title": "NLP-Powered Phishing & Social Engineering Detection",
+    "understanding": {
+      "definition": "Natural Language Processing (NLP) models detect phishing attacks by analyzing semantic urgency, grammatical anomalies, deceptive sentiment, brand impersonation, and structural lexical features in email headers and body content.",
+      "rationale": "Modern spear-phishing messages avoid keyword blacklists by using clean natural language, AI-generated lures, and spoofed homoglyphs. Deep contextual transformers and TF-IDF/N-gram models identify deceptive intent rather than basic keyword matches.",
+      "terminology": [
+        { "term": "Homoglyph Attack", "explanation": "Replacing ASCII characters with identical-looking Unicode characters (e.g., 'pаypal.com' using Cyrillic 'а')." },
+        { "term": "TF-IDF", "explanation": "Term Frequency-Inverse Document Frequency measuring word importance relative to a security corpus." },
+        { "term": "Urgency Incongruity", "explanation": "Statistical discrepancy between high psychological urgency and unverified sender reputation." }
+      ],
+      "markdownContent": "### Multi-Layered Phishing Defense\nTraditional email security filters look only for known malicious attachments or IP addresses. NLP phishing engines parse:\n1. **Header Analysis**: SPF, DKIM, and DMARC alignment checks combined with domain age.\n2. **Lexical URL Properties**: Shannon entropy of URL string, subdomain count, presence of @ symbols.\n3. **Semantic Intent Analysis**: Transformer embeddings scoring urgency, threat of account suspension, or financial transaction instructions."
+    },
+    "visualization": {
+      "diagramType": "sequence",
+      "diagramTitle": "Phishing Ingestion & Inference Flow",
+      "diagramSource": "sequenceDiagram\n  autonumber\n  MailServer->>NLPEngine: Inbound MIME Message\n  NLPEngine->>HeaderParser: Validate SPF / DKIM / DMARC\n  NLPEngine->>LexicalAnalyzer: Extract URLs & Compute Homoglyphs\n  NLPEngine->>TransformerModel: Predict Urgency & Financial Coercion\n  TransformerModel-->>NLPEngine: Phishing Score (0.96)\n  NLPEngine->>MailServer: Quarantine & Inject Warning Banner",
+      "explanation": "Inbound emails undergo concurrent header verification, lexical URL decomposition, and transformer semantic classification before inbox delivery."
+    },
+    "application": {
+      "industry": "Banking",
+      "scenario": "Targeted Business Email Compromise (BEC) masquerading as an urgent wire transfer request from the Chief Financial Officer.",
+      "inputExample": "Email text: 'URGENT: Confidential acquisition payment required before 4PM today. Do not call, wire to escrow account immediately.'",
+      "processSteps": [
+        "Tokenize body text using subword tokenizer (BPE / WordPiece).",
+        "Extract semantic embedding vector through fine-tuned RoBERTa-Sec model.",
+        "Calculate semantic similarity to high-risk BEC templates (urgency + secrecy + monetary routing).",
+        "Cross-reference sender display name 'CFO' against authorized internal VIP list; detect mismatched external return-path.",
+        "Quarantine email with automated alert to the security operations center."
+      ],
+      "outputExample": "Classification: Phishing (Confidence: 99.2%). Risk Category: High-Urgency CEO Fraud.",
+      "codeSnippet": {
+        "language": "python",
+        "caption": "Extracting Lexical and Structural URL Features for Phishing Detection",
+        "code": "import urllib.parse\nimport math\n\ndef extract_url_features(url: str) -> dict:\n    parsed = urllib.parse.urlparse(url)\n    domain = parsed.netloc\n    return {\n        'url_length': len(url),\n        'domain_length': len(domain),\n        'subdomain_count': domain.count('.'),\n        'has_ip_address': int(any(part.isdigit() for part in domain.split('.'))),\n        'has_at_symbol': int('@' in url),\n        'suspicious_keyword_count': sum(1 for kw in ['login', 'verify', 'secure', 'bank', 'update'] if kw in url.lower())\n    }"
+      },
+      "numericalExample": {
+        "problem": "Given vocabulary with word 'urgent' appearing 12 times in a phishing email of 200 words, and in 50 out of 10,000 corporate documents, calculate its TF-IDF score.",
+        "formula": "TF = f(t, d) / len(d), IDF = log10(N / (1 + df(t)))",
+        "solution": "TF = 12 / 200 = 0.06.\nIDF = log10(10000 / 51) = log10(196.07) ≈ 2.292.\nTF-IDF = 0.06 * 2.292 = 0.1375."
+      }
+    },
+    "memory": {
+      "mnemonic": "P-S-L-D-N-N (Phishing, Spam, Lexical, DGA, N-gram, Neural)",
+      "keywords": ["Homoglyphs", "BEC Fraud", "TF-IDF", "BERT/RoBERTa", "DMARC Alignment"],
+      "comparison": [
+        { "otherConcept": "Bayesian Spam Filter", "difference": "Bayesian models assume feature independence (bag-of-words); NLP transformers understand bidirectional context and word order." }
+      ],
+      "commonMistakes": [
+        "Focusing purely on body text while ignoring sender authentication headers (SPF/DKIM).",
+        "Assuming homoglyphs can be caught with standard ASCII regex."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "NLP phishing detection applies computational linguistics and contextual machine learning to evaluate email semantics, urgency cues, and URL structures to flag social engineering attacks.",
+      "fiveMarkAnswer": "**1. Core Mechanism**: Examines lexical syntax, sentiment urgency, and header anomalies to classify fraudulent emails.\n**2. Key Features**: Subdomain depth, IP literal URLs, homoglyph character substitutions, and semantic pressure vectors.\n**3. Algorithm**: Tokenization -> Feature vectorization (TF-IDF or transformer embedding) -> Classification via LightGBM / Neural Network.\n**4. Evaluation**: Why high precision is critical to prevent false-quarantining legitimate enterprise communication.",
+      "tenMarkAnswer": "**1. Architecture**: Full pipeline breakdown of Mail Transfer Agent (MTA) milter plugin, feature extractor, and ML decision engine.\n**2. Natural Language Challenges**: Zero-shot phishing generation using LLMs, stealthy phrasing without spam trigger words.\n**3. Feature Engineering Matrix**: Detailed catalog of lexical, domain-age, sentiment, and authentication features.\n**4. Model Performance**: Receiver Operating Characteristic (ROC) curve analysis on public phishing datasets (Nazario corpus).",
+      "sixteenMarkAnswer": "**Comprehensive Model Examination Framework**:\n- **Introduction**: Economic scale of Business Email Compromise (BEC) and limitations of static rule lists.\n- **Linguistic Indicators of Social Engineering**: Authority bias, artificial scarcity, fear appeal, and obfuscation.\n- **Technical Pipeline Architecture**: Integration of FastText embedding with multi-head attention transformer for line-rate analysis.\n- **Homoglyph & Internationalized Domain Name (IDN) Defense**: Punycode conversion and Levenshtein edit-distance calculation against protected brand domains.\n- **Worked Engineering Example**: End-to-end Python/FastAPI microservice scoring emails with simulated banking payloads.\n- **Countermeasures against Adversarial Evasion**: Character-level noise injection defense and robust adversarial training.",
+      "keyFormulas": [
+        "TF-IDF(t, d, D) = TF(t, d) * log(N / (1 + DF(t)))",
+        "Levenshtein Distance: lev(a, b)"
+      ]
+    },
+    "quiz": [
+      {
+        "id": "q4",
+        "question": "What is an Internationalized Domain Name (IDN) homoglyph attack?",
+        "options": [
+          "Overwhelming a DNS server with random query floods.",
+          "Registering domains using non-Latin characters visually identical to Latin characters to deceive victims.",
+          "Injecting malicious SQL statements into email subject headers.",
+          "Spoofing the Return-Path header with valid cryptographic signatures."
+        ],
+        "correctIndex": 1,
+        "explanation": "Homoglyph attacks exploit character similarities across scripts (e.g. Cyrillic 'а' vs Latin 'a') so phishing URLs appear legitimate to human eyes."
+      }
+    ]
+  },
+  {
+    "id": "c13-account-reputation-scoring",
+    "subjectId": "ai-cyber-security",
+    "unitId": "unit-4",
+    "title": "Account Reputation Scoring & Behavioral Biometrics",
+    "understanding": {
+      "definition": "Account reputation scoring is a continuous, dynamic risk-assessment system that evaluates user session signals—such as keystroke flight times, mouse acceleration profiles, device fingerprints, and geolocation anomalies—to authenticate identity without disrupting genuine users.",
+      "rationale": "Static passwords and SMS OTPs are systematically undermined by data breaches, SIM swapping, and automated credential stuffing. Behavioral biometrics provides passive, non-intrusive authentication that continuously verifies the user throughout the entire session lifecycle.",
+      "terminology": [
+        { "term": "Keystroke Flight Time", "explanation": "The time elapsed between releasing one key and pressing the subsequent key." },
+        { "term": "Dwell Time", "explanation": "The exact duration a single key remains depressed before release." },
+        { "term": "Risk-Based Authentication (RBA)", "explanation": "Prompting step-up challenges (MFA) only when the computed session risk score exceeds established risk thresholds." }
+      ],
+      "markdownContent": "### Passive Behavioral Verification\nUnlike passwords entered once at login, behavioral telemetry verifies continuous identity:\n- **Physical Biometrics**: Fingerprint, Face ID (Active, point-in-time).\n- **Behavioral Biometrics**: Keystroke rhythm, swipe curvature, gyro jitter, mouse velocity (Passive, continuous).\n\nIf credentials are stolen by an attacker, their physical cadence and device fingerprint will trigger high risk anomaly scores, initiating instant session revocation."
+    },
+    "visualization": {
+      "diagramType": "architecture",
+      "diagramTitle": "Risk-Based Continuous Authentication Architecture",
+      "diagramSource": "graph TD\n  Client[Browser / Mobile App] --> Telemetry[Collect Keystroke & Mouse Jitter]\n  Telemetry --> MLRiskEngine[Real-Time Risk Scoring Engine]\n  MLRiskEngine --> ScoreCheck{Risk Score s}\n  ScoreCheck -->|s < 0.30: Low Risk| Allow[Silent Frictionless Access]\n  ScoreCheck -->|0.30 <= s < 0.75: Medium| Challenge[Step-Up Authenticator MFA]\n  ScoreCheck -->|s >= 0.75: High Risk| Terminate[Kill Session & Alert SOC]",
+      "explanation": "Continuous scoring dynamically modulates user friction: low risk experiences zero friction, while anomalous behavioral cadences trigger step-up MFA or immediate quarantine."
+    },
+    "application": {
+      "industry": "Banking",
+      "scenario": "Preventing automated account takeover (ATO) during high-value fund transfers in mobile retail banking.",
+      "inputExample": "Session data: Dwell time mean 68ms (baseline 112ms), Flight time variance 1.2ms (indicates automated script/bot), Device ID unknown.",
+      "processSteps": [
+        "Capture raw touch and key press events in mobile SDK.",
+        "Calculate Mean Dwell Time, Median Flight Time, and Trajectory Curvature.",
+        "Evaluate against user's historical Gaussian Mixture Model (GMM) profile.",
+        "Compute composite risk score combining behavioral distance and IP reputation.",
+        "Block transfer transaction and demand biometric facial liveness re-verification."
+      ],
+      "outputExample": "Risk Score: 0.91 (Bot profile identified). Transfer declined.",
+      "codeSnippet": {
+        "language": "python",
+        "caption": "Extracting Keystroke Dynamics Dwell and Flight Times",
+        "code": "def compute_keystroke_metrics(raw_key_events: list[dict]) -> dict:\n    # raw_key_events format: [{'key': 'a', 'down': 1000, 'up': 1090}, ...]\n    dwell_times = [event['up'] - event['down'] for event in raw_key_events]\n    flight_times = [\n        raw_key_events[i+1]['down'] - raw_key_events[i]['up']\n        for i in range(len(raw_key_events) - 1)\n    ]\n    return {\n        'mean_dwell_ms': sum(dwell_times) / len(dwell_times) if dwell_times else 0,\n        'mean_flight_ms': sum(flight_times) / len(flight_times) if flight_times else 0,\n        'dwell_std_dev': (sum((x - (sum(dwell_times)/len(dwell_times)))**2 for x in dwell_times) / len(dwell_times)) ** 0.5 if dwell_times else 0\n    }"
+      },
+      "numericalExample": {
+        "problem": "A legitimate user has baseline dwell time mean μ = 110ms and σ = 15ms. A suspicious session logs 3 keystrokes with mean dwell time of 65ms. Calculate the Z-score.",
+        "formula": "Z = (X - μ) / (σ / sqrt(n))",
+        "solution": "Z = (65 - 110) / (15 / sqrt(3)) = -45 / (15 / 1.732) = -45 / 8.66 = -5.196.\nSince |Z| > 3.0, the probability of this originating from the legitimate user is p < 0.0001."
+      }
+    },
+    "memory": {
+      "mnemonic": "A-R-K-F (Account, Risk, Keystroke, Facial)",
+      "keywords": ["Flight Time", "Dwell Time", "Credential Stuffing", "Continuous Authentication", "Risk-Based Auth"],
+      "comparison": [
+        { "otherConcept": "Static Multi-Factor Auth (SMS OTP)", "difference": "SMS OTP verifies point-of-login once and is vulnerable to SIM swap; behavioral biometrics verifies the human continuously across all actions." }
+      ],
+      "commonMistakes": [
+        "Confusing flight time with dwell time.",
+        "Assuming behavioral profiles remain static over time; systems require rolling baseline updates."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Account reputation scoring continuously calculates session risk by analyzing biometric behavior (keystroke rhythm, touch velocity) and environmental signals to prevent credential theft.",
+      "fiveMarkAnswer": "**1. Purpose**: Mitigate automated credential stuffing and session hijacking without manual user friction.\n**2. Core Metrics**: Keystroke dwell time (key down to key up) and flight time (inter-key transition latency).\n**3. Decision Engine**: Computes continuous risk probability $s \\in [0, 1]$ against a personalized baseline model.\n**4. Response Actions**: Frictionless pass ($s < 0.3$), step-up MFA challenge ($0.3 \\le s < 0.75$), account lockdown ($s \\ge 0.75$).",
+      "tenMarkAnswer": "**1. Architectural Overview**: Client-side sensor capture, encryption, stream ingestion, micro-batch feature engineering, and real-time model inference.\n**2. Machine Learning Approaches**: One-Class SVMs, Autoencoders for anomaly reconstruction, and Gaussian Mixture Models.\n**3. Attack Vectors Handled**: Man-in-the-Middle (MitM) session hijacking, bot automation, remote desktop protocol (RDP) takeovers.\n**4. Privacy and Regulatory Compliance**: Storing derived behavioral timings rather than raw keystrokes to ensure GDPR/DPDP compliance.",
+      "sixteenMarkAnswer": "**University Model Examination Outline**:\n- **Introduction**: The breakdown of traditional perimeter defense and zero-trust authentication demands.\n- **Biometrics Taxonomy**: Physical vs Behavioral, static vs continuous.\n- **Mathematical Model**: Keystroke profile distance calculation via Mahalanobis distance accounting for covariance between adjacent key pairs.\n- **System Architecture**: High-throughput distributed risk scoring architecture handling 50k transactions/sec.\n- **Adversarial Spoofing & Countermeasures**: Replay attacks using robotic mouse actuators and how time-jitter hardware signatures defeat them.\n- **Industry Banking Case**: Quantitative reduction in fraud losses ($8M saved annually) alongside 60% reduction in customer MFA friction.",
+      "keyFormulas": [
+        "Mahalanobis Distance: D_M(x) = sqrt((x - mu)^T * Sigma^(-1) * (x - mu))",
+        "Z-score: Z = (X - mu) / sigma"
+      ]
+    },
+    "quiz": [
+      {
+        "id": "q5",
+        "question": "What is the technical definition of 'flight time' in keystroke biometric authentication?",
+        "options": [
+          "The duration a single key is held down by the user.",
+          "The time between releasing one key and pressing the next key.",
+          "The network transit latency from browser to authentication server.",
+          "The duration required for ML models to infer user identity."
+        ],
+        "correctIndex": 1,
+        "explanation": "Flight time is the inter-key latency measured between releasing key n and depressing key n+1."
+      }
+    ]
+  },
+  {
+    "id": "c17-bagging-boosting-fraud-engines",
+    "subjectId": "ai-cyber-security",
+    "unitId": "unit-5",
+    "title": "Ensemble Learning (Bagging & Boosting) for Fraud Detection",
+    "understanding": {
+      "definition": "Ensemble learning combines multiple base models (decision trees) to produce a unified fraud prevention system with lower variance (Bagging / Random Forest) and lower bias (Gradient Boosting / XGBoost / LightGBM) than any individual model.",
+      "rationale": "Financial fraud involves extreme class imbalance (e.g. 1 fraudulent transaction per 10,000 legitimate ones), complex non-linear feature interactions, and adversarial drift. Single decision trees either overfit noise or miss subtle organized fraud rings.",
+      "terminology": [
+        { "term": "Bagging (Bootstrap Aggregating)", "explanation": "Training multiple independent models on random bootstrap sub-samples and averaging predictions to reduce model variance." },
+        { "term": "Boosting", "explanation": "Training models sequentially, where each new tree focuses specifically on correcting the residual errors of preceding trees." },
+        { "term": "Class Imbalance", "explanation": "Disproportionate representation where the target minority class (fraud) represents under 0.1% of all instances." }
+      ],
+      "markdownContent": "### Bagging vs Boosting in Security\nBoth paradigms provide unique strengths for fraud analytics:\n\n```text\n+----------------------+-----------------------------+-----------------------------+\n| Feature              | Bagging (Random Forest)     | Boosting (LightGBM/XGBoost) |\n+----------------------+-----------------------------+-----------------------------+\n| Model Training       | Parallel & Independent      | Sequential & Error-driven   |\n| Primary Optimization | Reduces Variance & Overfit  | Reduces Bias & Underfitting |\n| Imbalance Resilience | Balanced Subsampling        | Cost-sensitive focal loss   |\n| Latency SLA          | Ultra-fast parallel eval    | High performance via trees  |\n+----------------------+-----------------------------+-----------------------------+\n```"
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "Sequential Boosting vs Parallel Bagging",
+      "diagramSource": "graph TD\n  Data[Financial Transaction Stream] --> BaggingPath[Bagging: Random Subsamples]\n  BaggingPath --> TreeA[Tree 1]\n  BaggingPath --> TreeB[Tree 2]\n  BaggingPath --> TreeC[Tree 3]\n  TreeA --> AvgVote[Majority / Average Voting]\n  TreeB --> AvgVote\n  TreeC --> AvgVote\n  Data --> BoostingPath[Boosting: Sequential Correction]\n  BoostingPath --> Tree1[Tree 1: Fits Data]\n  Tree1 --> Tree2[Tree 2: Fits Residuals of Tree 1]\n  Tree2 --> Tree3[Tree 3: Fits Residuals of Tree 2]\n  Tree3 --> WeightedSum[Weighted Sum Fraud Score]",
+      "explanation": "Bagging builds independent trees in parallel to reduce prediction variance; Boosting builds trees iteratively, each correcting errors from the prior stage."
+    },
+    "application": {
+      "industry": "Banking",
+      "scenario": "Real-time payment gateway scoring 20,000 credit card authorizations per second with sub-50ms latency budgets.",
+      "inputExample": "Transaction payload: { amount: $4200.00, merchant_cat: 'Luxury Jewelry', cardholder_dist_km: 1450, velocity_last_hour: 4 }",
+      "processSteps": [
+        "Ingest card transaction via event bus (Kafka).",
+        "Enrich with streaming velocity features from Redis cache (transactions in last 5m, 1h, 24h).",
+        "Pass 48-feature dense vector into LightGBM ensemble of 300 gradient boosted trees.",
+        "Calculate output probability: P(Fraud) = 0.942.",
+        "Trigger synchronous decline and SMS verification dispatch."
+      ],
+      "outputExample": "Decision: DECLINE (Rule: Cardholder Distance & High Velocity Outlier). Latency: 18ms.",
+      "codeSnippet": {
+        "language": "python",
+        "caption": "Configuring Cost-Sensitive LightGBM for Severe Class Imbalance",
+        "code": "import lightgbm as lgb\n\nparams = {\n    'objective': 'binary',\n    'metric': 'auc',\n    'boosting_type': 'gbdt',\n    'is_unbalance': False,          # Use explicit scale_pos_weight\n    'scale_pos_weight': 250.0,      # Weight minority fraud class 250x higher\n    'learning_rate': 0.05,\n    'num_leaves': 31,\n    'max_depth': 6,\n    'n_estimators': 200\n}\n\n# Train model on historical banking ledger\n# model = lgb.LGBMClassifier(**params).fit(X_train, y_train)"
+      },
+      "numericalExample": {
+        "problem": "In a dataset of 100,000 transactions, 100 are fraud. A model detects 80 fraud cases correctly, but misclassifies 200 legitimate transactions as fraud. Calculate Precision and Recall.",
+        "formula": "Precision = TP / (TP + FP), Recall = TP / (TP + FN)",
+        "solution": "TP = 80, FN = 20 (100 - 80), FP = 200, TN = 99,700.\nPrecision = 80 / (80 + 200) = 80 / 280 = 28.57%.\nRecall = 80 / (80 + 20) = 80 / 100 = 80.00%."
+      }
+    },
+    "memory": {
+      "mnemonic": "M-B-J-S (Metric selection, Bagging, Joint graphs, Synthetic identities)",
+      "keywords": ["Bootstrap Aggregating", "Gradient Boosting", "LightGBM", "Scale_pos_weight", "PR-AUC"],
+      "comparison": [
+        { "otherConcept": "Single Decision Tree (CART)", "difference": "Single trees suffer from extreme variance and unstable split thresholds; ensembles smooth decision boundaries and resist overfitting." }
+      ],
+      "commonMistakes": [
+        "Evaluating fraud models with Accuracy (a dummy model predicting 'Legitimate' achieves 99.9% accuracy but catches zero fraud).",
+        "Failing to account for production inference latency constraints when tuning tree depth."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Ensemble learning combines multiple decision tree algorithms via parallel averaging (Bagging) or sequential residual minimization (Boosting) to accurately detect rare financial fraud patterns.",
+      "fiveMarkAnswer": "**1. Purpose**: Single classifiers suffer from high variance or bias in low-prevalence fraud scenarios.\n**2. Bagging Mechanism**: Random Forest draws random bootstrap subsets with feature sampling, training parallel estimators to reduce variance.\n**3. Boosting Mechanism**: Gradient Boosted Trees sequentially fit decision trees to the negative gradient of the loss function, steadily reducing bias.\n**4. Critical Metric**: Reliance on Precision-Recall AUC (PR-AUC) rather than ROC-AUC due to extreme class imbalance.",
+      "tenMarkAnswer": "**1. Mathematical Comparison**: Detailed derivation of variance reduction in bagging (Var(avg) = sigma^2 / M) vs loss minimization in gradient boosting.\n**2. Class Imbalance Remedies**: Random undersampling, Synthetic Minority Over-sampling Technique (SMOTE), and cost-sensitive loss weighting.\n**3. Production Latency Considerations**: Tree pruning, quantization, and compiling tree ensembles to C++ binaries for sub-20ms inference.\n**4. Real-world Banking Case Study**: Architecting an anti-money laundering (AML) and payment fraud detection pipeline.",
+      "sixteenMarkAnswer": "**Comprehensive Examination Solution Architecture**:\n- **Introduction & Financial Impact**: The scale of global digital payment fraud and the imperative of sub-second ML decisioning.\n- **Theoretical Framework**: Bias-variance decomposition analysis of ensemble methods on non-stationary security data.\n- **Algorithmic Deep-Dive**: XGBoost split-finding algorithm with sparsity-aware handling vs LightGBM histogram-based binning.\n- **Severe Class Imbalance Mitigation**: Comparative evaluation of focal loss, SMOTE, and class-weighted cross-entropy.\n- **Full Production Deployment Architecture**: Apache Flink streaming feature store, Redis low-latency lookup, and Triton inference server.\n- **Continuous Monitoring & Concept Drift**: Detecting adversarial shift through Population Stability Index (PSI) and automated champion-challenger shadow retraining.",
+      "keyFormulas": [
+        "Precision = TP / (TP + FP)",
+        "Recall = TP / (TP + FN)",
+        "F1-Score = 2 * (Precision * Recall) / (Precision + Recall)"
+      ]
+    },
+    "quiz": [
+      {
+        "id": "q6",
+        "question": "Why is Accuracy an invalid metric for evaluating machine learning models on financial fraud datasets?",
+        "options": [
+          "Accuracy cannot be calculated on continuous numerical data.",
+          "Extreme class imbalance allows a trivial model predicting 'no fraud' to score >99.9% accuracy while catching zero attacks.",
+          "Accuracy requires equal numbers of features and samples.",
+          "Decision tree ensembles cannot compute confusion matrices."
+        ],
+        "correctIndex": 1,
+        "explanation": "If only 0.1% of transactions are fraudulent, always predicting legitimate yields 99.9% accuracy, completely failing its operational security objective."
+      }
+    ]
+  }
+]

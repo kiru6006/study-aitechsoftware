@@ -1,0 +1,98 @@
+[
+  {
+    "id": "q-exam-2m-1",
+    "question": "What is the primary difference between signature-based and AI-based cybersecurity detection?",
+    "unitId": "unit-1",
+    "marks": 2,
+    "relatedConceptIds": ["c1-ai-vs-traditional-security"],
+    "importantKeywords": ["Deterministic Hash", "Probabilistic Learning", "Polymorphism", "Zero-day"],
+    "answerOutline": ["Define signature detection", "Define AI detection", "Key contrast (novel/unseen attacks)"],
+    "modelAnswer": "Signature-based detection matches files or traffic against static pre-calculated hashes (e.g., MD5/SHA-256) and deterministic rules, failing against unseen variants. AI-based detection uses probabilistic machine learning to analyze behavioral patterns, telemetry statistics, and contextual heuristics, enabling the detection of novel zero-day and polymorphic threats."
+  },
+  {
+    "id": "q-exam-2m-2",
+    "question": "Define Keystroke Dwell Time and Flight Time in behavioral biometrics.",
+    "unitId": "unit-4",
+    "marks": 2,
+    "relatedConceptIds": ["c13-account-reputation-scoring"],
+    "importantKeywords": ["Dwell Time", "Flight Time", "Inter-key latency", "Passive Auth"],
+    "answerOutline": ["Define dwell time", "Define flight time"],
+    "modelAnswer": "Dwell time is the exact duration a single key is held down by a user (key-down to key-up). Flight time is the transition time elapsed between releasing one key and pressing the subsequent key (key-up of key n to key-down of key n+1)."
+  },
+  {
+    "id": "q-exam-5m-1",
+    "question": "Explain the working principle and mathematical formulation of Isolation Forest for cyber anomaly detection.",
+    "unitId": "unit-2",
+    "marks": 5,
+    "relatedConceptIds": ["c8-isolation-forest-anomaly"],
+    "importantKeywords": ["iTree", "Path Length", "Subsampling", "Linear Complexity", "Anomaly Score"],
+    "answerOutline": [
+      "Definition & Core Principle",
+      "Isolation Tree Construction",
+      "Mathematical Anomaly Score Formulation",
+      "Cybersecurity Advantage"
+    ],
+    "modelAnswer": "### 1. Definition\nIsolation Forest is an unsupervised tree ensemble that isolates anomalies instead of profiling normal clusters.\n\n### 2. Working Principle\nAnomalies are few and topologically distinct. By recursively selecting a random feature and splitting at a random uniform threshold, anomalous points isolate in very few splits (short tree paths), whereas dense normal points require deep trees.\n\n### 3. Mathematical Formulation\nThe anomaly score is computed as:\n$$s(x, n) = 2^{-\\frac{E(h(x))}{c(n)}}$$\nWhere $E(h(x))$ is the average path length across all trees and $c(n) \\approx 2(\\ln(n - 1) + 0.5772) - \\frac{2(n - 1)}{n}$ is the average depth of an unsuccessful search in a binary search tree.\n- If $s \\to 1$: Highly anomalous threat.\n- If $s < 0.5$: Normal network traffic.\n\n### 4. Benefits in Cybersecurity\nOperates in linear time $O(t \\cdot n \\log n)$ with minimal memory footprint, allowing line-rate anomaly scanning on high-volume VPC flow logs.",
+    "diagramOrFormula": "s(x, n) = 2^(-E(h(x)) / c(n))",
+    "practicalExample": "Detecting an insider performing unauthorized port scans across internal subnets at 3:00 AM."
+  },
+  {
+    "id": "q-exam-5m-2",
+    "question": "Why is Accuracy an inappropriate metric for fraud detection models, and what alternatives should be used?",
+    "unitId": "unit-5",
+    "marks": 5,
+    "relatedConceptIds": ["c17-bagging-boosting-fraud-engines"],
+    "importantKeywords": ["Class Imbalance", "Accuracy Paradox", "Precision-Recall AUC", "F1-Score", "Cost Matrix"],
+    "answerOutline": [
+      "The Accuracy Paradox in Rare Events",
+      "Mathematical Proof of Failure",
+      "Recommended Alternative Metrics (PR-AUC, F1, Cost-Weighted Loss)"
+    ],
+    "modelAnswer": "### 1. The Accuracy Paradox\nIn financial fraud and cyber attacks, the positive class (fraud/intrusion) is extremely rare (e.g. 0.05% of all transactions). A naive model that classifies every transaction as legitimate achieves 99.95% accuracy while failing to prevent a single dollar of fraud.\n\n### 2. Recommended Alternative Metrics\n- **Precision**: $TP / (TP + FP)$ - Measures the proportion of flagged transactions that are genuinely fraudulent (prevents customer false-positive friction).\n- **Recall (Sensitivity)**: $TP / (TP + FN)$ - Measures the proportion of total fraud captured.\n- **Precision-Recall AUC (PR-AUC)**: Evaluates trade-offs without being skewed by large true-negative volumes.\n- **Cost-Weighted Loss**: Assigns a financial cost matrix where missing a $10,000 fraud (FN) is penalized far more severely than a temporary verification challenge (FP)."
+  },
+  {
+    "id": "q-exam-10m-1",
+    "question": "Design an end-to-end NLP-based email security architecture to detect Business Email Compromise (BEC) and homoglyph attacks.",
+    "unitId": "unit-3",
+    "marks": 10,
+    "relatedConceptIds": ["c9-phishing-nlp-detection"],
+    "importantKeywords": ["Header Alignment", "Homoglyph Attacks", "Transformer Models", "Punycode", "Urgency Analysis", "Quarantine Pipeline"],
+    "answerOutline": [
+      "Definition & Threat Vector Overview",
+      "Working Mechanism & System Architecture",
+      "Algorithm & Feature Extraction",
+      "Real-World Banking Example",
+      "Benefits & Limitations",
+      "Conclusion"
+    ],
+    "modelAnswer": "### 1. Definition\nBusiness Email Compromise (BEC) is a sophisticated social engineering attack where adversaries impersonate corporate executives or vendors to authorize fraudulent wire transfers without malicious attachments or links.\n\n### 2. Working Mechanism & Architecture\nInbound messages pass through a multi-stage inspection pipeline:\n1. **Cryptographic Validation**: Validates SPF (Sender Policy Framework), DKIM, and DMARC alignment.\n2. **Lexical Domain Inspection**: Evaluates sender domain against known brand dictionaries using Levenshtein distance and Punycode decoder to identify homoglyph character substitutions (e.g. replacing Latin 'o' with Greek omicron).\n3. **Contextual Semantic Scoring**: Tokenizes email body and feeds contextual embeddings into a fine-tuned RoBERTa classifier measuring urgency, secrecy, and financial coercion.\n\n### 3. Feature Extraction & Algorithm\n- **Lexical Features**: URL Shannon entropy, domain registration age (< 30 days), subdomain nesting depth.\n- **Linguistic Vectors**: Urgency polarity, authority invocation keywords ('strictly confidential', 'wire transfer immediately').\n\n### 4. Practical Banking Example\nAn email sent to the bank treasury desk claiming to be the CEO authorizing an emergency acquisition escrow is caught when the model observes high urgency paired with an external sender return-path and a 3-day-old lookalike domain.\n\n### 5. Benefits & Limitations\n- **Benefits**: Catches zero-link zero-attachment executive fraud with >98% precision.\n- **Limitations**: Adversarial evasion using prompt injection or subtle linguistic paraphrasing requires continuous adversarial retraining.",
+    "diagramOrFormula": "Levenshtein Distance: lev(a, b); DMARC = SPF + DKIM Alignment"
+  },
+  {
+    "id": "q-exam-16m-1",
+    "question": "Critically analyze the role of machine learning in modern financial fraud prevention. Compare Bagging and Boosting ensemble paradigms, discuss strategies for handling extreme class imbalance, and design a production real-time scoring engine.",
+    "unitId": "unit-5",
+    "marks": 16,
+    "relatedConceptIds": ["c17-bagging-boosting-fraud-engines", "c8-isolation-forest-anomaly"],
+    "importantKeywords": [
+      "Bagging vs Boosting",
+      "Random Forest",
+      "LightGBM",
+      "Class Imbalance",
+      "SMOTE",
+      "Scale_pos_weight",
+      "Production Latency SLA",
+      "Streaming Feature Store"
+    ],
+    "answerOutline": [
+      "1. Introduction: Digital payment explosion and fraud landscape",
+      "2. Theoretical Comparison: Bagging (Variance reduction) vs Boosting (Bias reduction)",
+      "3. Mathematical Foundations of Ensemble Learning",
+      "4. Strategies for Extreme Class Imbalance (Algorithmic & Resampling)",
+      "5. Production Real-Time Architecture (Sub-30ms SLA)",
+      "6. Evaluation Framework & Explainability (XAI with SHAP)",
+      "7. Conclusion & Future Outlook"
+    ],
+    "modelAnswer": "### 1. Introduction\nFinancial institutions process tens of billions of digital transactions daily. Fraudulent actors exploit automated bots, synthetic identities, and stolen credentials. Traditional rule engines with thousands of static if-then statements suffer from high operational maintenance and high false decline rates that alienate legitimate cardholders.\n\n### 2. Theoretical Comparison: Bagging vs Boosting\n- **Bagging (Bootstrap Aggregating / Random Forest)**:\n  - Generates $B$ bootstrap samples from training data with replacement.\n  - Trains $B$ independent decision trees in parallel.\n  - Averages predictions: $\\hat{f}(x) = \\frac{1}{B} \\sum_{b=1}^B f_b(x)$.\n  - **Primary Benefit**: Reduces model variance without increasing bias. Robust against noisy labels.\n- **Boosting (Gradient Boosting / LightGBM / XGBoost)**:\n  - Builds trees sequentially: each tree fits the negative gradient (pseudo-residuals) of the loss function from preceding trees.\n  - $\\hat{y}_i^{(t)} = \\hat{y}_i^{(t-1)} + \\eta f_t(x_i)$.\n  - **Primary Benefit**: Reduces bias and captures complex non-linear feature interactions.\n\n### 3. Strategies for Extreme Class Imbalance\nIn banking ledgers, fraud constitutes less than 0.1% of transactions.\n1. **Algorithmic Cost Weighting**: Modifying the loss function using `scale_pos_weight = N_negative / N_positive` to penalize misclassified fraud.\n2. **Focal Loss**: Dynamically scales the cross-entropy loss down for easy examples and focuses gradient updates on hard borderline instances: $FL(p_t) = -\\alpha_t (1 - p_t)^\\gamma \\log(p_t)$.\n3. **Resampling Techniques**: Synthetic Minority Over-sampling Technique (SMOTE) to interpolate artificial fraud instances in feature space, combined with Tomek Links to clean ambiguous boundaries.\n\n### 4. Production Real-Time Architecture\nTo meet card network SLAs (< 50ms latency):\n- **Streaming Ingestion**: Apache Kafka streaming raw authorizations.\n- **Feature Store**: Redis in-memory cache pre-calculating customer velocity metrics (e.g. transactions in past 5 minutes, geographical velocity).\n- **Model Execution**: LightGBM ensemble compiled to native C++ / ONNX runtime, evaluating in < 15ms.\n- **Decisioning Layer**: Automated action (Allow / Challenge with OTP / Decline) with SHAP tree explainers generating customer-facing compliance reasons.\n\n### 5. Conclusion\nModern fraud defense demands a hybrid architecture: tree boosting ensembles excel at tabular transactional telemetry, while unsupervised anomaly detectors flag emerging synthetic attack vectors, delivering resilient financial security."
+  }
+]

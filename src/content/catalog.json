@@ -1,0 +1,60 @@
+{
+  "programs": [
+    {
+      "id": "msc-ai-ml",
+      "name": "MSc Artificial Intelligence & Machine Learning",
+      "semesters": [
+        {
+          "id": "sem-3",
+          "number": 3,
+          "subjectIds": ["ai-cyber-security"]
+        }
+      ]
+    }
+  ],
+  "subjects": {
+    "ai-cyber-security": {
+      "id": "ai-cyber-security",
+      "name": "AI for Cyber Security",
+      "code": "MAI-OL506A-3",
+      "university": "CHRIST (Deemed to be University)",
+      "program": "MSc Artificial Intelligence & Machine Learning",
+      "semester": 3,
+      "description": "Learn to apply machine learning, deep learning, anomaly detection, behavioral analytics, and adversarial defense to secure enterprise IT/OT environments, financial systems, and cloud assets.",
+      "learningObjectives": [
+        "Understand foundational AI principles and their intersection with enterprise cybersecurity defense.",
+        "Master classification, regression, clustering, and anomaly detection algorithms for security telemetry.",
+        "Formulate and implement machine learning models for detecting spam, phishing, and malware threats.",
+        "Engineer AI-driven solutions to protect authentication systems, verify user identity, and guard sensitive data assets.",
+        "Architect end-to-end fraud prevention engines using ensemble methods, bagging, boosting, and rigorous evaluation metrics."
+      ],
+      "courseOutcomes": [
+        "CO1: Analyze heterogeneous cybersecurity datasets and extract security features for machine learning pipelines.",
+        "CO2: Deploy classical and modern ML algorithms to detect network intrusions and anomalous behavior.",
+        "CO3: Construct NLP and deep learning classifiers for email phishing, domain spoofing, and malicious binaries.",
+        "CO4: Implement biometrics, keystroke dynamics, and behavioral authentication mechanisms for access protection.",
+        "CO5: Design scalable fraud detection systems and evaluate adversarial robustness against evasion attacks."
+      ],
+      "unitIds": ["unit-1", "unit-2", "unit-3", "unit-4", "unit-5"],
+      "primaryCaseStudyId": "banking-cyber-intelligence",
+      "resources": [
+        {
+          "title": "Machine Learning and Security: Protecting Systems with Data and Algorithms",
+          "type": "Textbook",
+          "authorOrSource": "Clarence Chio & David Freeman (O'Reilly Media)",
+          "url": "https://www.oreilly.com/library/view/machine-learning-and/9781491979891/"
+        },
+        {
+          "title": "AI in Cybersecurity: Foundations, Principles and Applications",
+          "type": "Reference",
+          "authorOrSource": "Leslie F. Sikos (Springer)"
+        },
+        {
+          "title": "Official Course Syllabus MAI-OL506A-3",
+          "type": "Syllabus",
+          "authorOrSource": "Department of Computer Science, CHRIST (Deemed to be University)"
+        }
+      ]
+    }
+  }
+}

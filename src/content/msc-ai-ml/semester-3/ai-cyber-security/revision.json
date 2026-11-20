@@ -1,0 +1,179 @@
+{
+  "subjectId": "ai-cyber-security",
+  "masterMemorySequence": [
+    "UNDERSTAND (Unit I: Foundations & Security Data Landscape)",
+    "ANALYZE (Unit II: Supervised & Unsupervised Machine Learning Arsenal)",
+    "DETECT (Unit III: Detecting Threats, Phishing, & Binary Malware)",
+    "PROTECT (Unit IV: Protecting Sensitive Assets, Accounts, & Biometrics)",
+    "PREVENT (Unit V: Real-time Fraud Prevention & Ensemble Architectures)"
+  ],
+  "unitMemoryCodes": [
+    {
+      "unitNumber": 1,
+      "code": "E-L-T-J-C",
+      "meaning": "Entity logs, Label scarcity, Time-series, JSON parsing, Curse of dimensionality",
+      "breakdown": [
+        { "letter": "E", "concept": "Entity & Host Logs (Firewalls, SIEM, DNS queries)" },
+        { "letter": "L", "concept": "Label Scarcity & Ground Truth Uncertainty in SOC events" },
+        { "letter": "T", "concept": "Time-Series & Flow Sequence Modeling" },
+        { "letter": "J", "concept": "JSON & Semi-Structured Telemetry Parsing" },
+        { "letter": "C", "concept": "Curse of Dimensionality in Multi-Source Security Feeds" }
+      ]
+    },
+    {
+      "unitNumber": 2,
+      "code": "C-R-D-C-V-N-I",
+      "meaning": "Classification, Regression, Dim-Reduction, Clustering, Vectorization, NLP, Isolation-Forest",
+      "breakdown": [
+        { "letter": "C", "concept": "Classification for Known Intrusion Detection" },
+        { "letter": "R", "concept": "Regression for Quantitative Risk & Blast-Radius Estimation" },
+        { "letter": "D", "concept": "Dimensionality Reduction (PCA / t-SNE) for Telemetry Compression" },
+        { "letter": "C", "concept": "Clustering (DBSCAN / K-Means) for Attacker Campaign Profiling" },
+        { "letter": "V", "concept": "Vectorization of System Calls and Raw Bytes" },
+        { "letter": "N", "concept": "NLP for Unstructured Syslog and Alert Triage" },
+        { "letter": "I", "concept": "Isolation Forests for Linear-Time Anomaly Scoring" }
+      ]
+    },
+    {
+      "unitNumber": 3,
+      "code": "P-S-L-D-N-N",
+      "meaning": "Phishing detection, Spam filtering, Lexical domain analysis, DGA classification, N-gram feature hashing, Neural malware signatures",
+      "breakdown": [
+        { "letter": "P", "concept": "Phishing Email Semantic & Header Analysis" },
+        { "letter": "S", "concept": "Spam Filtering via Contextual Classifiers" },
+        { "letter": "L", "concept": "Lexical URL Analysis (Entropy, Subdomains, Hyphens)" },
+        { "letter": "D", "concept": "Domain Generation Algorithm (DGA) Botnet Detection" },
+        { "letter": "N", "concept": "N-Gram Byte Sequencing & Feature Hashing" },
+        { "letter": "N", "concept": "Neural Network Representations of Executable Binaries" }
+      ]
+    },
+    {
+      "unitNumber": 4,
+      "code": "A-R-K-F",
+      "meaning": "Account reputation, Risk-based authentication, Keystroke dynamics, Facial recognition biometric verification",
+      "breakdown": [
+        { "letter": "A", "concept": "Account Reputation Scoring across Session Lifecycles" },
+        { "letter": "R", "concept": "Risk-Based Adaptive Authentication (RBA)" },
+        { "letter": "K", "concept": "Keystroke Dynamics (Dwell Time & Flight Time)" },
+        { "letter": "F", "concept": "Facial Biometrics & Liveness Anti-Spoofing" }
+      ]
+    },
+    {
+      "unitNumber": 5,
+      "code": "M-B-J-S",
+      "meaning": "Metric selection (PR-AUC), Bagging & ensembles, Joint fraud graphs, Synthetic identity detection",
+      "breakdown": [
+        { "letter": "M", "concept": "Metric Selection (PR-AUC & Cost Matrix vs Accuracy)" },
+        { "letter": "B", "concept": "Bagging & Boosting (Random Forest vs LightGBM)" },
+        { "letter": "J", "concept": "Joint Fraud Graph Analytics for Organized Rings" },
+        { "letter": "S", "concept": "Synthetic Identity & Credit Washing Detection" }
+      ]
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "fc-1",
+      "unitId": "unit-1",
+      "front": "Why does cryptographic hashing fail against polymorphic malware?",
+      "back": "Due to the avalanche effect in hash algorithms: mutating even a single byte or register completely changes the output hash, rendering static blocklists useless.",
+      "tag": "Foundations"
+    },
+    {
+      "id": "fc-2",
+      "unitId": "unit-2",
+      "front": "What does a shallow average path length E(h(x)) signify in an Isolation Forest?",
+      "back": "It signifies an anomaly! Sparse outliers isolate in very few random partition cuts, yielding short paths and an anomaly score s approaching 1.",
+      "tag": "Algorithms"
+    },
+    {
+      "id": "fc-3",
+      "unitId": "unit-3",
+      "front": "What is an IDN Homoglyph attack?",
+      "back": "An attack where malicious domains substitute visual look-alike Unicode characters (such as Cyrillic 'а') in place of standard Latin characters to deceive users.",
+      "tag": "Threat Detection"
+    },
+    {
+      "id": "fc-4",
+      "unitId": "unit-4",
+      "front": "Distinguish between Keystroke Dwell Time and Flight Time.",
+      "back": "Dwell time = duration key remains depressed (down to up). Flight time = transition latency between releasing key n and depressing key n+1.",
+      "tag": "Biometrics"
+    },
+    {
+      "id": "fc-5",
+      "unitId": "unit-5",
+      "front": "Why is PR-AUC preferred over ROC-AUC for credit card fraud models?",
+      "back": "In extreme class imbalance (e.g. 0.05% fraud), ROC-AUC is overly optimistic because massive true-negative numbers distort the false positive rate; PR-AUC focuses strictly on the minority positive class.",
+      "tag": "Fraud"
+    }
+  ],
+  "checklist": [
+    {
+      "id": "chk-1",
+      "unitId": "unit-1",
+      "title": "Explain Shannon Entropy calculation on malware payloads",
+      "category": "Core Concept",
+      "summary": "Master H(X) = -sum(p(x)log2(p(x))) and threshold interpretation for packed vs clear executables."
+    },
+    {
+      "id": "chk-2",
+      "unitId": "unit-2",
+      "title": "Derive Isolation Forest Anomaly Score formula",
+      "category": "Formula",
+      "summary": "Memorize s(x,n) = 2^(-E(h(x))/c(n)) and understand the BST constant c(n)."
+    },
+    {
+      "id": "chk-3",
+      "unitId": "unit-3",
+      "title": "Analyze NLP Phishing Features & Header Alignment",
+      "category": "Core Concept",
+      "summary": "Understand SPF, DKIM, DMARC alignment and transformer urgency scoring."
+    },
+    {
+      "id": "chk-4",
+      "unitId": "unit-4",
+      "title": "Formulate Continuous Risk-Based Authentication Pipeline",
+      "category": "Algorithm",
+      "summary": "Dwell/flight dynamics, threshold modulation (pass, step-up MFA, lockdown)."
+    },
+    {
+      "id": "chk-5",
+      "unitId": "unit-5",
+      "title": "Contrast Bagging vs Boosting for High-Velocity Payment Fraud",
+      "category": "Algorithm",
+      "summary": "Variance reduction in Random Forest vs bias reduction in LightGBM/XGBoost."
+    }
+  ],
+  "formulaSheet": [
+    {
+      "name": "Shannon Entropy",
+      "formula": "H(X) = - \\sum_{i=1}^n P(x_i) \\log_2 P(x_i)",
+      "description": "Measures uncertainty/randomness in byte sequences. Plaintext ~3.0 - 5.0, Encrypted/Compressed Malware > 7.5 bits/byte.",
+      "unitId": "unit-1"
+    },
+    {
+      "name": "Isolation Forest Anomaly Score",
+      "formula": "s(x, n) = 2^{-\\frac{E(h(x))}{c(n)}}",
+      "description": "Normalized score where E(h(x)) is average path length and c(n) is average BST depth. s > 0.8 flags severe anomalies.",
+      "unitId": "unit-2"
+    },
+    {
+      "name": "TF-IDF Weighting",
+      "formula": "\\text{TF-IDF}(t, d, D) = \\text{TF}(t, d) \\times \\log\\left(\\frac{N}{1 + |\\{d \\in D : t \\in d\\}|}\\right)",
+      "description": "Identifies discriminative vocabulary in phishing emails vs standard enterprise corporate traffic.",
+      "unitId": "unit-3"
+    },
+    {
+      "name": "Mahalanobis Distance (Keystroke Biometrics)",
+      "formula": "D_M(\\vec{x}) = \\sqrt{(\\vec{x} - \\vec{\\mu})^T \\Sigma^{-1} (\\vec{x} - \\vec{\\mu})}",
+      "description": "Measures distance of a user's session typing vector from historical baseline while accounting for inter-key covariance.",
+      "unitId": "unit-4"
+    },
+    {
+      "name": "F-Beta Measure (Security Evaluation)",
+      "formula": "F_\\beta = (1 + \\beta^2) \\frac{\\text{Precision} \\times \\text{Recall}}{(\\beta^2 \\times \\text{Precision}) + \\text{Recall}}",
+      "description": "Use beta = 2 (F2-score) to weight Recall twice as heavily as Precision when missing a threat is far costlier than an alert.",
+      "unitId": "unit-5"
+    }
+  ]
+}
