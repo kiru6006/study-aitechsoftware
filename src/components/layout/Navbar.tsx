@@ -34,7 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }
                 SubjectLab
               </span>
               <span className="hidden sm:inline-block ml-2 text-[11px] font-sans font-medium px-2 py-0.5 rounded bg-[#FCE8EF] text-[#C70234] border border-[#C70234]/20">
-                CHRIST (Deemed to be University)
+                AI for Cyber Security
               </span>
             </div>
           </Link>

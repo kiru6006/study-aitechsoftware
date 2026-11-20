@@ -8,11 +8,11 @@ Built with **React 18 + TypeScript + Vite + Tailwind CSS** for zero-backend stat
 ---
 
 ## 🏛️ Pilot Course
-- **University**: CHRIST (Deemed to be University)
 - **Program**: MSc Artificial Intelligence & Machine Learning
 - **Semester**: III
 - **Subject**: AI for Cyber Security
 - **Course Code**: `MAI-OL506A-3`
+- **Total Teaching Hours**: 90 Hours | Credits: 3
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "subjectId": "ai-cyber-security",
   "masterMemorySequence": [
-    "UNDERSTAND (Unit I: Foundations & Security Data Landscape)",
+    "UNDERSTAND (Unit I: AI Fundamentals, CIA Triad & Training Optimization)",
     "ANALYZE (Unit II: Supervised & Unsupervised Machine Learning Arsenal)",
     "DETECT (Unit III: Detecting Threats, Phishing, & Binary Malware)",
     "PROTECT (Unit IV: Protecting Sensitive Assets, Accounts, & Biometrics)",
@@ -11,62 +11,62 @@
     {
       "unitNumber": 1,
       "code": "E-L-T-J-C",
-      "meaning": "Entity logs, Label scarcity, Time-series, JSON parsing, Curse of dimensionality",
+      "meaning": "Evolution of AI, Learning Methods (S-U-R), Training & Optimization (D-T-E-O), Jupyter Notebooks, Cybersecurity Applications",
       "breakdown": [
-        { "letter": "E", "concept": "Entity & Host Logs (Firewalls, SIEM, DNS queries)" },
-        { "letter": "L", "concept": "Label Scarcity & Ground Truth Uncertainty in SOC events" },
-        { "letter": "T", "concept": "Time-Series & Flow Sequence Modeling" },
-        { "letter": "J", "concept": "JSON & Semi-Structured Telemetry Parsing" },
-        { "letter": "C", "concept": "Curse of Dimensionality in Multi-Source Security Feeds" }
+        { "letter": "E", "concept": "Evolution: Expert Systems -> Data Mining -> Machine Learning -> Deep Learning" },
+        { "letter": "L", "concept": "Learning Methods (S-U-R): Supervised, Unsupervised, Reinforcement Learning" },
+        { "letter": "T", "concept": "Training & Optimization: Overfitting, Underfitting, Hyperparameters, Cross-Validation" },
+        { "letter": "J", "concept": "Jupyter Notebooks: Python, Pandas, Matplotlib, Scikit-learn data exploration" },
+        { "letter": "C", "concept": "Cybersecurity Foundations: CIA Triad, Threat, Vulnerability, Attack, and Risk" }
       ]
     },
     {
       "unitNumber": 2,
       "code": "C-R-D-C-V-N-I",
-      "meaning": "Classification, Regression, Dim-Reduction, Clustering, Vectorization, NLP, Isolation-Forest",
+      "meaning": "Classification, Regression, Dim-Reduction, Clustering, Video Anomaly, NLP Social, Image Processing",
       "breakdown": [
-        { "letter": "C", "concept": "Classification for Known Intrusion Detection" },
-        { "letter": "R", "concept": "Regression for Quantitative Risk & Blast-Radius Estimation" },
-        { "letter": "D", "concept": "Dimensionality Reduction (PCA / t-SNE) for Telemetry Compression" },
-        { "letter": "C", "concept": "Clustering (DBSCAN / K-Means) for Attacker Campaign Profiling" },
-        { "letter": "V", "concept": "Vectorization of System Calls and Raw Bytes" },
-        { "letter": "N", "concept": "NLP for Unstructured Syslog and Alert Triage" },
-        { "letter": "I", "concept": "Isolation Forests for Linear-Time Anomaly Scoring" }
+        { "letter": "C", "concept": "Classification (Category Prediction): Binary & Multiclass threat detection" },
+        { "letter": "R", "concept": "Regression (Numerical Prediction): Incident volume & loss estimation, MAE, RMSE" },
+        { "letter": "D", "concept": "Dimensionality Reduction: Principal Component Analysis (PCA) variance preservation" },
+        { "letter": "C", "concept": "Clustering (Unsupervised Grouping): K-Means centroids & DBSCAN density/noise" },
+        { "letter": "V", "concept": "Video Anomaly Detection: Temporal motion analysis and ATM surveillance" },
+        { "letter": "N", "concept": "Natural Language Processing (NLP): Social media scam & impersonation analysis" },
+        { "letter": "I", "concept": "Image Processing: Convolutional Neural Networks (CNN) for image spam & QR codes" }
       ]
     },
     {
       "unitNumber": 3,
       "code": "P-S-L-D-N-N",
-      "meaning": "Phishing detection, Spam filtering, Lexical domain analysis, DGA classification, N-gram feature hashing, Neural malware signatures",
+      "meaning": "Perceptron, SVM, Logistic Regression, Decision Tree, Naive Bayes, NLP Threat Pipeline",
       "breakdown": [
-        { "letter": "P", "concept": "Phishing Email Semantic & Header Analysis" },
-        { "letter": "S", "concept": "Spam Filtering via Contextual Classifiers" },
-        { "letter": "L", "concept": "Lexical URL Analysis (Entropy, Subdomains, Hyphens)" },
-        { "letter": "D", "concept": "Domain Generation Algorithm (DGA) Botnet Detection" },
-        { "letter": "N", "concept": "N-Gram Byte Sequencing & Feature Hashing" },
-        { "letter": "N", "concept": "Neural Network Representations of Executable Binaries" }
+        { "letter": "P", "concept": "Perceptron: Linear binary classification, weights, bias, step function" },
+        { "letter": "S", "concept": "Support Vector Machines (SVM): Hyperplane, support vectors, maximum margin, RBF kernel" },
+        { "letter": "L", "concept": "Logistic Regression: Sigmoid probability estimation for phishing URLs" },
+        { "letter": "D", "concept": "Decision Trees: Recursive splitting based on Entropy and Information Gain" },
+        { "letter": "N", "concept": "Naive Bayes: Bayes' Theorem with conditional feature independence" },
+        { "letter": "N", "concept": "NLP Threat Detection: Text cleaning, tokenization, and TF-IDF vectorization" }
       ]
     },
     {
       "unitNumber": 4,
       "code": "A-R-K-F",
-      "meaning": "Account reputation, Risk-based authentication, Keystroke dynamics, Facial recognition biometric verification",
+      "meaning": "Authentication Abuse Prevention, Account Reputation Scoring, Keystroke Recognition, Facial Recognition",
       "breakdown": [
-        { "letter": "A", "concept": "Account Reputation Scoring across Session Lifecycles" },
-        { "letter": "R", "concept": "Risk-Based Adaptive Authentication (RBA)" },
-        { "letter": "K", "concept": "Keystroke Dynamics (Dwell Time & Flight Time)" },
-        { "letter": "F", "concept": "Facial Biometrics & Liveness Anti-Spoofing" }
+        { "letter": "A", "concept": "Authentication Abuse: Brute force, credential stuffing, password spraying, MFA factors" },
+        { "letter": "R", "concept": "Account Reputation Scoring: Risk-based authentication (RBA) and point scoring" },
+        { "letter": "K", "concept": "Keystroke Recognition: Behavioral biometrics, Dwell Time, Flight Time dynamics" },
+        { "letter": "F", "concept": "Facial Recognition: Deep face embeddings, Cosine Similarity, FAR, FRR, Liveness" }
       ]
     },
     {
       "unitNumber": 5,
       "code": "M-B-J-S",
-      "meaning": "Metric selection (PR-AUC), Bagging & ensembles, Joint fraud graphs, Synthetic identity detection",
+      "meaning": "Machine Learning for Fraud, Bagging and Boosting, Jupyter Data Analysis, Statistical Evaluation Metrics",
       "breakdown": [
-        { "letter": "M", "concept": "Metric Selection (PR-AUC & Cost Matrix vs Accuracy)" },
-        { "letter": "B", "concept": "Bagging & Boosting (Random Forest vs LightGBM)" },
-        { "letter": "J", "concept": "Joint Fraud Graph Analytics for Organized Rings" },
-        { "letter": "S", "concept": "Synthetic Identity & Credit Washing Detection" }
+        { "letter": "M", "concept": "Machine Learning for Fraud: Transaction features and the class imbalance paradox" },
+        { "letter": "B", "concept": "Bagging & Boosting: Random Forest (parallel variance) vs Gradient Boosting (sequential bias)" },
+        { "letter": "J", "concept": "Jupyter Data Analysis (L-C-A-T-E): Load, clean, analyze, train, evaluate" },
+        { "letter": "S", "concept": "Statistical Evaluation (A-P-R-F): Confusion Matrix, Accuracy, Precision, Recall, F1" }
       ]
     }
   ],
@@ -74,106 +74,198 @@
     {
       "id": "fc-1",
       "unitId": "unit-1",
-      "front": "Why does cryptographic hashing fail against polymorphic malware?",
-      "back": "Due to the avalanche effect in hash algorithms: mutating even a single byte or register completely changes the output hash, rendering static blocklists useless.",
+      "front": "What is the difference between an Expert System and a Machine Learning system?",
+      "back": "An Expert System uses hand-coded IF-THEN rules in a Knowledge Base executed by an Inference Engine. Machine Learning automatically learns decision boundaries by fitting parameters to empirical training data.",
       "tag": "Foundations"
     },
     {
       "id": "fc-2",
-      "unitId": "unit-2",
-      "front": "What does a shallow average path length E(h(x)) signify in an Isolation Forest?",
-      "back": "It signifies an anomaly! Sparse outliers isolate in very few random partition cuts, yielding short paths and an anomaly score s approaching 1.",
-      "tag": "Algorithms"
+      "unitId": "unit-1",
+      "front": "What is Data Leakage in machine learning, and how does it happen in cybersecurity?",
+      "back": "Data leakage occurs when future information or ground-truth investigation artifacts contaminate training features. In cybersecurity, randomly shuffling time-series logs leaks future attack data into past predictions.",
+      "tag": "Training"
     },
     {
       "id": "fc-3",
-      "unitId": "unit-3",
-      "front": "What is an IDN Homoglyph attack?",
-      "back": "An attack where malicious domains substitute visual look-alike Unicode characters (such as Cyrillic 'а') in place of standard Latin characters to deceive users.",
-      "tag": "Threat Detection"
+      "unitId": "unit-2",
+      "front": "How do K-Means and DBSCAN differ in handling outliers?",
+      "back": "K-Means forces all outliers into the nearest centroid cluster; DBSCAN identifies sparse points and explicitly flags them as Noise (-1), making DBSCAN superior for anomaly detection.",
+      "tag": "Clustering"
     },
     {
       "id": "fc-4",
-      "unitId": "unit-4",
-      "front": "Distinguish between Keystroke Dwell Time and Flight Time.",
-      "back": "Dwell time = duration key remains depressed (down to up). Flight time = transition latency between releasing key n and depressing key n+1.",
-      "tag": "Biometrics"
+      "unitId": "unit-3",
+      "front": "What is the mathematical formulation of the Sigmoid function in Logistic Regression?",
+      "back": "P(y=1|x) = 1 / (1 + e^-z), where z = w^T x + b. It maps any real-valued number into a calibrated probability strictly bounded between 0 and 1.",
+      "tag": "Threat Detection"
     },
     {
       "id": "fc-5",
+      "unitId": "unit-3",
+      "front": "What are Support Vectors in an SVM?",
+      "back": "Support vectors are the critical training data points closest to the decision hyperplane that directly determine its position and maximize the margin width (2 / ||w||).",
+      "tag": "Threat Detection"
+    },
+    {
+      "id": "fc-6",
+      "unitId": "unit-4",
+      "front": "Define Dwell Time and Flight Time in Keystroke Dynamics.",
+      "back": "Dwell Time = Key Release Time - Key Press Time (duration key held). Flight Time = Next Key Press Time - Previous Key Release Time (inter-key transition latency).",
+      "tag": "Biometrics"
+    },
+    {
+      "id": "fc-7",
+      "unitId": "unit-4",
+      "front": "What do FAR, FRR, and EER represent in biometric verification?",
+      "back": "FAR (False Acceptance Rate) = impostor accepted. FRR (False Rejection Rate) = genuine user rejected. EER (Equal Error Rate) = the operating threshold where FAR equals FRR.",
+      "tag": "Biometrics"
+    },
+    {
+      "id": "fc-8",
       "unitId": "unit-5",
-      "front": "Why is PR-AUC preferred over ROC-AUC for credit card fraud models?",
-      "back": "In extreme class imbalance (e.g. 0.05% fraud), ROC-AUC is overly optimistic because massive true-negative numbers distort the false positive rate; PR-AUC focuses strictly on the minority positive class.",
+      "front": "Why is Accuracy an invalid metric for evaluating fraud detection models?",
+      "back": "Because fraud is rare (<0.1%). A trivial dummy model predicting 'no fraud' achieves 99.9% accuracy while catching zero attacks (0% recall). Use Precision, Recall, and PR-AUC instead.",
       "tag": "Fraud"
+    },
+    {
+      "id": "fc-9",
+      "unitId": "unit-5",
+      "front": "What is the core difference between Bagging and Boosting?",
+      "back": "Bagging trains independent models in parallel on bootstrap samples to reduce variance (Random Forest); Boosting trains models sequentially, fitting residual errors to reduce bias (Gradient Boosting).",
+      "tag": "Ensembles"
     }
   ],
   "checklist": [
     {
       "id": "chk-1",
       "unitId": "unit-1",
-      "title": "Explain Shannon Entropy calculation on malware payloads",
+      "title": "Explain the CIA Triad & Evolution from Expert Systems to Deep Learning",
       "category": "Core Concept",
-      "summary": "Master H(X) = -sum(p(x)log2(p(x))) and threshold interpretation for packed vs clear executables."
+      "summary": "Master Confidentiality, Integrity, Availability, knowledge bases vs neural representations."
     },
     {
       "id": "chk-2",
-      "unitId": "unit-2",
-      "title": "Derive Isolation Forest Anomaly Score formula",
-      "category": "Formula",
-      "summary": "Memorize s(x,n) = 2^(-E(h(x))/c(n)) and understand the BST constant c(n)."
+      "unitId": "unit-1",
+      "title": "Differentiate Supervised, Unsupervised, and Reinforcement Learning",
+      "category": "Core Concept",
+      "summary": "Understand labeled classification, unlabeled clustering, and MDP reward optimization."
     },
     {
       "id": "chk-3",
-      "unitId": "unit-3",
-      "title": "Analyze NLP Phishing Features & Header Alignment",
-      "category": "Core Concept",
-      "summary": "Understand SPF, DKIM, DMARC alignment and transformer urgency scoring."
+      "unitId": "unit-2",
+      "title": "Compare Classification vs Regression & Compute MAE/RMSE",
+      "category": "Algorithm",
+      "summary": "Discrete threat decisions vs continuous risk estimation and residual loss formulas."
     },
     {
       "id": "chk-4",
-      "unitId": "unit-4",
-      "title": "Formulate Continuous Risk-Based Authentication Pipeline",
+      "unitId": "unit-2",
+      "title": "Understand PCA Dimensionality Reduction and DBSCAN Clustering",
       "category": "Algorithm",
-      "summary": "Dwell/flight dynamics, threshold modulation (pass, step-up MFA, lockdown)."
+      "summary": "Eigenvalue variance projection, eps-neighborhood, core points, and noise identification."
     },
     {
       "id": "chk-5",
-      "unitId": "unit-5",
-      "title": "Contrast Bagging vs Boosting for High-Velocity Payment Fraud",
+      "unitId": "unit-3",
+      "title": "Derive Perceptron Learning Rule and SVM Maximum Margin",
+      "category": "Formula",
+      "summary": "w_new = w + eta(y - y_hat)x, Margin = 2/||w||, and kernel transformations."
+    },
+    {
+      "id": "chk-6",
+      "unitId": "unit-3",
+      "title": "Calculate Phishing Probability with Sigmoid & Spam with Bayes' Theorem",
+      "category": "Formula",
+      "summary": "P = 1/(1 + e^-z) and posterior P(Spam|Words) = P(W|S)P(S) / P(W)."
+    },
+    {
+      "id": "chk-7",
+      "unitId": "unit-4",
+      "title": "Formulate Keystroke Dynamics (Dwell/Flight) and Cosine Face Similarity",
       "category": "Algorithm",
-      "summary": "Variance reduction in Random Forest vs bias reduction in LightGBM/XGBoost."
+      "summary": "Typing cadence metrics, deep face embeddings, and FAR/FRR/EER trade-offs."
+    },
+    {
+      "id": "chk-8",
+      "unitId": "unit-5",
+      "title": "Contrast Bagging (Random Forest) vs Boosting (Gradient Boosting)",
+      "category": "Algorithm",
+      "summary": "Parallel bootstrap variance reduction vs sequential error-correcting bias reduction."
+    },
+    {
+      "id": "chk-9",
+      "unitId": "unit-5",
+      "title": "Solve 4-Quadrant Confusion Matrix & Compute Accuracy, Precision, Recall, F1",
+      "category": "Formula",
+      "summary": "TP, TN, FP, FN derivations, alert quality vs detection coverage, and cost-weighted loss."
     }
   ],
   "formulaSheet": [
     {
-      "name": "Shannon Entropy",
-      "formula": "H(X) = - \\sum_{i=1}^n P(x_i) \\log_2 P(x_i)",
-      "description": "Measures uncertainty/randomness in byte sequences. Plaintext ~3.0 - 5.0, Encrypted/Compressed Malware > 7.5 bits/byte.",
-      "unitId": "unit-1"
-    },
-    {
-      "name": "Isolation Forest Anomaly Score",
-      "formula": "s(x, n) = 2^{-\\frac{E(h(x))}{c(n)}}",
-      "description": "Normalized score where E(h(x)) is average path length and c(n) is average BST depth. s > 0.8 flags severe anomalies.",
-      "unitId": "unit-2"
-    },
-    {
-      "name": "TF-IDF Weighting",
-      "formula": "\\text{TF-IDF}(t, d, D) = \\text{TF}(t, d) \\times \\log\\left(\\frac{N}{1 + |\\{d \\in D : t \\in d\\}|}\\right)",
-      "description": "Identifies discriminative vocabulary in phishing emails vs standard enterprise corporate traffic.",
+      "name": "Perceptron Weighted Sum & Activation",
+      "formula": "z = \\sum_{i=1}^n w_i x_i + b, \\quad y = 1 \\text{ if } z \\ge 0 \\text{ else } 0",
+      "description": "Linear decision threshold for binary classification in Unit 3.",
       "unitId": "unit-3"
     },
     {
-      "name": "Mahalanobis Distance (Keystroke Biometrics)",
-      "formula": "D_M(\\vec{x}) = \\sqrt{(\\vec{x} - \\vec{\\mu})^T \\Sigma^{-1} (\\vec{x} - \\vec{\\mu})}",
-      "description": "Measures distance of a user's session typing vector from historical baseline while accounting for inter-key covariance.",
+      "name": "Perceptron Weight Update Rule",
+      "formula": "w_i^{(new)} = w_i^{(old)} + \\eta (y - \\hat{y}) x_i",
+      "description": "Adjusts feature weight proportionally to prediction error and learning rate eta.",
+      "unitId": "unit-3"
+    },
+    {
+      "name": "SVM Maximum Margin Width",
+      "formula": "\\text{Margin} = \\frac{2}{\\|\\mathbf{w}\\|} = \\frac{2}{\\sqrt{w_1^2 + w_2^2 + \\dots + w_n^2}}",
+      "description": "The geometric separation between support vectors that SVM maximizes.",
+      "unitId": "unit-3"
+    },
+    {
+      "name": "Logistic Regression Sigmoid Probability",
+      "formula": "P(y = 1 | x) = \\frac{1}{1 + e^{-z}} \\quad \\text{where } z = \\mathbf{w}^T \\mathbf{x} + b",
+      "description": "Converts linear score into calibrated probability between 0 and 1 for phishing detection.",
+      "unitId": "unit-3"
+    },
+    {
+      "name": "Bayes' Theorem for Spam Detection",
+      "formula": "P(\\text{Spam} | W) = \\frac{P(W | \\text{Spam}) \\cdot P(\\text{Spam})}{P(W | \\text{Spam}) P(\\text{Spam}) + P(W | \\text{Legit}) P(\\text{Legit})}",
+      "description": "Calculates posterior probability of spam given observed word frequencies.",
+      "unitId": "unit-3"
+    },
+    {
+      "name": "Entropy & Information Gain",
+      "formula": "H(S) = -\\sum p_i \\log_2 p_i, \\quad IG(S, A) = H(S) - \\sum \\frac{|S_v|}{|S|} H(S_v)",
+      "description": "Measures impurity reduction for feature splitting in Decision Trees.",
+      "unitId": "unit-3"
+    },
+    {
+      "name": "Keystroke Timing Features",
+      "formula": "\\text{Dwell} = T_{\\text{release}} - T_{\\text{press}}, \\quad \\text{Flight} = T_{\\text{press}}(k+1) - T_{\\text{release}}(k)",
+      "description": "Core temporal kinematic metrics in behavioral biometrics.",
       "unitId": "unit-4"
     },
     {
-      "name": "F-Beta Measure (Security Evaluation)",
-      "formula": "F_\\beta = (1 + \\beta^2) \\frac{\\text{Precision} \\times \\text{Recall}}{(\\beta^2 \\times \\text{Precision}) + \\text{Recall}}",
-      "description": "Use beta = 2 (F2-score) to weight Recall twice as heavily as Precision when missing a threat is far costlier than an alert.",
+      "name": "Face Embedding Cosine Similarity",
+      "formula": "\\text{Cosine Similarity} = \\frac{\\mathbf{A} \\cdot \\mathbf{B}}{\\|\\mathbf{A}\\| \\|\\mathbf{B}\\|} = \\frac{\\sum A_i B_i}{\\sqrt{\\sum A_i^2} \\sqrt{\\sum B_i^2}}",
+      "description": "Measures angular orientation between deep facial representation vectors.",
+      "unitId": "unit-4"
+    },
+    {
+      "name": "Biometric Error Rates (FAR & FRR)",
+      "formula": "\\text{FAR} = \\frac{\\text{False Acceptances}}{\\text{Total Impostor Attempts}}, \\quad \\text{FRR} = \\frac{\\text{False Rejections}}{\\text{Total Genuine Attempts}}",
+      "description": "Standard performance measures for 1:1 biometric verification systems.",
+      "unitId": "unit-4"
+    },
+    {
+      "name": "Confusion Matrix Metrics (Precision, Recall, F1)",
+      "formula": "\\text{Prec} = \\frac{TP}{TP + FP}, \\quad \\text{Rec} = \\frac{TP}{TP + FN}, \\quad F_1 = \\frac{2 \\cdot \\text{Prec} \\cdot \\text{Rec}}{\\text{Prec} + \\text{Rec}} = \\frac{2TP}{2TP + FP + FN}",
+      "description": "Critical evaluation metrics under extreme class imbalance in fraud detection.",
       "unitId": "unit-5"
+    },
+    {
+      "name": "Regression Error Metrics (MAE & RMSE)",
+      "formula": "\\text{MAE} = \\frac{1}{n} \\sum |y_i - \\hat{y}_i|, \\quad \\text{RMSE} = \\sqrt{\\frac{1}{n} \\sum (y_i - \\hat{y}_i)^2}",
+      "description": "Measures error magnitude for incident volume and financial loss forecasting.",
+      "unitId": "unit-2"
     }
   ]
 }

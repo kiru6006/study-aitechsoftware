@@ -91,7 +91,7 @@ export const CatalogPage: React.FC = () => {
 
                         <div className="mt-4 pt-3 border-t border-[#DADCE0]/50 flex items-center justify-between text-[11px] text-[#5F6368]">
                           <span className="font-medium text-[#202124]">
-                            {subject.university}
+                            Master Academic Curriculum
                           </span>
                           <span className="text-[#C70234] font-semibold flex items-center gap-1">
                             <span>Open Subject</span>

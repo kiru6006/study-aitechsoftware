@@ -1,7 +1,7 @@
 [
   {
     "id": "q-exam-2m-1",
-    "question": "What is the primary difference between signature-based and AI-based cybersecurity detection?",
+    "question": "What is the primary difference between traditional signature-based security and AI-based cybersecurity detection?",
     "unitId": "unit-1",
     "marks": 2,
     "relatedConceptIds": ["c1-ai-vs-traditional-security"],
@@ -11,88 +11,148 @@
   },
   {
     "id": "q-exam-2m-2",
-    "question": "Define Keystroke Dwell Time and Flight Time in behavioral biometrics.",
+    "question": "Explain the three core principles of the CIA Triad with enterprise security examples.",
+    "unitId": "unit-1",
+    "marks": 2,
+    "relatedConceptIds": ["c1-ai-vs-traditional-security"],
+    "importantKeywords": ["Confidentiality", "Integrity", "Availability"],
+    "answerOutline": ["Define Confidentiality", "Define Integrity", "Define Availability"],
+    "modelAnswer": "1. **Confidentiality**: Prevents unauthorized disclosure of information (e.g., protecting customer passwords via AES-256 encryption).\n2. **Integrity**: Ensures information is not altered without authorization (e.g., cryptographic HMAC preventing tampering with transaction amounts).\n3. **Availability**: Guarantees authorized users have timely, reliable access to systems (e.g., redundant load balancers and DDoS mitigation maintaining banking portal uptime)."
+  },
+  {
+    "id": "q-exam-2m-3",
+    "question": "Differentiate between Classification and Regression in machine learning.",
+    "unitId": "unit-2",
+    "marks": 2,
+    "relatedConceptIds": ["c5-classification-regression-arsenal"],
+    "importantKeywords": ["Discrete Category", "Continuous Value", "Logistic Regression", "Linear Regression"],
+    "answerOutline": ["Classification definition", "Regression definition", "Security examples"],
+    "modelAnswer": "Classification is a supervised learning task that maps inputs to discrete categories (e.g., classifying an email as Spam vs Benign). Regression maps inputs to continuous numerical quantities (e.g., forecasting tomorrow's security incident count or estimating financial loss from a system outage)."
+  },
+  {
+    "id": "q-exam-2m-4",
+    "question": "Define Dwell Time and Flight Time in keystroke biometric authentication.",
     "unitId": "unit-4",
     "marks": 2,
-    "relatedConceptIds": ["c13-account-reputation-scoring"],
+    "relatedConceptIds": ["c14-keystroke-biometrics"],
     "importantKeywords": ["Dwell Time", "Flight Time", "Inter-key latency", "Passive Auth"],
     "answerOutline": ["Define dwell time", "Define flight time"],
-    "modelAnswer": "Dwell time is the exact duration a single key is held down by a user (key-down to key-up). Flight time is the transition time elapsed between releasing one key and pressing the subsequent key (key-up of key n to key-down of key n+1)."
+    "modelAnswer": "Dwell time is the exact duration a single key is held down by a user (key-down to key-up: $T_{\\text{release}} - T_{\\text{press}}$). Flight time is the transition time elapsed between releasing one key and pressing the subsequent key ($T_{\\text{press}}(k+1) - T_{\\text{release}}(k)$)."
+  },
+  {
+    "id": "q-exam-2m-5",
+    "question": "Why is Accuracy an invalid metric for evaluating fraud detection models?",
+    "unitId": "unit-5",
+    "marks": 2,
+    "relatedConceptIds": ["c16-ml-fraud-detection-class-imbalance"],
+    "importantKeywords": ["Class Imbalance", "Accuracy Paradox", "Majority Class", "Precision-Recall"],
+    "answerOutline": ["Explain extreme imbalance", "Describe dummy model behavior", "State proper metrics"],
+    "modelAnswer": "Because financial fraud represents less than 0.1% of transactions. A naive dummy model that predicts 'Legitimate' for every transaction achieves 99.9% accuracy while detecting zero fraud (0% Recall). Models must instead be evaluated using Precision, Recall, and PR-AUC."
   },
   {
     "id": "q-exam-5m-1",
-    "question": "Explain the working principle and mathematical formulation of Isolation Forest for cyber anomaly detection.",
-    "unitId": "unit-2",
+    "question": "Explain the evolution from Expert Systems to Data Mining, Machine Learning, and Deep Learning in cybersecurity.",
+    "unitId": "unit-1",
     "marks": 5,
-    "relatedConceptIds": ["c8-isolation-forest-anomaly"],
-    "importantKeywords": ["iTree", "Path Length", "Subsampling", "Linear Complexity", "Anomaly Score"],
+    "relatedConceptIds": ["c2-evolution-expert-systems-ai"],
+    "importantKeywords": ["Knowledge Base", "Inference Engine", "Apriori", "Gradient Descent", "Transformers"],
     "answerOutline": [
-      "Definition & Core Principle",
-      "Isolation Tree Construction",
-      "Mathematical Anomaly Score Formulation",
-      "Cybersecurity Advantage"
+      "Expert Systems (IF-THEN rule bases)",
+      "Data Mining (Association and pattern discovery)",
+      "Machine Learning (Statistical optimization on labeled data)",
+      "Deep Learning (Hierarchical neural representations)"
     ],
-    "modelAnswer": "### 1. Definition\nIsolation Forest is an unsupervised tree ensemble that isolates anomalies instead of profiling normal clusters.\n\n### 2. Working Principle\nAnomalies are few and topologically distinct. By recursively selecting a random feature and splitting at a random uniform threshold, anomalous points isolate in very few splits (short tree paths), whereas dense normal points require deep trees.\n\n### 3. Mathematical Formulation\nThe anomaly score is computed as:\n$$s(x, n) = 2^{-\\frac{E(h(x))}{c(n)}}$$\nWhere $E(h(x))$ is the average path length across all trees and $c(n) \\approx 2(\\ln(n - 1) + 0.5772) - \\frac{2(n - 1)}{n}$ is the average depth of an unsuccessful search in a binary search tree.\n- If $s \\to 1$: Highly anomalous threat.\n- If $s < 0.5$: Normal network traffic.\n\n### 4. Benefits in Cybersecurity\nOperates in linear time $O(t \\cdot n \\log n)$ with minimal memory footprint, allowing line-rate anomaly scanning on high-volume VPC flow logs.",
-    "diagramOrFormula": "s(x, n) = 2^(-E(h(x)) / c(n))",
-    "practicalExample": "Detecting an insider performing unauthorized port scans across internal subnets at 3:00 AM."
+    "modelAnswer": "### 1. Expert Systems (1980s-90s)\nRelied on explicit, hand-coded human rules stored in a Knowledge Base and executed by an Inference Engine. Highly explainable, but fragile and unable to adapt to novel attacks.\n\n### 2. Data Mining (1990s-2000s)\nDiscovered non-obvious correlations and patterns across large historical databases (e.g. Apriori algorithm discovering frequent attack paths).\n\n### 3. Machine Learning (2010s)\nUsed statistical optimization algorithms (Random Forests, Support Vector Machines, Gradient Boosting) to learn predictive decision boundaries from empirical training data.\n\n### 4. Deep Learning (Modern Era)\nUses multilayer neural networks (CNNs, Transformers) to learn hierarchical features directly from unstructured data like raw packet bytes, executable binaries, and natural language emails."
   },
   {
     "id": "q-exam-5m-2",
-    "question": "Why is Accuracy an inappropriate metric for fraud detection models, and what alternatives should be used?",
+    "question": "Explain the architecture, mathematical model, and learning rule of the Perceptron for email spam detection.",
+    "unitId": "unit-3",
+    "marks": 5,
+    "relatedConceptIds": ["c8-perceptron-spam-detection"],
+    "importantKeywords": ["Perceptron", "Weighted Sum", "Bias", "Step Function", "Learning Rule"],
+    "answerOutline": [
+      "Perceptron Architecture",
+      "Mathematical Weighted Sum & Activation",
+      "Perceptron Learning Rule",
+      "Cybersecurity Application"
+    ],
+    "modelAnswer": "### 1. Architecture\nA single-layer neural classifier taking input features $x_i$ (e.g., suspicious keywords, links), multiplying by weights $w_i$, adding bias $b$, and evaluating through a step activation function.\n\n### 2. Mathematical Formulation\n$$\nz = \\sum_{i=1}^n w_i x_i + b\n$$\n$$\ny = \\begin{cases} 1 & \\text{if } z \\ge 0 \\quad (\\text{Spam}) \\\\ 0 & \\text{if } z < 0 \\quad (\\text{Not Spam}) \\end{cases}\n$$\n\n### 3. Learning Rule\nWhenever an error occurs ($y \\ne \\hat{y}$):\n$$\nw_i \\leftarrow w_i + \\eta (y - \\hat{y}) x_i \\quad \\text{and} \\quad b \\leftarrow b + \\eta (y - \\hat{y})\n$$\nWhere $\\eta$ is the learning rate ($0 < \\eta \\le 1$).\n\n### 4. Limitation\nCan only separate linearly separable datasets; fails on non-linear feature interactions."
+  },
+  {
+    "id": "q-exam-5m-3",
+    "question": "Compare Bagging and Boosting ensemble techniques in financial fraud prevention.",
     "unitId": "unit-5",
     "marks": 5,
-    "relatedConceptIds": ["c17-bagging-boosting-fraud-engines"],
-    "importantKeywords": ["Class Imbalance", "Accuracy Paradox", "Precision-Recall AUC", "F1-Score", "Cost Matrix"],
+    "relatedConceptIds": ["c17-bagging-boosting-ensembles"],
+    "importantKeywords": ["Ensemble Learning", "Bagging", "Bootstrap", "Random Forest", "Boosting", "Gradient Boosting"],
     "answerOutline": [
-      "The Accuracy Paradox in Rare Events",
-      "Mathematical Proof of Failure",
-      "Recommended Alternative Metrics (PR-AUC, F1, Cost-Weighted Loss)"
+      "Define Bagging & mechanism",
+      "Define Boosting & mechanism",
+      "Key architectural differences",
+      "Application in payment fraud"
     ],
-    "modelAnswer": "### 1. The Accuracy Paradox\nIn financial fraud and cyber attacks, the positive class (fraud/intrusion) is extremely rare (e.g. 0.05% of all transactions). A naive model that classifies every transaction as legitimate achieves 99.95% accuracy while failing to prevent a single dollar of fraud.\n\n### 2. Recommended Alternative Metrics\n- **Precision**: $TP / (TP + FP)$ - Measures the proportion of flagged transactions that are genuinely fraudulent (prevents customer false-positive friction).\n- **Recall (Sensitivity)**: $TP / (TP + FN)$ - Measures the proportion of total fraud captured.\n- **Precision-Recall AUC (PR-AUC)**: Evaluates trade-offs without being skewed by large true-negative volumes.\n- **Cost-Weighted Loss**: Assigns a financial cost matrix where missing a $10,000 fraud (FN) is penalized far more severely than a temporary verification challenge (FP)."
+    "modelAnswer": "### 1. Bagging (Bootstrap Aggregation)\n- **Mechanism**: Draws random bootstrap samples with replacement, trains multiple independent base trees in parallel, and combines predictions via majority voting or averaging.\n- **Primary Target**: Reduces model variance and resists overfitting.\n- **Example**: Random Forest.\n\n### 2. Boosting\n- **Mechanism**: Trains base estimators sequentially; each successive model fits the residual errors or gradients of preceding models.\n- **Primary Target**: Reduces model bias and captures subtle non-linear interactions.\n- **Example**: AdaBoost, Gradient Boosting, LightGBM.\n\n### 3. Summary Comparison\nBagging is parallel and variance-reducing; Boosting is sequential and bias-reducing. Both represent state-of-the-art tools for high-velocity tabular fraud detection."
   },
   {
     "id": "q-exam-10m-1",
-    "question": "Design an end-to-end NLP-based email security architecture to detect Business Email Compromise (BEC) and homoglyph attacks.",
+    "question": "Explain Image Spam detection using Support Vector Machines (SVM). Discuss hyperplanes, support vectors, maximum margin, and kernel functions.",
     "unitId": "unit-3",
     "marks": 10,
-    "relatedConceptIds": ["c9-phishing-nlp-detection"],
-    "importantKeywords": ["Header Alignment", "Homoglyph Attacks", "Transformer Models", "Punycode", "Urgency Analysis", "Quarantine Pipeline"],
+    "relatedConceptIds": ["c9-svm-image-spam"],
+    "importantKeywords": ["SVM", "Hyperplane", "Support Vectors", "Maximum Margin", "Kernel Functions", "RBF Kernel", "Image Spam"],
     "answerOutline": [
-      "Definition & Threat Vector Overview",
-      "Working Mechanism & System Architecture",
-      "Algorithm & Feature Extraction",
-      "Real-World Banking Example",
-      "Benefits & Limitations",
-      "Conclusion"
+      "1. Introduction to Image Spam threat",
+      "2. SVM Working Principle & Maximum Margin",
+      "3. Hyperplane & Support Vectors Mathematics",
+      "4. Kernel Functions (Linear, Polynomial, RBF)",
+      "5. Image Spam Feature Engineering & Workflow",
+      "6. Advantages and Limitations"
     ],
-    "modelAnswer": "### 1. Definition\nBusiness Email Compromise (BEC) is a sophisticated social engineering attack where adversaries impersonate corporate executives or vendors to authorize fraudulent wire transfers without malicious attachments or links.\n\n### 2. Working Mechanism & Architecture\nInbound messages pass through a multi-stage inspection pipeline:\n1. **Cryptographic Validation**: Validates SPF (Sender Policy Framework), DKIM, and DMARC alignment.\n2. **Lexical Domain Inspection**: Evaluates sender domain against known brand dictionaries using Levenshtein distance and Punycode decoder to identify homoglyph character substitutions (e.g. replacing Latin 'o' with Greek omicron).\n3. **Contextual Semantic Scoring**: Tokenizes email body and feeds contextual embeddings into a fine-tuned RoBERTa classifier measuring urgency, secrecy, and financial coercion.\n\n### 3. Feature Extraction & Algorithm\n- **Lexical Features**: URL Shannon entropy, domain registration age (< 30 days), subdomain nesting depth.\n- **Linguistic Vectors**: Urgency polarity, authority invocation keywords ('strictly confidential', 'wire transfer immediately').\n\n### 4. Practical Banking Example\nAn email sent to the bank treasury desk claiming to be the CEO authorizing an emergency acquisition escrow is caught when the model observes high urgency paired with an external sender return-path and a 3-day-old lookalike domain.\n\n### 5. Benefits & Limitations\n- **Benefits**: Catches zero-link zero-attachment executive fraud with >98% precision.\n- **Limitations**: Adversarial evasion using prompt injection or subtle linguistic paraphrasing requires continuous adversarial retraining.",
-    "diagramOrFormula": "Levenshtein Distance: lev(a, b); DMARC = SPF + DKIM Alignment"
+    "modelAnswer": "### 1. Introduction\nSpammers render fraudulent promotional text inside image attachments (JPEG/PNG/GIF) to bypass traditional ASCII keyword filters. Support Vector Machines (SVM) analyze extracted visual features to classify these attachments.\n\n### 2. Working Principle & Maximum Margin\nSVM seeks the optimal decision boundary (hyperplane) that maximizes the geometric distance (margin) between the closest training observations of opposing classes.\n\n### 3. Mathematical Model\n- **Hyperplane**: $\\mathbf{w} \\cdot \\mathbf{x} + b = 0$\n- **Margin Width**: $\\frac{2}{\\|\\mathbf{w}\\|}$\n- **Optimization**: Minimize $\\frac{1}{2} \\|\\mathbf{w}\\|^2$ subject to $y_i (\\mathbf{w} \\cdot \\mathbf{x}_i + b) \\ge 1$.\n- **Support Vectors**: The critical boundary points satisfying $y_i (\\mathbf{w} \\cdot \\mathbf{x}_i + b) = 1$.\n\n### 4. Kernel Functions\nFor non-linearly separable image distributions, the kernel trick maps inputs to higher-dimensional space:\n- **Linear Kernel**: $K(x, z) = x \\cdot z$\n- **Polynomial Kernel**: $K(x, z) = (\\gamma x \\cdot z + r)^d$\n- **Radial Basis Function (RBF)**: $K(x, z) = \\exp(-\\gamma \\|x - z\\|^2)$\n\n### 5. Image Spam Features\n- Color count and palette entropy\n- Edge density and aspect ratio\n- Text-to-image area ratio\n\n### 6. Limitations\nComputational complexity $O(N^2)$ to $O(N^3)$ makes training on massive image collections slow; requires careful feature scaling."
+  },
+  {
+    "id": "q-exam-10m-2",
+    "question": "Discuss biometric authentication using Facial Recognition. Explain the complete pipeline, similarity metrics, FAR, FRR, EER, and Liveness Detection.",
+    "unitId": "unit-4",
+    "marks": 10,
+    "relatedConceptIds": ["c15-facial-recognition-biometrics"],
+    "importantKeywords": ["Face Detection", "Face Alignment", "Face Embedding", "Cosine Similarity", "FAR", "FRR", "EER", "Liveness Detection"],
+    "answerOutline": [
+      "1. Definition & 1:1 Verification vs 1:N Identification",
+      "2. Complete Facial Processing Pipeline",
+      "3. Deep Face Embeddings & Cosine Similarity",
+      "4. Biometric Error Metrics (FAR, FRR, EER)",
+      "5. Presentation Attacks & Liveness Detection",
+      "6. Privacy & Regulatory Compliance"
+    ],
+    "modelAnswer": "### 1. Definition\nFacial recognition verifies identity by analyzing facial geometry. In account security, it operates primarily as 1:1 Face Verification ('Does this live face match user Alice's enrolled profile?').\n\n### 2. Processing Pipeline\n1. **Face Detection**: Localizes face bounding box (e.g. MTCNN, RetinaFace).\n2. **Alignment**: Normalizes head tilt using eye-center landmarks.\n3. **Liveness Detection**: Confirms human presence (blink, micro-texture, depth).\n4. **Feature Extraction**: Deep CNN generates a compact, high-dimensional vector (Embedding).\n5. **Matching**: Compares live embedding against enrolled reference template.\n\n### 3. Similarity Measurement\nUses Cosine Similarity between normalized embedding vectors $\\mathbf{A}$ and $\\mathbf{B}$:\n$$\n\\text{Cosine Similarity} = \\frac{\\mathbf{A} \\cdot \\mathbf{B}}{\\|\\mathbf{A}\\| \\|\\mathbf{B}\\|}\n$$\n\n### 4. Error Metrics\n- **False Acceptance Rate (FAR)**: $\\frac{\\text{False Acceptances}}{\\text{Total Impostor Attempts}}$ (Security vulnerability).\n- **False Rejection Rate (FRR)**: $\\frac{\\text{False Rejections}}{\\text{Total Genuine Attempts}}$ (Customer friction).\n- **Equal Error Rate (EER)**: Operating point where $\\text{FAR} = \\text{FRR}$. Lower EER indicates superior system accuracy.\n\n### 5. Liveness Detection\nDefends against spoofing using printed photos, tablet video replays, or 3D masks through active challenges (blink, smile) and passive spectral/depth analysis."
   },
   {
     "id": "q-exam-16m-1",
     "question": "Critically analyze the role of machine learning in modern financial fraud prevention. Compare Bagging and Boosting ensemble paradigms, discuss strategies for handling extreme class imbalance, and design a production real-time scoring engine.",
     "unitId": "unit-5",
     "marks": 16,
-    "relatedConceptIds": ["c17-bagging-boosting-fraud-engines", "c8-isolation-forest-anomaly"],
+    "relatedConceptIds": ["c16-ml-fraud-detection-class-imbalance", "c17-bagging-boosting-ensembles", "c19-statistical-evaluation-metrics"],
     "importantKeywords": [
       "Bagging vs Boosting",
       "Random Forest",
-      "LightGBM",
+      "Gradient Boosting",
       "Class Imbalance",
-      "SMOTE",
-      "Scale_pos_weight",
-      "Production Latency SLA",
-      "Streaming Feature Store"
+      "Accuracy Paradox",
+      "Confusion Matrix",
+      "Precision-Recall",
+      "Production Latency SLA"
     ],
     "answerOutline": [
       "1. Introduction: Digital payment explosion and fraud landscape",
       "2. Theoretical Comparison: Bagging (Variance reduction) vs Boosting (Bias reduction)",
       "3. Mathematical Foundations of Ensemble Learning",
-      "4. Strategies for Extreme Class Imbalance (Algorithmic & Resampling)",
-      "5. Production Real-Time Architecture (Sub-30ms SLA)",
-      "6. Evaluation Framework & Explainability (XAI with SHAP)",
+      "4. Strategies for Extreme Class Imbalance (Cost-Sensitive & Resampling)",
+      "5. Production Real-Time Architecture (Sub-25ms SLA)",
+      "6. Statistical Evaluation Suite (Worked numerical calculation)",
       "7. Conclusion & Future Outlook"
     ],
-    "modelAnswer": "### 1. Introduction\nFinancial institutions process tens of billions of digital transactions daily. Fraudulent actors exploit automated bots, synthetic identities, and stolen credentials. Traditional rule engines with thousands of static if-then statements suffer from high operational maintenance and high false decline rates that alienate legitimate cardholders.\n\n### 2. Theoretical Comparison: Bagging vs Boosting\n- **Bagging (Bootstrap Aggregating / Random Forest)**:\n  - Generates $B$ bootstrap samples from training data with replacement.\n  - Trains $B$ independent decision trees in parallel.\n  - Averages predictions: $\\hat{f}(x) = \\frac{1}{B} \\sum_{b=1}^B f_b(x)$.\n  - **Primary Benefit**: Reduces model variance without increasing bias. Robust against noisy labels.\n- **Boosting (Gradient Boosting / LightGBM / XGBoost)**:\n  - Builds trees sequentially: each tree fits the negative gradient (pseudo-residuals) of the loss function from preceding trees.\n  - $\\hat{y}_i^{(t)} = \\hat{y}_i^{(t-1)} + \\eta f_t(x_i)$.\n  - **Primary Benefit**: Reduces bias and captures complex non-linear feature interactions.\n\n### 3. Strategies for Extreme Class Imbalance\nIn banking ledgers, fraud constitutes less than 0.1% of transactions.\n1. **Algorithmic Cost Weighting**: Modifying the loss function using `scale_pos_weight = N_negative / N_positive` to penalize misclassified fraud.\n2. **Focal Loss**: Dynamically scales the cross-entropy loss down for easy examples and focuses gradient updates on hard borderline instances: $FL(p_t) = -\\alpha_t (1 - p_t)^\\gamma \\log(p_t)$.\n3. **Resampling Techniques**: Synthetic Minority Over-sampling Technique (SMOTE) to interpolate artificial fraud instances in feature space, combined with Tomek Links to clean ambiguous boundaries.\n\n### 4. Production Real-Time Architecture\nTo meet card network SLAs (< 50ms latency):\n- **Streaming Ingestion**: Apache Kafka streaming raw authorizations.\n- **Feature Store**: Redis in-memory cache pre-calculating customer velocity metrics (e.g. transactions in past 5 minutes, geographical velocity).\n- **Model Execution**: LightGBM ensemble compiled to native C++ / ONNX runtime, evaluating in < 15ms.\n- **Decisioning Layer**: Automated action (Allow / Challenge with OTP / Decline) with SHAP tree explainers generating customer-facing compliance reasons.\n\n### 5. Conclusion\nModern fraud defense demands a hybrid architecture: tree boosting ensembles excel at tabular transactional telemetry, while unsupervised anomaly detectors flag emerging synthetic attack vectors, delivering resilient financial security."
+    "modelAnswer": "### 1. Introduction\nFinancial institutions process billions of digital authorizations daily. Attackers deploy automated bots, stolen credentials, and synthetic identities. Traditional rule engines suffer from high operational maintenance and high false-decline rates. Machine learning provides automated, probabilistic risk scoring.\n\n### 2. Bagging vs Boosting Ensemble Paradigms\n- **Bagging (Bootstrap Aggregation / Random Forest)**: Generates $B$ bootstrap samples from training data with replacement, trains $B$ independent decision trees in parallel, and averages outputs: $\\hat{f}(x) = \\frac{1}{B} \\sum f_b(x)$. Primarily reduces model variance.\n- **Boosting (Gradient Boosting / LightGBM)**: Trains models sequentially; each new tree fits the negative gradient (pseudo-residuals) of the loss function from preceding trees: $\\hat{y}^{(t)} = \\hat{y}^{(t-1)} + \\eta f_t(x)$. Primarily reduces model bias and captures subtle non-linear interactions.\n\n### 3. Strategies for Extreme Class Imbalance\nIn banking data, fraud prevalence is typically $< 0.1%$.\n1. **Cost-Sensitive Weighting**: Modifying loss with `scale_pos_weight = N_negative / N_positive` to heavily penalize False Negatives.\n2. **Focal Loss**: Dynamically downweighting easy negative examples to focus training on hard borderline fraud.\n3. **Resampling**: Applying SMOTE or random undersampling strictly to the training fold, never to the validation set.\n\n### 4. Production Real-Time Architecture\n- **Ingestion**: Apache Kafka stream ingesting payment authorizations.\n- **Feature Store**: Redis cache providing sub-5ms lookup of customer velocity metrics.\n- **Inference Engine**: Pre-compiled tree ensemble evaluating under a 20ms SLA.\n- **Decisioning**: Low Risk (Authorize), Medium Risk (Prompt Step-Up OTP), High Risk (Decline & Alert SOC).\n\n### 5. Statistical Evaluation Suite\nEvaluating on 1,000 transactions (TP=40, TN=900, FP=50, FN=10):\n- **Accuracy**: $(40 + 900) / 1000 = 94.0\\%$\n- **Precision**: $40 / (40 + 50) = 44.44\\%$\n- **Recall**: $40 / (40 + 10) = 80.00\\%$\n- **F1-Score**: $2 \\times \\frac{0.4444 \\times 0.80}{0.4444 + 0.80} = 57.14\\%$\n\n### 6. Conclusion\nProduction fraud prevention demands hybrid architectures: fast tree ensembles handle structured transactional telemetry, while unsupervised anomaly detectors flag novel fraud vectors."
   }
 ]

@@ -40,7 +40,7 @@ export const SubjectOverviewPage: React.FC = () => {
             {subject.code}
           </span>
           <span className="px-2.5 py-1 rounded bg-[#FCE8EF] text-[#C70234] text-xs font-sans font-semibold">
-            {subject.university}
+            Core Master Curriculum
           </span>
           <span className="text-xs text-[#5F6368] font-sans font-medium">
             Semester {subject.semester} • {subject.program}
