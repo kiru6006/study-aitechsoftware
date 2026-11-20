@@ -83,12 +83,21 @@ export interface ConceptMemory {
   commonMistakes: string[];
 }
 
+export type NoteDepth = 'short' | 'medium' | 'detailed';
+
+export interface StudyNotes {
+  short: string;
+  medium: string;
+  detailed: string;
+}
+
 export interface ConceptExamAnswers {
   shortDefinition: string;
   fiveMarkAnswer?: string;
   tenMarkAnswer?: string;
   sixteenMarkAnswer?: string;
   keyFormulas?: string[];
+  notes?: StudyNotes;
 }
 
 export interface QuizQuestion {

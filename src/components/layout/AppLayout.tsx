@@ -20,7 +20,7 @@ export const AppLayout: React.FC = () => {
         />
 
         <main className="flex-1 lg:pl-72 transition-all duration-200">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="max-w-5xl mx-auto px-3 sm:px-5 lg:px-6 py-4">
             <Outlet />
           </div>
         </main>

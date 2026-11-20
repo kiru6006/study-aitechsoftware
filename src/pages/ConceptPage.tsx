@@ -7,7 +7,6 @@ import {
   Eye,
   Briefcase,
   Lightbulb,
-  GraduationCap,
   HelpCircle,
   Bookmark,
   CheckCircle2,
@@ -15,9 +14,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Code2,
-  AlertCircle,
-  Copy,
-  Check
+  AlertCircle
 } from 'lucide-react';
 import {
   getConceptById,
@@ -29,6 +26,10 @@ import {
   toggleConceptBookmark
 } from '../lib/contentLoader';
 
+import { CodeBlock } from '../components/learning/CodeBlock';
+import { StudyNotes } from '../components/learning/StudyNotes';
+import { ConceptComparison } from '../components/learning/ConceptComparison';
+
 export const ConceptPage: React.FC = () => {
   const { subjectId = 'ai-cyber-security', conceptId = '' } = useParams<{
     subjectId?: string;
@@ -39,9 +40,7 @@ export const ConceptPage: React.FC = () => {
   const units = getSubjectUnits(subjectId);
   const allConcepts = getSubjectConcepts(subjectId);
 
-  const [activeExamTab, setActiveExamTab] = useState<'short' | '5m' | '10m' | '16m'>('5m');
   const [selectedQuizAnswers, setSelectedQuizAnswers] = useState<Record<string, number>>({});
-  const [copiedCode, setCopiedCode] = useState(false);
 
   // Persistence local states
   const [isCompleted, setIsCompleted] = useState<boolean>(() =>
@@ -65,21 +64,15 @@ export const ConceptPage: React.FC = () => {
     setSelectedQuizAnswers(prev => ({ ...prev, [questionId]: optionIndex }));
   };
 
-  const copyCodeToClipboard = (code: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2000);
-  };
-
   if (!concept) {
     return (
-      <div className="bg-white rounded-xl p-8 text-center border border-[#DADCE0]">
-        <h2 className="font-serif text-xl font-bold text-[#202124]">Concept Not Found</h2>
-        <p className="text-xs text-[#5F6368] mt-2">
+      <div className="bg-white rounded-xl p-6 text-center border border-[#C70234]/30">
+        <h2 className="font-serif text-lg font-bold text-[#202124]">Concept Not Found</h2>
+        <p className="text-xs text-[#5F6368] mt-1">
           The concept '{conceptId}' could not be loaded for subject '{subjectId}'.
         </p>
-        <Link to={`/${subjectId}`} className="inline-block mt-4 text-xs font-semibold text-[#1A73E8]">
-          Back to Subject
+        <Link to={`/${subjectId}`} className="inline-block mt-3 text-xs font-semibold text-[#C70234]">
+          Return to Subject Overview
         </Link>
       </div>
     );
@@ -94,158 +87,110 @@ export const ConceptPage: React.FC = () => {
   const nextConcept = currentIndex < allConcepts.length - 1 ? allConcepts[currentIndex + 1] : null;
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Breadcrumb Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-xl border border-[#DADCE0] mat-elevation-1">
-        <div className="flex items-center gap-2 text-xs font-sans text-[#5F6368]">
-          <Link to={`/${subjectId}`} className="hover:text-[#1A73E8]">
+    <div className="space-y-4 pb-12">
+      {/* Breadcrumb Header with Red & Yellow Theme */}
+      <div className="flex flex-wrap items-center justify-between gap-2 bg-white px-3.5 py-2.5 rounded-xl border border-[#C70234]/30 shadow-xs">
+        <div className="flex items-center gap-1.5 text-xs font-sans text-[#5F6368]">
+          <Link to={`/${subjectId}`} className="hover:text-[#C70234] font-medium transition-colors">
             AI for Cyber Security
           </Link>
-          <ChevronRight className="w-3 h-3 text-[#DADCE0]" />
-          <span className="font-medium text-[#202124]">
-            {parentUnit ? `Unit ${parentUnit.unitNumber}` : 'Concepts'}
-          </span>
-          <ChevronRight className="w-3 h-3 text-[#DADCE0]" />
-          <span className="text-[#C70234] font-semibold truncate max-w-[200px]">
+          <ChevronRight className="w-3.5 h-3.5 text-[#BDC1C6]" />
+          {parentUnit && (
+            <Link
+              to={`/${subjectId}/units/${parentUnit.id}`}
+              className="hover:text-[#C70234] font-medium transition-colors"
+            >
+              Unit {parentUnit.unitNumber}
+            </Link>
+          )}
+          <ChevronRight className="w-3.5 h-3.5 text-[#BDC1C6]" />
+          <span className="font-semibold text-[#C70234] line-clamp-1 max-w-[200px] sm:max-w-xs">
             {concept.title}
           </span>
         </div>
 
+        {/* Action buttons: Mark complete & Bookmark */}
         <div className="flex items-center gap-2">
           <button
             onClick={handleToggleBookmark}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors ${
+            className={`p-1.5 rounded-lg border text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer ${
               isBookmarked
-                ? 'bg-[#FEF7E0] text-[#B06000] border border-[#FBBC05]'
-                : 'bg-[#F1F3F4] text-[#5F6368] hover:bg-[#DADCE0]'
+                ? 'bg-[#FEF7E0] border-[#FBBC05] text-[#92400E]'
+                : 'bg-white border-[#DADCE0] text-[#5F6368] hover:border-[#FBBC05]'
             }`}
+            title={isBookmarked ? 'Remove Bookmark' : 'Bookmark Concept'}
           >
-            <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-current' : ''}`} />
-            <span>{isBookmarked ? 'Saved' : 'Bookmark'}</span>
+            <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-[#FBBC05]' : ''}`} />
+            <span className="hidden sm:inline text-[11px]">{isBookmarked ? 'Saved' : 'Save'}</span>
           </button>
 
           <button
             onClick={handleToggleComplete}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-sans font-medium transition-colors ${
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
               isCompleted
-                ? 'bg-[#E6F4EA] text-[#188038] border border-[#34A853]'
-                : 'bg-[#188038] text-white hover:bg-[#136C30]'
+                ? 'bg-[#E6F4EA] text-[#188038] border border-[#34A853]/40'
+                : 'bg-[#C70234] hover:bg-[#B6263A] text-white shadow-xs'
             }`}
           >
             <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>{isCompleted ? 'Completed' : 'Mark Done'}</span>
+            <span className="text-[11px]">{isCompleted ? 'Completed' : 'Mark Done'}</span>
           </button>
         </div>
       </div>
 
-      {/* Concept Title Banner */}
-      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DADCE0] mat-elevation-1">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#C70234]/10 text-[#C70234]">
-            {parentUnit?.officialTitle || 'CORE CONCEPT'}
+      {/* Concept Hero Card */}
+      <div className="bg-white rounded-xl p-4 sm:p-5 border border-[#C70234]/30 shadow-xs space-y-3">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-mono uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-[#FEF7E0] text-[#92400E] border border-[#FBBC05]/40">
+            {parentUnit ? `Unit ${parentUnit.unitNumber}` : 'Module'} Concept Deep Dive
           </span>
-          {parentUnit?.memoryCode && (
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-[#FEF7E0] text-[#B06000]">
-              Code: {parentUnit.memoryCode}
-            </span>
-          )}
+          <span className="text-[10px] font-mono text-[#80868B]">
+            ID: {concept.id}
+          </span>
         </div>
 
-        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#202124] tracking-tight">
+        <h1 className="font-serif text-xl sm:text-2xl font-bold text-[#202124] tracking-tight">
           {concept.title}
         </h1>
 
-        {/* Section Jump Pills */}
-        <div className="mt-6 flex flex-wrap gap-2 text-xs font-sans">
-          <a
-            href="#understand"
-            className="px-3 py-1 rounded-full bg-[#E8F0FE] text-[#1A73E8] font-medium hover:bg-[#1A73E8] hover:text-white transition-colors"
-          >
-            A. Understand
-          </a>
-          {concept.visualization && (
-            <a
-              href="#visualize"
-              className="px-3 py-1 rounded-full bg-[#F3E8FD] text-[#A142F4] font-medium hover:bg-[#A142F4] hover:text-white transition-colors"
-            >
-              B. Visualize
-            </a>
-          )}
-          {concept.application && (
-            <a
-              href="#apply"
-              className="px-3 py-1 rounded-full bg-[#E0F7FA] text-[#00838F] font-medium hover:bg-[#00838F] hover:text-white transition-colors"
-            >
-              C. Apply
-            </a>
-          )}
-          {concept.memory && (
-            <a
-              href="#remember"
-              className="px-3 py-1 rounded-full bg-[#FEF7E0] text-[#B06000] font-medium hover:bg-[#B06000] hover:text-white transition-colors"
-            >
-              D. Remember
-            </a>
-          )}
-          {concept.exam && (
-            <a
-              href="#exam"
-              className="px-3 py-1 rounded-full bg-[#FCE8EF] text-[#C70234] font-medium hover:bg-[#C70234] hover:text-white transition-colors"
-            >
-              E. Exam Prep
-            </a>
-          )}
-          {concept.quiz && concept.quiz.length > 0 && (
-            <a
-              href="#quiz"
-              className="px-3 py-1 rounded-full bg-[#E6F4EA] text-[#188038] font-medium hover:bg-[#188038] hover:text-white transition-colors"
-            >
-              F. Check Understanding
-            </a>
-          )}
-        </div>
-      </div>
-
-      {/* SECTION A: UNDERSTAND */}
-      <section id="understand" className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DADCE0] mat-elevation-1 space-y-6">
-        <div className="flex items-center gap-2 border-b border-[#DADCE0]/60 pb-3">
-          <BookOpen className="w-5 h-5 text-[#1A73E8]" />
-          <h2 className="font-serif text-xl font-bold text-[#202124]">
-            A. Understand the Concept
-          </h2>
-        </div>
-
         {/* Definition Highlight Box */}
-        <div className="p-4 rounded-xl bg-[#F8FAFC] border-l-4 border-[#1A73E8]">
-          <h3 className="text-xs font-semibold text-[#1A73E8] uppercase tracking-wider">
-            Canonical Academic Definition
-          </h3>
-          <p className="mt-1 text-sm font-sans text-[#202124] leading-relaxed font-medium">
+        <div className="p-3.5 rounded-xl bg-[#FAF9F5] border-l-4 border-[#C70234] border-t border-r border-b border-[#FBBC05]/40 space-y-1">
+          <span className="text-[10px] uppercase font-bold tracking-wider text-[#C70234] block">
+            Core Definition
+          </span>
+          <p className="text-xs sm:text-sm font-medium text-[#202124] leading-relaxed">
             {concept.understanding.definition}
           </p>
         </div>
 
-        {/* Why it exists */}
-        <div>
-          <h3 className="font-serif text-base font-bold text-[#202124] mb-1">
-            Why Does This Concept Exist?
-          </h3>
-          <p className="text-xs text-[#5F6368] font-sans leading-relaxed">
-            {concept.understanding.rationale}
-          </p>
+        {/* Why this concept matters */}
+        {concept.understanding.rationale && (
+          <div className="text-xs text-[#5F6368] leading-relaxed pt-1">
+            <strong className="text-[#202124]">Why this concept is crucial:</strong> {concept.understanding.rationale}
+          </div>
+        )}
+      </div>
+
+      {/* SECTION A: THEORY & TERMINOLOGY */}
+      <section className="bg-white rounded-xl p-4 sm:p-5 border border-[#C70234]/30 shadow-xs space-y-3">
+        <div className="flex items-center gap-2 border-b border-[#FBBC05]/40 pb-2">
+          <BookOpen className="w-4 h-4 text-[#C70234]" />
+          <h2 className="font-serif text-base font-bold text-[#202124]">
+            Theoretical Foundation & Terminology
+          </h2>
         </div>
 
-        {/* Essential Terminology */}
-        {concept.understanding.terminology.length > 0 && (
-          <div>
-            <h3 className="font-serif text-base font-bold text-[#202124] mb-3">
-              Essential Terminology
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Terminology Grid */}
+        {concept.understanding.terminology && concept.understanding.terminology.length > 0 && (
+          <div className="space-y-2">
+            <span className="text-[11px] font-bold text-[#92400E] uppercase tracking-wider block">
+              Key Terminology & Definitions:
+            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {concept.understanding.terminology.map((t, idx) => (
-                <div key={idx} className="p-3 rounded-lg bg-[#F1F3F4]/60 border border-[#DADCE0]/60">
-                  <span className="text-xs font-bold text-[#202124] block">{t.term}</span>
-                  <span className="text-[11px] text-[#5F6368] mt-0.5 block leading-normal">
+                <div key={idx} className="p-2.5 rounded-lg bg-[#FAF9F5] border border-[#FBBC05]/30">
+                  <span className="text-xs font-bold text-[#C70234] block">{t.term}</span>
+                  <span className="text-[11px] text-[#5F6368] mt-0.5 block leading-snug">
                     {t.explanation}
                   </span>
                 </div>
@@ -255,7 +200,7 @@ export const ConceptPage: React.FC = () => {
         )}
 
         {/* Detailed Theory Markdown */}
-        <div className="prose prose-slate max-w-none text-xs leading-relaxed border-t border-[#DADCE0]/60 pt-4">
+        <div className="prose prose-sm max-w-none text-xs leading-relaxed border-t border-[#DADCE0]/60 pt-3 text-[#202124]">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {concept.understanding.markdownContent}
           </ReactMarkdown>
@@ -264,284 +209,209 @@ export const ConceptPage: React.FC = () => {
 
       {/* SECTION B: VISUALIZE */}
       {concept.visualization && (
-        <section id="visualize" className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DADCE0] mat-elevation-1 space-y-4">
-          <div className="flex items-center gap-2 border-b border-[#DADCE0]/60 pb-3">
-            <Eye className="w-5 h-5 text-[#A142F4]" />
-            <h2 className="font-serif text-xl font-bold text-[#202124]">
-              B. Visualize the Workflow
+        <section className="bg-white rounded-xl p-4 sm:p-5 border border-[#C70234]/30 shadow-xs space-y-3">
+          <div className="flex items-center gap-2 border-b border-[#FBBC05]/40 pb-2">
+            <Eye className="w-4 h-4 text-[#C70234]" />
+            <h2 className="font-serif text-base font-bold text-[#202124]">
+              Visual Architecture & Workflow
             </h2>
           </div>
 
           {concept.visualization.diagramTitle && (
-            <h3 className="text-sm font-bold text-[#202124]">
+            <h3 className="text-xs font-bold text-[#202124]">
               {concept.visualization.diagramTitle}
             </h3>
           )}
 
           {concept.visualization.diagramSource && (
-            <div className="p-4 rounded-xl bg-[#202124] text-slate-100 font-mono text-xs overflow-x-auto">
-              <pre className="whitespace-pre">{concept.visualization.diagramSource}</pre>
+            <div className="p-3.5 rounded-xl bg-[#1E1E2E] text-[#CDD6F4] font-mono text-xs overflow-x-auto border border-[#FBBC05]/40">
+              <pre className="whitespace-pre m-0">{concept.visualization.diagramSource}</pre>
             </div>
           )}
 
-          <p className="text-xs text-[#5F6368] font-sans leading-relaxed pt-1">
+          <p className="text-xs text-[#5F6368] font-sans leading-relaxed">
             {concept.visualization.explanation}
           </p>
         </section>
       )}
 
-      {/* SECTION C: APPLY */}
+      {/* SECTION C: REAL-WORLD APPLICATION & CODE */}
       {concept.application && (
-        <section id="apply" className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DADCE0] mat-elevation-1 space-y-5">
-          <div className="flex items-center gap-2 border-b border-[#DADCE0]/60 pb-3">
-            <Briefcase className="w-5 h-5 text-[#00ACC1]" />
-            <h2 className="font-serif text-xl font-bold text-[#202124]">
-              C. Apply in the Real World
+        <section className="bg-white rounded-xl p-4 sm:p-5 border border-[#C70234]/30 shadow-xs space-y-3">
+          <div className="flex items-center gap-2 border-b border-[#FBBC05]/40 pb-2">
+            <Briefcase className="w-4 h-4 text-[#C70234]" />
+            <h2 className="font-serif text-base font-bold text-[#202124]">
+              Industry Application & Code Example
             </h2>
           </div>
 
-          <div className="p-4 rounded-xl bg-[#E0F7FA]/40 border border-[#00ACC1]/30">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#00ACC1] text-white uppercase">
-                {concept.application.industry} Case
-              </span>
-            </div>
-            <p className="mt-2 text-xs text-[#202124] font-medium leading-relaxed">
+          <div className="p-3.5 rounded-xl bg-[#FEF7E0]/40 border border-[#FBBC05]/40 space-y-1">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#FEF7E0] text-[#92400E] uppercase border border-[#FBBC05]/50">
+              {concept.application.industry} Case Study
+            </span>
+            <p className="text-xs text-[#202124] font-medium leading-relaxed mt-1">
               {concept.application.scenario}
             </p>
           </div>
 
-          {concept.application.inputExample && (
-            <div className="text-xs space-y-1">
-              <span className="font-bold text-[#202124] block">Input Telemetry Example:</span>
-              <div className="p-3 bg-[#F1F3F4] rounded-lg font-mono text-[11px] text-[#202124] overflow-x-auto">
-                {concept.application.inputExample}
-              </div>
-            </div>
-          )}
-
           {/* Process Steps */}
           {concept.application.processSteps.length > 0 && (
-            <div className="space-y-2">
+            <div className="space-y-1.5 pt-1">
               <span className="text-xs font-bold text-[#202124] block">Algorithmic Process Steps:</span>
-              <ol className="space-y-1.5 pl-4 list-decimal text-xs text-[#5F6368]">
+              <ol className="space-y-1 pl-4 list-decimal text-xs text-[#5F6368]">
                 {concept.application.processSteps.map((step, i) => (
-                  <li key={i} className="leading-relaxed">{step}</li>
+                  <li key={i} className="leading-snug">{step}</li>
                 ))}
               </ol>
             </div>
           )}
 
-          {/* Code Snippet */}
+          {/* Verified Code Snippet Component */}
           {concept.application.codeSnippet && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#202124] flex items-center gap-1.5">
-                  <Code2 className="w-4 h-4 text-[#1A73E8]" />
-                  <span>{concept.application.codeSnippet.caption || 'Implementation Script'}</span>
-                </span>
-                <button
-                  onClick={() => copyCodeToClipboard(concept.application!.codeSnippet!.code)}
-                  className="text-[11px] text-[#5F6368] hover:text-[#202124] flex items-center gap-1"
-                >
-                  {copiedCode ? <Check className="w-3.5 h-3.5 text-[#188038]" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedCode ? 'Copied' : 'Copy'}</span>
-                </button>
-              </div>
-
-              <div className="p-4 rounded-xl bg-[#202124] text-slate-100 font-mono text-xs overflow-x-auto">
-                <pre>{concept.application.codeSnippet.code}</pre>
-              </div>
-            </div>
+            <CodeBlock
+              language={concept.application.codeSnippet.language}
+              caption={concept.application.codeSnippet.caption}
+              code={concept.application.codeSnippet.code}
+              sampleInput={concept.application.inputExample}
+              expectedOutput={concept.application.outputExample}
+              explanation={concept.application.processSteps}
+            />
           )}
 
-          {/* Worked Numerical Problem */}
+          {/* Numerical Worked Example */}
           {concept.application.numericalExample && (
-            <div className="p-4 rounded-xl bg-[#FEF7E0]/40 border border-[#FBBC05]/40 space-y-2">
-              <span className="text-xs font-bold text-[#B06000] block uppercase tracking-wider">
-                Worked Numerical Problem
-              </span>
-              <p className="text-xs text-[#202124] font-medium">
-                {concept.application.numericalExample.problem}
-              </p>
-              <div className="text-[11px] font-mono text-[#5F6368] bg-white p-2 rounded border border-[#DADCE0]">
-                Formula: {concept.application.numericalExample.formula}
+            <div className="p-3 rounded-xl bg-[#FAF9F5] border border-[#FBBC05]/40 space-y-1.5 text-xs">
+              <span className="font-bold text-[#92400E] block">Worked Numerical Problem:</span>
+              <p className="text-[#5F6368]">{concept.application.numericalExample.problem}</p>
+              <div className="p-2 rounded bg-white font-mono text-[11px] text-[#202124] border border-[#DADCE0]">
+                {concept.application.numericalExample.formula}
               </div>
-              <p className="text-xs text-[#188038] font-mono font-medium whitespace-pre-line">
-                Solution: {concept.application.numericalExample.solution}
+              <p className="text-[#188038] font-medium font-mono text-[11px]">
+                {concept.application.numericalExample.solution}
               </p>
             </div>
           )}
         </section>
       )}
 
-      {/* SECTION D: REMEMBER */}
+      {/* SECTION D: COMPARISON IF AVAILABLE */}
+      {concept.memory?.comparison && concept.memory.comparison.length > 0 && (
+        <ConceptComparison
+          title={`Comparative Contrast: ${concept.title}`}
+          itemAName={concept.title}
+          itemBName={concept.memory.comparison[0]?.otherConcept || 'Alternative Approach'}
+          rows={concept.memory.comparison.map(c => ({
+            dimension: 'Contrast Metric',
+            itemA: 'Primary mechanism described in syllabus',
+            itemB: c.difference,
+            advantage: 'A'
+          }))}
+        />
+      )}
+
+      {/* SECTION E: STUDY NOTES (SHORT, MEDIUM, DETAILED) */}
+      <StudyNotes
+        shortContent={concept.exam?.shortDefinition}
+        mediumContent={concept.exam?.fiveMarkAnswer}
+        detailedContent={concept.exam?.tenMarkAnswer || concept.exam?.sixteenMarkAnswer}
+        keywords={concept.memory?.keywords}
+        keyFormulas={concept.exam?.keyFormulas}
+      />
+
+      {/* SECTION F: REVISION TRICKS & COMMON PITFALLS */}
       {concept.memory && (
-        <section id="remember" className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DADCE0] mat-elevation-1 space-y-5">
-          <div className="flex items-center gap-2 border-b border-[#DADCE0]/60 pb-3">
-            <Lightbulb className="w-5 h-5 text-[#FBBC05]" />
-            <h2 className="font-serif text-xl font-bold text-[#202124]">
-              D. Remember & Retain
+        <section className="bg-white rounded-xl p-4 sm:p-5 border border-[#C70234]/30 shadow-xs space-y-3">
+          <div className="flex items-center gap-2 border-b border-[#FBBC05]/40 pb-2">
+            <Lightbulb className="w-4 h-4 text-[#C70234]" />
+            <h2 className="font-serif text-base font-bold text-[#202124]">
+              Memory Tricks & Exam Pitfalls
             </h2>
           </div>
 
-          {concept.memory.mnemonic && (
-            <div className="p-4 rounded-xl bg-[#FEF7E0] border border-[#FBBC05]/50 flex items-center gap-3">
-              <span className="w-9 h-9 rounded-lg bg-[#FBBC05] text-[#202124] font-bold text-sm flex items-center justify-center shrink-0">
-                Key
-              </span>
-              <div>
-                <span className="text-[10px] font-bold uppercase text-[#B06000]">Unit Memory Shortcut</span>
-                <p className="text-sm font-bold text-[#202124]">{concept.memory.mnemonic}</p>
-              </div>
-            </div>
-          )}
-
-          {/* Keyword Badges */}
-          <div>
-            <span className="text-xs font-bold text-[#202124] block mb-2">Crucial Exam Keywords:</span>
-            <div className="flex flex-wrap gap-1.5">
-              {concept.memory.keywords.map((kw, i) => (
-                <span key={i} className="px-2.5 py-1 rounded-md bg-[#F1F3F4] text-[#202124] text-xs font-medium">
-                  {kw}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {concept.memory.mnemonic && (
+              <div className="p-3 rounded-lg bg-[#FEF7E0]/60 border border-[#FBBC05]/40 space-y-1">
+                <span className="text-[11px] font-bold text-[#92400E] uppercase block">
+                  Mnemonic Memory Anchor:
                 </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Common Exam Mistakes */}
-          {concept.memory.commonMistakes.length > 0 && (
-            <div className="p-4 rounded-xl bg-[#FCE8E6] border border-[#EA4335]/30">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-[#D93025]">
-                <AlertCircle className="w-4 h-4" />
-                <span>Common Examination Pitfalls to Avoid:</span>
+                <p className="text-xs font-semibold text-[#202124]">{concept.memory.mnemonic}</p>
               </div>
-              <ul className="mt-2 space-y-1 pl-4 list-disc text-xs text-[#202124]">
-                {concept.memory.commonMistakes.map((m, i) => (
-                  <li key={i}>{m}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* SECTION E: EXAM PREPARATION */}
-      {concept.exam && (
-        <section id="exam" className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DADCE0] mat-elevation-1 space-y-5">
-          <div className="flex items-center gap-2 border-b border-[#DADCE0]/60 pb-3">
-            <GraduationCap className="w-5 h-5 text-[#C70234]" />
-            <h2 className="font-serif text-xl font-bold text-[#202124]">
-              E. Examination Model Answers
-            </h2>
-          </div>
-
-          {/* Marks Selector Tabs */}
-          <div className="flex flex-wrap gap-2 border-b border-[#DADCE0] pb-2">
-            {[
-              { id: 'short', label: 'Short Definition (2M)' },
-              { id: '5m', label: '5-Mark Answer' },
-              { id: '10m', label: '10-Mark Answer' },
-              { id: '16m', label: '16-Mark Master Answer' }
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveExamTab(tab.id as any)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-sans font-semibold transition-colors ${
-                  activeExamTab === tab.id
-                    ? 'bg-[#C70234] text-white shadow-xs'
-                    : 'bg-[#F1F3F4] text-[#5F6368] hover:bg-[#DADCE0]'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Tab Content */}
-          <div className="prose prose-slate max-w-none text-xs leading-relaxed bg-[#F8FAFC] p-5 rounded-xl border border-[#DADCE0]">
-            {activeExamTab === 'short' && (
-              <p className="font-medium text-[#202124]">{concept.exam.shortDefinition}</p>
             )}
 
-            {activeExamTab === '5m' && concept.exam.fiveMarkAnswer && (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {concept.exam.fiveMarkAnswer}
-              </ReactMarkdown>
-            )}
-
-            {activeExamTab === '10m' && concept.exam.tenMarkAnswer && (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {concept.exam.tenMarkAnswer}
-              </ReactMarkdown>
-            )}
-
-            {activeExamTab === '16m' && concept.exam.sixteenMarkAnswer && (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {concept.exam.sixteenMarkAnswer}
-              </ReactMarkdown>
+            {concept.memory.commonMistakes && concept.memory.commonMistakes.length > 0 && (
+              <div className="p-3 rounded-lg bg-[#FCE8EF]/50 border border-[#C70234]/30 space-y-1">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#C70234]">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>Common Pitfalls to Avoid:</span>
+                </div>
+                <ul className="list-disc pl-4 space-y-0.5 text-xs text-[#202124]">
+                  {concept.memory.commonMistakes.map((m, i) => (
+                    <li key={i}>{m}</li>
+                  ))}
+                </ul>
+              </div>
             )}
           </div>
         </section>
       )}
 
-      {/* SECTION F: CHECK UNDERSTANDING */}
+      {/* SECTION G: SELF-ASSESSMENT QUIZ */}
       {concept.quiz && concept.quiz.length > 0 && (
-        <section id="quiz" className="bg-white rounded-2xl p-6 sm:p-8 border border-[#DADCE0] mat-elevation-1 space-y-6">
-          <div className="flex items-center gap-2 border-b border-[#DADCE0]/60 pb-3">
-            <HelpCircle className="w-5 h-5 text-[#188038]" />
-            <h2 className="font-serif text-xl font-bold text-[#202124]">
-              F. Check Your Understanding
-            </h2>
+        <section className="bg-white rounded-xl p-4 sm:p-5 border border-[#C70234]/30 shadow-xs space-y-3">
+          <div className="flex items-center justify-between border-b border-[#FBBC05]/40 pb-2">
+            <div className="flex items-center gap-2">
+              <HelpCircle className="w-4 h-4 text-[#C70234]" />
+              <h2 className="font-serif text-base font-bold text-[#202124]">
+                Concept Knowledge Check
+              </h2>
+            </div>
+            <span className="text-[11px] font-medium text-[#188038]">
+              {concept.quiz.length} Questions
+            </span>
           </div>
 
-          <div className="space-y-6">
-            {concept.quiz.map((q, qIndex) => {
-              const selected = selectedQuizAnswers[q.id];
-              const isAnswered = selected !== undefined;
-              const isCorrect = selected === q.correctIndex;
+          <div className="space-y-3">
+            {concept.quiz.map((q, idx) => {
+              const selectedOpt = selectedQuizAnswers[q.id];
+              const hasAnswered = selectedOpt !== undefined;
+              const isCorrect = selectedOpt === q.correctIndex;
 
               return (
-                <div key={q.id} className="p-4 rounded-xl border border-[#DADCE0] bg-[#F8FAFC] space-y-3">
-                  <div className="flex items-start gap-2">
-                    <span className="w-5 h-5 rounded-full bg-[#188038] text-white font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
-                      {qIndex + 1}
-                    </span>
-                    <h3 className="text-xs font-bold text-[#202124]">{q.question}</h3>
-                  </div>
+                <div key={q.id} className="p-3 rounded-lg bg-[#FAF9F5] border border-[#FBBC05]/40 space-y-2">
+                  <span className="text-xs font-semibold text-[#202124] block">
+                    {idx + 1}. {q.question}
+                  </span>
 
-                  <div className="space-y-1.5 pl-7">
-                    {q.options.map((opt, optIndex) => {
-                      const isOptionSelected = selected === optIndex;
-                      let optionStyle = 'border-[#DADCE0] bg-white hover:border-[#1A73E8]';
-
-                      if (isAnswered) {
-                        if (optIndex === q.correctIndex) {
-                          optionStyle = 'border-[#34A853] bg-[#E6F4EA] font-semibold text-[#188038]';
-                        } else if (isOptionSelected) {
-                          optionStyle = 'border-[#EA4335] bg-[#FCE8E6] text-[#D93025]';
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {q.options.map((opt, optIdx) => {
+                      let btnStyle = 'bg-white border-[#DADCE0] text-[#202124] hover:border-[#FBBC05]';
+                      if (hasAnswered) {
+                        if (optIdx === q.correctIndex) {
+                          btnStyle = 'bg-[#E6F4EA] border-[#34A853] text-[#188038] font-bold';
+                        } else if (optIdx === selectedOpt) {
+                          btnStyle = 'bg-[#FCE8EF] border-[#C70234] text-[#C70234] font-bold';
                         }
                       }
 
                       return (
                         <button
-                          key={optIndex}
-                          onClick={() => handleQuizSelect(q.id, optIndex)}
-                          className={`w-full text-left p-2.5 rounded-lg border text-xs transition-colors flex items-center justify-between ${optionStyle}`}
+                          key={optIdx}
+                          disabled={hasAnswered}
+                          onClick={() => handleQuizSelect(q.id, optIdx)}
+                          className={`p-2 rounded-lg border text-left text-xs transition-colors cursor-pointer ${btnStyle}`}
                         >
-                          <span>{opt}</span>
-                          {isAnswered && optIndex === q.correctIndex && (
-                            <CheckCircle2 className="w-4 h-4 text-[#188038] shrink-0 ml-2" />
-                          )}
+                          {opt}
                         </button>
                       );
                     })}
                   </div>
 
-                  {isAnswered && (
-                    <div className={`mt-2 p-3 rounded-lg text-xs font-sans ${isCorrect ? 'bg-[#E6F4EA] text-[#188038]' : 'bg-[#FCE8E6] text-[#D93025]'}`}>
-                      <span className="font-bold block">{isCorrect ? 'Correct!' : 'Incorrect'}</span>
-                      <span className="text-[11px] mt-0.5 block">{q.explanation}</span>
+                  {hasAnswered && (
+                    <div className={`p-2 rounded-lg text-xs leading-relaxed ${
+                      isCorrect ? 'bg-[#E6F4EA] text-[#188038] border border-[#34A853]/40' : 'bg-[#FEF7E0] text-[#92400E] border border-[#FBBC05]/40'
+                    }`}>
+                      <strong>{isCorrect ? 'Correct! ' : 'Explanation: '}</strong>
+                      {q.explanation}
                     </div>
                   )}
                 </div>
@@ -551,27 +421,29 @@ export const ConceptPage: React.FC = () => {
         </section>
       )}
 
-      {/* Concept Navigation Prev / Next */}
-      <div className="flex items-center justify-between pt-4 border-t border-[#DADCE0]">
+      {/* Pagination Footer */}
+      <div className="flex items-center justify-between pt-2">
         {prevConcept ? (
           <Link
             to={`/${subjectId}/concepts/${prevConcept.id}`}
-            className="inline-flex items-center gap-2 text-xs font-semibold text-[#1A73E8] hover:text-[#185ABC]"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#C70234]/30 hover:border-[#C70234] text-xs font-semibold text-[#202124] hover:text-[#C70234] transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="line-clamp-1">Prev: {prevConcept.title}</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span className="line-clamp-1 max-w-[150px] sm:max-w-none">{prevConcept.title}</span>
           </Link>
-        ) : <div />}
+        ) : (
+          <div />
+        )}
 
-        {nextConcept ? (
+        {nextConcept && (
           <Link
             to={`/${subjectId}/concepts/${nextConcept.id}`}
-            className="inline-flex items-center gap-2 text-xs font-semibold text-[#1A73E8] hover:text-[#185ABC]"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#C70234] hover:bg-[#B6263A] text-xs font-semibold text-white transition-colors shadow-xs"
           >
-            <span className="line-clamp-1">Next: {nextConcept.title}</span>
-            <ArrowRight className="w-4 h-4" />
+            <span className="line-clamp-1 max-w-[150px] sm:max-w-none">{nextConcept.title}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
-        ) : <div />}
+        )}
       </div>
     </div>
   );
