@@ -6,39 +6,34 @@
     --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-    /* Google-Inspired + Vignxs Crimson Palette */
-    --color-bg-main: #F5F7FB;
+    /* Yellow-Red-Black-White High-Contrast Palette */
+    --color-bg-main: #F4F5F7;
     --color-surface-white: #FFFFFF;
-    --color-surface-muted: #F1F3F4;
+    --color-surface-muted: #F8F9FA;
 
-    /* Vignxs Crimson Editorial Accent */
-    --brand-crimson: #C70234;
-    --brand-crimson-deep: #B6263A;
-    --brand-crimson-soft: #FCE8EF;
-    --brand-crimson-hover: #FCEEF2;
+    /* Crisp Red Primary & Accents */
+    --brand-red: #C70234;
+    --brand-red-deep: #A00028;
+    --brand-red-soft: #FCE8EF;
+    --brand-red-border: rgba(199, 2, 52, 0.35);
 
-    /* Google Core Primaries */
-    --google-blue: #1A73E8;
-    --google-blue-soft: #E8F0FE;
-    --google-green: #34A853;
-    --google-green-dark: #188038;
-    --google-green-soft: #E6F4EA;
-    --google-red: #EA4335;
-    --google-red-dark: #D93025;
-    --google-red-soft: #FCE8E6;
-    --google-yellow: #FBBC05;
-    --google-yellow-soft: #FEF7E0;
-    --google-purple: #A142F4;
-    --google-purple-soft: #F3E8FD;
-    --google-cyan: #00ACC1;
-    --google-cyan-soft: #E0F7FA;
+    /* Warm Yellow Highlights & Badges */
+    --brand-yellow: #FBBC05;
+    --brand-yellow-warm: #F59E0B;
+    --brand-yellow-soft: #FEF7E0;
+    --brand-yellow-border: rgba(251, 188, 5, 0.5);
 
-    /* Typography & Borders */
-    --md-text-primary: #202124;
-    --md-text-secondary: #5F6368;
-    --md-text-muted: #80868B;
-    --md-outline: #DADCE0;
-    --md-outline-strong: #BDC1C6;
+    /* Deep Black Text & Dark Mode Terminals */
+    --brand-black: #0F172A;
+    --brand-black-deep: #000000;
+    --brand-black-card: #18181B;
+
+    /* Typography & Neutral Borders */
+    --md-text-primary: #0F172A;
+    --md-text-secondary: #475569;
+    --md-text-muted: #64748B;
+    --md-outline: #E2E8F0;
+    --md-outline-strong: #CBD5E1;
   }
 
   body {
@@ -47,10 +42,11 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-image: radial-gradient(#DADCE0 0.75px, transparent 0.75px);
-    background-size: 24px 24px;
+    background-image: radial-gradient(#CBD5E1 0.75px, transparent 0.75px);
+    background-size: 20px 20px;
     background-position: 0 0;
     background-attachment: fixed;
+    line-height: 1.45;
   }
 
   h1, h2, h3, .font-heading {
@@ -60,21 +56,21 @@
 }
 
 .mat-elevation-1 {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .mat-elevation-2 {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .mat-elevation-3 {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.08);
 }
 
-/* Custom scrollbars */
+/* Custom compact scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;

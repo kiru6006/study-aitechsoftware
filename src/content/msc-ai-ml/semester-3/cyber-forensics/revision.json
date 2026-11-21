@@ -1,0 +1,170 @@
+{
+  "subjectId": "cyber-forensics",
+  "masterMemorySequence": [
+    "PRESERVE (Unit I: Foundations, Legal Compliance, Chain of Custody & Acquisition)",
+    "RECOVER (Unit II: File Systems, Slack Space, Data Carving & Windows Artifacts)",
+    "RECONSTRUCT (Unit III: Volatile RAM, Volatility Process Triage, Super Timelines & PCAP)",
+    "EXAMINE (Unit IV: Android vs iOS Sandboxes, Mobile Artifacts, IoT & Privacy Limits)",
+    "VALIDATE (Unit V: EDRM Case Management, Forensic Reporting, Testimony & NIST CFTT)"
+  ],
+  "unitMemoryCodes": [
+    {
+      "unitNumber": 1,
+      "code": "I-P-C-E-A-D-P-R",
+      "meaning": "Identification, Preservation, Collection, Examination, Analysis, Documentation, Presentation, Review",
+      "breakdown": [
+        { "letter": "I", "concept": "Identification: Recognizing potential digital evidence sources (devices, clouds, RAM, peripherals)" },
+        { "letter": "P", "concept": "Preservation: Isolating crime scene, Faraday bags, write-blockers, preventing volatile degradation" },
+        { "letter": "C", "concept": "Collection: Bitstream physical/logical disk imaging and RAM capture under certified standards" },
+        { "letter": "E", "concept": "Examination: Processing raw data, file recovery, header analysis without modifying master copy" },
+        { "letter": "A", "concept": "Analysis: Correlating findings, interpreting intent, timeline mapping, and attack hypothesis testing" },
+        { "letter": "D", "concept": "Documentation: Real-time contemporaneous bench notes, custody logs, and photographs" },
+        { "letter": "P", "concept": "Presentation: Courtroom testimony, Section 65B electronic certificates, executive briefings" },
+        { "letter": "R", "concept": "Review: Post-investigation feedback, process validation, peer review, and continuous lessons learned" }
+      ]
+    },
+    {
+      "unitNumber": 2,
+      "code": "F-D-C-W-T",
+      "meaning": "File Systems, Deleted Files, Carving, Windows Artifacts, Tools (TSK & Autopsy)",
+      "breakdown": [
+        { "letter": "F", "concept": "File Systems: FAT (File Allocation Table), NTFS ($MFT, $LogFile), ext4 (Inodes), APFS (Container Superblocks)" },
+        { "letter": "D", "concept": "Deleted Files: Marking clusters unallocated, directory pointer deletion, slack space recovery" },
+        { "letter": "C", "concept": "Carving: Signature-based extraction using magic bytes (headers/footers) across raw blocks" },
+        { "letter": "W", "concept": "Windows Artifacts: Registry (SAM, SYSTEM, NTUSER.DAT), LNK shortcuts, Jump Lists, Prefetch (.pf)" },
+        { "letter": "T", "concept": "Tools: The Sleuth Kit CLI (mmls, fsstat, fls, istat, icat) and GUI investigation in Autopsy" }
+      ]
+    },
+    {
+      "unitNumber": 3,
+      "code": "L-M-T-A-N",
+      "meaning": "Live Investigation, Memory Forensics, Timeline Correlation, Artifacts, Network Analysis",
+      "breakdown": [
+        { "letter": "L", "concept": "Live Investigation: Order of Volatility (RFC 3227: Registers -> RAM -> Network -> Disk -> Backup)" },
+        { "letter": "M", "concept": "Memory Forensics: Volatility 3 plugins (pslist, pstree, netscan, malfind) detecting injected code" },
+        { "letter": "T", "concept": "Timeline Correlation: Super Timelines generated via plaso/log2timeline normalizing UTC timestamps" },
+        { "letter": "A", "concept": "Artifacts: Browser cache/history, email headers (PST/OST, SPF/DKIM/DMARC), USB connection history" },
+        { "letter": "N", "concept": "Network Analysis: Deep packet inspection (PCAP) vs aggregated flow records (NetFlow / IPFIX)" }
+      ]
+    },
+    {
+      "unitNumber": 4,
+      "code": "M-A-D-I-L",
+      "meaning": "Mobile OS Architecture, Acquisition Methods, Device Data, IoT Forensics, Legal & Privacy Safeguards",
+      "breakdown": [
+        { "letter": "M", "concept": "Mobile Architecture: Android Linux kernel & permissions vs iOS Secure Enclave & hardware crypto" },
+        { "letter": "A", "concept": "Acquisition Methods: Logical (ADB/iTunes backup), File System (agent-based), Physical (JTAG/chip-off)" },
+        { "letter": "D", "concept": "Device Data: SQLite databases, SMS/MMS, call records, WhatsApp/Signal chats, GPS geotags" },
+        { "letter": "I", "concept": "IoT Forensics: Embedded NAND flash, smart CCTV cameras, drone telemetry, vehicle infotainment" },
+        { "letter": "L", "concept": "Legal Safeguards: Proportionality, warrant scope, constitutional privacy rights, third-party disclosure limits" }
+      ]
+    },
+    {
+      "unitNumber": 5,
+      "code": "C-R-E-V",
+      "meaning": "Case Management (EDRM), Reporting Standards, Expert Witness & Ethics, Validation (NIST CFTT & Biometrics)",
+      "breakdown": [
+        { "letter": "C", "concept": "Case Management: Electronic Discovery Reference Model (EDRM) identification through presentation" },
+        { "letter": "R", "concept": "Reporting Standards: ISO/IEC 27042 compliant objective reports separating observations from hypotheses" },
+        { "letter": "E", "concept": "Expert Witness & Ethics: Daubert/Frye admissibility standards, nonpartisan testimony, cross-examination" },
+        { "letter": "V", "concept": "Validation: NIST Computer Forensic Tool Testing (CFTT) methodology and Biometric evaluation (FAR/FRR)" }
+      ]
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "cf-fc-1",
+      "unitId": "unit-1",
+      "front": "What is the Order of Volatility defined by RFC 3227?",
+      "back": "1. CPU Registers and Cache\n2. Routing table, ARP cache, process table, kernel statistics, RAM\n3. Temporary file systems\n4. Disk storage\n5. Remote logging and monitoring data\n6. Physical topology and network configuration\n7. Archival media and backup tapes",
+      "tag": "Preservation"
+    },
+    {
+      "id": "cf-fc-2",
+      "unitId": "unit-1",
+      "front": "Why does a matching cryptographic hash NOT prove the author of a file?",
+      "back": "A matching SHA-256 hash mathematically proves content integrity (the bits have not changed). It does not prove who authored the file, who placed it on the machine, or the state of mind of the system user.",
+      "tag": "Integrity vs Authenticity"
+    },
+    {
+      "id": "cf-fc-3",
+      "unitId": "unit-2",
+      "front": "What is File Slack Space and what are its two components?",
+      "back": "Slack space is the unused space between the end of a file's logical data and the end of the physical cluster allocation. It consists of: (1) RAM Slack (bytes from logical end to next sector boundary, zero-padded in modern OS); (2) Drive Slack (remaining sectors of cluster containing remnant data from prior files).",
+      "tag": "File Systems"
+    },
+    {
+      "id": "cf-fc-4",
+      "unitId": "unit-2",
+      "front": "What does a Windows Prefetch file (.pf) prove?",
+      "back": "A Prefetch file proves that a specific application was executed on that Windows machine, records the execution count, and logs the last 8 execution timestamps along with referenced DLLs and directories. It does NOT prove what user input occurred inside the application.",
+      "tag": "Windows Artifacts"
+    },
+    {
+      "id": "cf-fc-5",
+      "unitId": "unit-3",
+      "front": "What is the key difference between Volatility windows.pslist and windows.psscan?",
+      "back": "windows.pslist traverses the doubly-linked list of ActiveProcessLinks (can be manipulated by rootkits unlinking DKOM processes). windows.psscan scans memory for pool tag allocations matching EPROCESS structures, discovering hidden, terminated, or unlinked processes.",
+      "tag": "Memory Forensics"
+    },
+    {
+      "id": "cf-fc-6",
+      "unitId": "unit-3",
+      "front": "Compare PCAP vs NetFlow for incident reconstruction.",
+      "back": "PCAP (Full Packet Capture): Captures complete packet headers and application payload; provides total visibility and protocol reconstruction; huge storage footprint. NetFlow/IPFIX: Captures aggregated session metadata (Source IP/port, Dest IP/port, protocol, bytes, packets, duration); scalable and searchable, but contains zero application payload.",
+      "tag": "Network Forensics"
+    },
+    {
+      "id": "cf-fc-7",
+      "unitId": "unit-4",
+      "front": "What is the difference between Logical and Physical Mobile Acquisition?",
+      "back": "Logical Acquisition extracts files accessible through the mobile OS API (contacts, SMS, media) excluding deleted records and unallocated space. Physical Acquisition copies bit-by-bit flash memory (including deleted databases and unallocated flash), but often requires root privileges, bootloader bypass, or specialized hardware exploits.",
+      "tag": "Mobile Forensics"
+    },
+    {
+      "id": "cf-fc-8",
+      "unitId": "unit-5",
+      "front": "Define False Acceptance Rate (FAR) and False Rejection Rate (FRR) in biometric forensics.",
+      "back": "FAR (Type II Error): The probability that a biometric system incorrectly accepts an unauthorized imposter. FRR (Type I Error): The probability that the system incorrectly rejects an authorized genuine user. The point where FAR equals FRR is the Crossover Error Rate (CER / EER).",
+      "tag": "Biometrics"
+    }
+  ],
+  "checklist": [
+    { "id": "cf-chk-1", "unitId": "unit-1", "title": "Section 65B Indian Evidence Act Compliance & 8-Stage Lifecycle", "category": "Core Concept", "summary": "Mandatory affidavit criteria for electronic records admissibility, contemporaneity of evidence collection, and lifecycle execution." },
+    { "id": "cf-chk-2", "unitId": "unit-1", "title": "Hardware Write-Blockers & Cryptographic Hash Functions", "category": "Algorithm", "summary": "Blocking SCSI/SATA/NVMe write commands and generating dual SHA-256 and MD5 bitstream hashes before analysis." },
+    { "id": "cf-chk-3", "unitId": "unit-2", "title": "NTFS Master File Table ($MFT) Record Parsing & Attributes", "category": "Keyword", "summary": "Deciphering 1024-byte MFT records, $STANDARD_INFORMATION (0x10), $FILE_NAME (0x30), and $DATA (0x80) resident vs non-resident runs." },
+    { "id": "cf-chk-4", "unitId": "unit-2", "title": "Header/Footer Magic Bytes & Data Carving Workflow", "category": "Core Concept", "summary": "File carving algorithms recognizing JPEG (FF D8 FF ... FF D9), PDF (%PDF ... %%EOF), and ZIP (PK.. 50 4B 03 04) headers." },
+    { "id": "cf-chk-5", "unitId": "unit-2", "title": "The Sleuth Kit (TSK) Command Suite Execution", "category": "Algorithm", "summary": "Executing mmls (partition display), fsstat (file system stats), fls (directory listing), istat (inode details), and icat (extracting content)." },
+    { "id": "cf-chk-6", "unitId": "unit-3", "title": "Volatility 3 Memory Plugins for Malware Triage", "category": "Algorithm", "summary": "Running windows.pslist, windows.pstree, windows.netscan, windows.malfind, and windows.dlllist to detect process hollowing and stealth sockets." },
+    { "id": "cf-chk-7", "unitId": "unit-3", "title": "Super Timeline Construction & UTC Timestamp Normalization", "category": "Core Concept", "summary": "Extracting MACB timestamps (Modified, Accessed, Changed, Born) across MFT, event logs, browser history, and shellbags into unified sequence." },
+    { "id": "cf-chk-8", "unitId": "unit-4", "title": "Android SQLite Database Analysis & Geolocation Recovery", "category": "Keyword", "summary": "Analyzing WAL (Write-Ahead Logging) journal files and extracting EXIF GPS coordinates, cell tower triangulation, and Wi-Fi SSID records." },
+    { "id": "cf-chk-9", "unitId": "unit-4", "title": "IoT & Smart CCTV Firmware Triage", "category": "Core Concept", "summary": "Acquiring SPI/NAND flash memory via JTAG/UART, extracting SquashFS partitions, and parsing video circular ring buffers." },
+    { "id": "cf-chk-10", "unitId": "unit-5", "title": "NIST CFTT Standards & Expert Witness Admissibility Rules", "category": "Core Concept", "summary": "Daubert standard factors (testability, peer review, known error rate, general acceptance) and NIST Computer Forensic Tool Testing protocol." }
+  ],
+  "formulaSheet": [
+    {
+      "name": "Cryptographic Hash Comparison (Integrity Ratio)",
+      "formula": "Integrity Status = (Hash(Evidence_Copy) == Hash(Original_Bitstream)) ? VALID : CORRUPTED",
+      "description": "Standard mathematical equality check proving bit-for-bit authenticity of forensically mirrored images.",
+      "unitId": "unit-1"
+    },
+    {
+      "name": "File Slack Space Calculation",
+      "formula": "File_Slack = (Cluster_Size * ceil(Logical_Size / Cluster_Size)) - Logical_Size",
+      "description": "Calculates byte volume of remnant storage space in allocated clusters that may host carved fragments.",
+      "unitId": "unit-2"
+    },
+    {
+      "name": "Biometric Accuracy: False Acceptance Rate (FAR)",
+      "formula": "FAR = (Number of False Acceptances / Total Number of Imposter Attempts) * 100%",
+      "description": "Measures security risk where an unauthorized adversary is incorrectly authenticated.",
+      "unitId": "unit-5"
+    },
+    {
+      "name": "Biometric Accuracy: False Rejection Rate (FRR)",
+      "formula": "FRR = (Number of False Rejections / Total Number of Genuine Attempts) * 100%",
+      "description": "Measures usability impedance where a legitimate authorized user is mistakenly rejected.",
+      "unitId": "unit-5"
+    }
+  ]
+}

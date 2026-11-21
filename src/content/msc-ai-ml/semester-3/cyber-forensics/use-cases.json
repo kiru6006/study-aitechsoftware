@@ -1,0 +1,60 @@
+[
+  {
+    "id": "bank-cyberattack-investigation",
+    "title": "₹5 Crore Digital Bank Cyberattack: Complete Digital Forensic Investigation",
+    "industry": "Banking",
+    "businessProblem": "ABC Digital Bank, a scheduled commercial banking entity, detected five critical anomalies: (1) An operations employee opened an obfuscated invoice attachment from a spoofed email; (2) High-value KYC and customer loan files were accessed and scrubbed from file servers; (3) The primary payment switch server initiated unauthorized outbound TCP connections to an overseas IP; (4) Customers logged ₹5 crore in fraudulent unauthorized outward RTGS/IMPS transactions; (5) Multiple branch workstations displayed LockBit ransomware lockscreens. The board suspects a coordinated insider-assisted advanced persistent threat (APT). Lead forensic investigators must rigorously identify evidence, maintain chain of custody, reverse-engineer disk and memory artifacts, analyze mobile and IoT logs, correlate cross-system timestamps into a super timeline, validate tool accuracy under NIST CFTT standards, and author a court-admissible forensic report distinguishing verified observations from hypotheses.",
+    "relevantConceptIds": [
+      "cf1-forensic-fundamentals-lifecycle",
+      "cf3-chain-of-custody-hashing",
+      "cf7-windows-forensic-artifacts",
+      "cf10-volatility-process-rootkits",
+      "cf11-super-timelines-log-analysis",
+      "cf12-network-browser-cloud-forensics",
+      "cf15-smartphone-app-artifacts",
+      "cf18-forensic-report-drafting"
+    ],
+    "unitMapping": [
+      {
+        "unitNumber": 1,
+        "roleInSolution": "Unit I (Preserve): First responder evidence triage across employee laptop, bank servers, smartphone, and network taps. Generation of cryptographic SHA-256 hashes, write-blocked bitstream imaging (.E01 / .raw), and physical chain of custody logs under Section 65B compliance."
+      },
+      {
+        "unitNumber": 2,
+        "roleInSolution": "Unit II (Recover): Examination of employee laptop NTFS Master File Table ($MFT), carving deleted customer Excel documents from unallocated clusters, and extraction of Windows execution artifacts (Prefetch, LNK, UserAssist, and Shellbags) proving malware launch."
+      },
+      {
+        "unitNumber": 3,
+        "roleInSolution": "Unit III (Reconstruct): Volatile memory triage of payment switch server with Volatility 3 (windows.pslist, windows.netscan, windows.malfind) uncovering unlinked process (PID 1220 unknown.exe) beaconing to 198.51.100.44:443, and building a 72-hour multi-source Super Timeline."
+      },
+      {
+        "unitNumber": 4,
+        "roleInSolution": "Unit IV (Examine Devices): Extraction of privileged employee's Android smartphone using logical backup and ADB file system acquisition; reverse-engineering WhatsApp and Signal SQLite databases; and parsing smart CCTV embedded memory for physical server room access."
+      },
+      {
+        "unitNumber": 5,
+        "roleInSolution": "Unit V (Validate & Report): Aggregating evidence into a master Evidence Register, conducting NIST CFTT validation checks, performing expert witness defense cross-examination simulation, and compiling an executive and court-ready Digital Forensic Investigation Report."
+      }
+    ],
+    "inputData": "SIMULATED FORENSIC TELEMETRY & ARTIFACT REPOSITORY:\n• Evidence Item E-01: Dell Latitude 7420 (Employee Laptop) - SHA256: 8a4f91b...3f\n• Evidence Item E-02: Payment Switch Server HP ProLiant DL380 - SHA256: 3c9b11e...9a\n• Evidence Item E-03: Exchange Online Message Trace (Message-ID: <20261118-inv@spoofed.com>)\n• Evidence Item E-04: SanDisk Cruzer Blade 32GB USB Drive - Serial: 4C530001090123115142\n• Evidence Item E-05: Samsung Galaxy S23 (Employee Mobile) - Physical ADB / FFS dump\n• Evidence Item E-06: Cisco ASA Firewall NetFlow & Core Switch PCAP (14.2 GB dump)\n• Evidence Item E-07: AWS CloudTrail & Kubernetes API Gateway Access Logs\n• Evidence Item E-08: Hikvision IP-CCTV Embedded Flash & Server Room Access Badge Logs",
+    "stepByStepProcess": [
+      "Stage 1: Secure volatile state of banking switch (RAM dump via winpmem) and physical isolation of compromised subnets.",
+      "Stage 2: Acquire bitstream images of employee laptop using Tableau forensic write-blocker; verify SHA-256 integrity match.",
+      "Stage 3: File system analysis via Autopsy/TSK; identify deleted invoice 'Security_Update.pdf.exe' and carve deleted loan records.",
+      "Stage 4: Execute Volatility 3 plugins on switch memory dump; isolate injected DLL inside PID 1220 and trace outbound socket.",
+      "Stage 5: Parse Windows Event Logs (Security.evtx Event ID 4624, 4672, 7045) and correlate with NetFlow logs into Super Timeline.",
+      "Stage 6: Examine employee smartphone SQLite databases for suspicious SMS 2FA intercept codes and unauthorized remote access apps.",
+      "Stage 7: Conduct tool validation against NIST CFTT test references; audit limitations regarding attribution versus USB presence.",
+      "Stage 8: Synthesize final Forensic Report with defensible findings, chronology, and expert witness testimony prep."
+    ],
+    "expectedOutput": "Root Cause Reconstruction: Adversary gained initial execution via spear-phishing macro on employee workstation at 08:42:15 UTC; executed lateral reconnaissance via SMB; established persistence on payment switch via service installation (PID 1220); routed ₹5 crore across 14 dummy recipient accounts at 14:15:00 UTC; deployed wiper/ransomware at 16:30:00 UTC to cover digital footprint.",
+    "practicalApplication": "Production incident response protocols for financial institutions conforming to RBI Digital Payment Security Controls, CERT-In Cyber Incident Reporting standards, ISO/IEC 27037 digital evidence handling, and Indian Evidence Act Section 65B certification.",
+    "limitations": [
+      "USB insertion artifact (Registry USBSTOR) proves physical connection and mount time, but does NOT independently prove data exfiltration without LNK or volume shadow corroboration.",
+      "Identical cryptographic hashes verify bitstream image integrity, but do not independently prove the identity or intent of the author.",
+      "Suspicious unlisted process names (e.g. unknown.exe) warrant memory analysis but cannot be declared malware without behavioral or binary disassembled proof.",
+      "Biometric fingerprint match on smartphone indicates authorized unlock mechanism, but cannot definitively prove whether the owner was acting under duress or voluntary action."
+    ],
+    "relatedExamQuestions": ["cf-q-10m-1", "cf-q-10m-2", "cf-q-10m-3", "cf-q-10m-4", "cf-q-10m-5"]
+  }
+]

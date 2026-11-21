@@ -1,0 +1,388 @@
+{
+  "id": "bank-cyberattack-investigation",
+  "title": "₹5 Crore Digital Bank Cyberattack: Complete Digital Forensic Investigation",
+  "organization": "ABC Digital Bank (Scheduled Commercial Banking Entity)",
+  "suspectedImpact": "₹5 Crore Unauthorized Outward Transfers & System Ransomware",
+  "incidentCategory": "Coordinated Insider-Assisted Advanced Persistent Threat (APT)",
+  "subjectId": "cyber-forensics",
+  "isSimulated": true,
+  "disclaimer": "SIMULATED EDUCATIONAL EVIDENCE: All bank names, accounts, IP addresses, hashes, and financial loss amounts are synthetic training artifacts designed exclusively for SubjectLab forensic education.",
+  "objectives": [
+    "Identify, isolate, and acquire digital evidence across physical endpoints, volatile RAM, smartphones, network taps, and IoT CCTV.",
+    "Verify cryptographic SHA-256 hashes and maintain unbroken Chain of Custody documentation conforming to statutory Section 65B requirements.",
+    "Examine NTFS storage structures ($MFT), carve deleted customer files from unallocated clusters, and extract Windows execution artifacts (Prefetch, LNK, Registry).",
+    "Analyze physical RAM dumps using Volatility 3 (pslist, psscan, netscan, malfind) to uncover hidden rootkits and active C2 connections.",
+    "Extract smartphone SQLite databases (SMS OTPs, encrypted messaging) and embedded IoT CCTV firmware to corroborate physical presence.",
+    "Construct a normalized UTC Super Timeline, validate forensic tool accuracy against NIST CFTT assertions, and draft a court-admissible forensic report."
+  ],
+  "evidenceSources": [
+    {
+      "id": "E-01",
+      "name": "Employee Workstation (Dell Latitude 7420)",
+      "source": "Operations Terminal - Workstation IP: 10.14.2.45",
+      "evidenceType": "Physical NVMe SSD (512 GB) - Bitstream .E01 Image",
+      "simulated": true,
+      "hash": "8a4f91b6c230e5512b947a50a12e84c791d293847561234567890abcdef12345",
+      "status": "Examined",
+      "findings": [
+        "Prefetch file INVOICE_UPDATE.EXE-B2C4E1A0.pf confirmed 3 executions starting at 08:42:15 UTC.",
+        "MFT Record #4812 showed deleted Customer_Accounts.xlsx; carved 18 valid Excel loan spreadsheets from unallocated clusters.",
+        "USBSTOR registry entry showed SanDisk USB connected at 14:02:10 UTC (Serial: 4C530001090123115142)."
+      ],
+      "limitations": [
+        "USB connection artifact proves device was plugged in, but does NOT independently prove files were copied without corroborating shellbag or transfer logs.",
+        "Matching image hash confirms bitstream integrity, but does not prove who operated the keyboard."
+      ],
+      "details": {
+        "Host OS": "Windows 11 Enterprise (Build 22631)",
+        "Acquisition Mode": "Dead Acquisition via Tableau T8u Write-Blocker",
+        "Primary Analyst": "Lead Digital Forensic Investigator",
+        "Seizure Date": "2026-11-18 17:30 UTC"
+      }
+    },
+    {
+      "id": "E-02",
+      "name": "Payment Switch Core Server (HP ProLiant DL380)",
+      "source": "Data Center Rack 04 - Server IP: 10.14.10.12",
+      "evidenceType": "Volatile RAM (64 GB raw dump) & RAID-10 Disk Image (.E01)",
+      "simulated": true,
+      "hash": "3c9b11e42a9810f5431cd761239845019a823471029384756102938475610293",
+      "status": "Analyzed",
+      "findings": [
+        "Memory triage via Volatility windows.psscan uncovered unlinked rogue process PID 1220 (unknown.exe).",
+        "windows.malfind located PAGE_EXECUTE_READWRITE memory page at 0x7ffe0000 harboring injected MZ shellcode.",
+        "windows.netscan revealed PID 1220 holding active TLS socket to 198.51.100.44:443 matching transaction timestamps."
+      ],
+      "limitations": [
+        "Process name unknown.exe alone cannot be classified as malware without injected code analysis.",
+        "Volatile RAM capture causes minor heisenbug memory footprint modification of ~12 MB."
+      ],
+      "details": {
+        "Host OS": "Windows Server 2022 Datacenter",
+        "Acquisition Mode": "Live Memory Triage (winpmem) followed by static disk imaging",
+        "RAM Dump Size": "64.2 GB (.raw)",
+        "Seizure Date": "2026-11-18 16:45 UTC"
+      }
+    },
+    {
+      "id": "E-03",
+      "name": "Corporate Exchange Email Server Logs",
+      "source": "Microsoft 365 Exchange Online Message Trace",
+      "evidenceType": "M365 Unified Audit Log & Inbound SMTP Headers (.eml)",
+      "simulated": true,
+      "hash": "e5b871c990a213456789abcdef1234567890abcdef1234567890abcdef123456",
+      "status": "Examined",
+      "findings": [
+        "Spear-phishing email delivered at 08:35:12 UTC spoofing CEO name with display homoglyph.",
+        "Attachment 'Invoice_Nov2026.pdf.exe' disguised using right-to-left override character."
+      ],
+      "limitations": [
+        "Email headers show originating IP was a Tor exit node; attribution to real-world adversary requires ISP subpoena."
+      ],
+      "details": {
+        "Sender": "billing@abc-cligitalbank.com (Spoofed)",
+        "Recipient": "ops.employee@abcdigitalbank.com",
+        "Message-ID": "<20261118-inv@spoofed-bank.net>"
+      }
+    },
+    {
+      "id": "E-04",
+      "name": "SanDisk Cruzer Blade 32GB USB Storage",
+      "source": "Seized from Employee Desk Drawer",
+      "evidenceType": "Physical Removable Flash Drive (FAT32)",
+      "simulated": true,
+      "hash": "4a7b11c992019384756102938475610293847561029384756102938475610293",
+      "status": "Examined",
+      "findings": [
+        "Hardware serial 4C530001090123115142 exactly matches USBSTOR registry entry on Employee Laptop.",
+        "File system analysis revealed 0 files in active FAT32 directory; carved 4 system diagnostic scripts from unallocated space."
+      ],
+      "limitations": [
+        "No bank customer records were found on this specific USB drive; exfiltration to this drive is uncorroborated."
+      ],
+      "details": {
+        "Capacity": "32.0 GB",
+        "File System": "FAT32",
+        "Serial": "4C530001090123115142"
+      }
+    },
+    {
+      "id": "E-05",
+      "name": "Employee Smartphone (Samsung Galaxy S23)",
+      "source": "Personal / Corporate Dual-SIM Mobile Handset",
+      "evidenceType": "Physical ADB File System Dump (256 GB UFS 4.0)",
+      "simulated": true,
+      "hash": "7f8e9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f",
+      "status": "Analyzed",
+      "findings": [
+        "SMS database mmssms.db-wal showed banking 2FA OTP received at 14:14:22 UTC.",
+        "Signal messaging database showed OTP forwarded to unknown recipient at 14:14:45 UTC.",
+        "EXIF GPS telemetry placed device in server room vicinity (18.9220 N, 72.8347 E) at 14:10:00 UTC."
+      ],
+      "limitations": [
+        "Biometric fingerprint unlock artifact proves phone was unlocked, but cannot verify whether employee was coerced."
+      ],
+      "details": {
+        "OS": "Android 14 (One UI 6.1)",
+        "IMEI": "358941209384712",
+        "Extraction Mode": "Advanced File System Extraction (Passcode Provided)"
+      }
+    },
+    {
+      "id": "E-06",
+      "name": "Core Firewall & Perimeter Network Taps",
+      "source": "Cisco ASA 5585-X & Internal Core Switch SPAN Port",
+      "evidenceType": "Full PCAP (14.2 GB) & IPFIX / NetFlow Database",
+      "simulated": true,
+      "hash": "1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
+      "status": "Analyzed",
+      "findings": [
+        "1,420 outbound TLS sessions established between server 10.14.10.12 and external IP 198.51.100.44:443.",
+        "60-second periodic intervals with 5% jitter, consistent with Cobalt Strike beacon configuration.",
+        "High-volume encrypted burst (42 MB) observed immediately prior to transaction execution."
+      ],
+      "limitations": [
+        "NetFlow records lack application payloads; TLS payload decryption required private key recovery from RAM."
+      ],
+      "details": {
+        "Device": "Cisco ASA 5585-X",
+        "Capture Window": "2026-11-18 00:00 to 2026-11-18 23:59 UTC",
+        "Total Sessions": "1,420 C2 Beacons"
+      }
+    },
+    {
+      "id": "E-07",
+      "name": "AWS Cloud & API Gateway Audit Logs",
+      "source": "CloudTrail, VPC Flow Logs & Amazon EKS Audit Stream",
+      "evidenceType": "JSON CloudTrail Audit Stream (Compressed .json.gz)",
+      "simulated": true,
+      "hash": "9c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b",
+      "status": "Examined",
+      "findings": [
+        "API Gateway logged 14 unauthorized RTGS fund transfer calls originating from payment switch internal IP.",
+        "Total transfer sum calculated: ₹5,00,00,000 across 14 beneficiary accounts within 6 minutes."
+      ],
+      "limitations": [
+        "CloudTrail records confirm API key was used; they cannot verify whether the key was stolen or authorized."
+      ],
+      "details": {
+        "Cloud Provider": "AWS ap-south-1 (Mumbai)",
+        "IAM Role": "PaymentSwitchServiceRole",
+        "Events Logged": "14 BatchTransfer Executions"
+      }
+    },
+    {
+      "id": "E-08",
+      "name": "Smart CCTV & Physical Access Badge Records",
+      "source": "Hikvision IP Camera & Server Room RFID Access Controller",
+      "evidenceType": "Embedded Flash Dump (MicroSD ring buffer) & SQL Access Log",
+      "simulated": true,
+      "hash": "2f3e4d5c6b7a8f9e0d1c2b3a4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e",
+      "status": "Analyzed",
+      "findings": [
+        "RFID badge log shows Employee Badge #402 swiped at server room door at 14:09:42 UTC.",
+        "Recovered CCTV video frame confirms employee physically entered server vault at 14:10:00 UTC."
+      ],
+      "limitations": [
+        "CCTV camera internal clock was drifting by +3 minutes 12 seconds; normalized to NTP reference."
+      ],
+      "details": {
+        "Camera Model": "Hikvision DS-2CD2143G2-I",
+        "Storage": "128 MB SPI Flash + 64 GB MicroSD",
+        "Corroboration": "RFID Reader Controller Port 02"
+      }
+    }
+  ],
+  "stages": [
+    {
+      "id": "stage-1",
+      "unitId": "unit-1",
+      "unitNumber": 1,
+      "title": "Stage 1: Evidence Identification & Preservation",
+      "subtitle": "Foundations, Legal Compliance & Write-Blocked Imaging",
+      "objective": "Identify evidence sources, apply RFC 3227 order of volatility, attach write-blockers, compute baseline SHA-256 hashes, and log Chain of Custody entries.",
+      "conceptIds": ["cf1-forensic-fundamentals-lifecycle", "cf2-legal-compliance-admissibility", "cf3-chain-of-custody-hashing", "cf4-forensic-imaging-standards"],
+      "evidenceIds": ["E-01", "E-02"],
+      "activities": [
+        {
+          "id": "act-1-1",
+          "title": "Order of Volatility Triage",
+          "instruction": "Select the correct immediate action when arriving at the live payment switch server (Item E-02).",
+          "type": "select",
+          "prompt": "The payment switch server is currently active and beaconing to an external IP. What should the first responder execute first?",
+          "options": [
+            { "id": "opt-1", "label": "Immediately pull the power cord to prevent further fund transfers", "feedback": "INCORRECT: Pulling the power cord destroys physical RAM, wiping active processes, encryption keys, and C2 sockets permanently.", "isCorrect": false },
+            { "id": "opt-2", "label": "Capture physical RAM via winpmem before disconnecting network or powering off", "feedback": "CORRECT: Conforms to RFC 3227 order of volatility, capturing volatile in-memory malware and sockets before severance.", "isCorrect": true },
+            { "id": "opt-3", "label": "Reboot into Safe Mode and run Windows Defender", "feedback": "INCORRECT: Rebooting destroys volatile memory and contaminates file system timestamps.", "isCorrect": false }
+          ],
+          "explanation": "RFC 3227 establishes that physical RAM is highly volatile and must be secured before non-volatile storage or rebooting."
+        },
+        {
+          "id": "act-1-2",
+          "title": "Hardware Write-Blocker Verification",
+          "instruction": "Evaluate the forensic necessity of a hardware write-blocker during acquisition of the employee laptop (Item E-01).",
+          "type": "quiz",
+          "prompt": "Why must the analyst connect a hardware write-blocker between the suspect drive and the forensic workstation?",
+          "options": [
+            { "id": "opt-a", "label": "To increase the read and write transfer speed of the SATA bus", "feedback": "Incorrect: Write-blockers protect data integrity, not bus speed.", "isCorrect": false },
+            { "id": "opt-b", "label": "To intercept and drop SCSI/ATA write commands, guaranteeing the source disk cannot be modified", "feedback": "Correct: Prevents host OS mounting or auto-writing to evidence media.", "isCorrect": true },
+            { "id": "opt-c", "label": "To automatically decrypt BitLocker partitions without a password", "feedback": "Incorrect: Write-blockers do not perform cryptographic decryption.", "isCorrect": false }
+          ],
+          "explanation": "A write-blocker physically intercepts write signals, ensuring the master evidence media remains pristine."
+        }
+      ]
+    },
+    {
+      "id": "stage-2",
+      "unitId": "unit-2",
+      "unitNumber": 2,
+      "title": "Stage 2: File System Recovery & Artifact Examination",
+      "subtitle": "NTFS Structures, Carving & Windows Execution Footprints",
+      "objective": "Inspect the employee laptop's NTFS $MFT, carve deleted Excel loan documents from unallocated space, and analyze Prefetch, LNK, and Registry artifacts.",
+      "conceptIds": ["cf5-filesystem-structures-metadata", "cf6-deleted-recovery-carving", "cf7-windows-forensic-artifacts", "cf8-sleuthkit-autopsy-analysis"],
+      "evidenceIds": ["E-01", "E-04"],
+      "activities": [
+        {
+          "id": "act-2-1",
+          "title": "Windows Prefetch (.pf) Analysis",
+          "instruction": "Interpret the prefetch artifact found on the employee's workstation: INVOICE_UPDATE.EXE-B2C4E1A0.pf.",
+          "type": "select",
+          "prompt": "What does the existence of this Prefetch file with execution count = 3 conclusively prove?",
+          "options": [
+            { "id": "opt-1", "label": "It proves the employee intentionally stole ₹5 crore", "feedback": "INCORRECT: Prefetch proves application execution, not legal intent or financial theft.", "isCorrect": false },
+            { "id": "opt-2", "label": "It proves invoice_update.exe was executed on this machine 3 times", "feedback": "CORRECT: Windows Prefetch records program execution counts, timestamps, and loaded DLLs.", "isCorrect": true },
+            { "id": "opt-3", "label": "It proves invoice_update.exe is certified clean by Microsoft", "feedback": "INCORRECT: Prefetch records execution regardless of whether the binary is benign or malicious.", "isCorrect": false }
+          ],
+          "explanation": "Prefetch files prove application execution on a Windows endpoint, but do not establish the subjective intent of the user."
+        },
+        {
+          "id": "act-2-2",
+          "title": "Deleted File Carving",
+          "instruction": "Identify the magic byte header and footer required to carve the deleted customer loan file (PDF/XLSX).",
+          "type": "quiz",
+          "prompt": "Which hex signature identifies the start of an OpenXML document (e.g. Customer_Accounts.xlsx)?",
+          "options": [
+            { "id": "opt-a", "label": "FF D8 FF E0 (JPEG)", "feedback": "Incorrect: This is JPEG format.", "isCorrect": false },
+            { "id": "opt-b", "label": "50 4B 03 04 (PK.. ZIP Header)", "feedback": "Correct: Microsoft XLSX/DOCX are ZIP containers starting with PK.. (0x504B0304).", "isCorrect": true },
+            { "id": "opt-c", "label": "25 50 44 46 (%PDF)", "feedback": "Incorrect: This is Adobe PDF format.", "isCorrect": false }
+          ],
+          "explanation": "Modern Office OpenXML files (.xlsx, .docx) are structured ZIP packages marked by the PK.. magic header."
+        }
+      ]
+    },
+    {
+      "id": "stage-3",
+      "unitId": "unit-3",
+      "unitNumber": 3,
+      "title": "Stage 3: Memory Triage & Network Reconstruction",
+      "subtitle": "Volatility Framework, Rootkits & Super Timeline Synthesis",
+      "objective": "Execute Volatility plugins on switch memory dump, isolate unlinked PID 1220 unknown.exe, correlate NetFlow C2 beacons, and build a normalized UTC timeline.",
+      "conceptIds": ["cf9-volatile-memory-triage", "cf10-volatility-process-rootkits", "cf11-super-timelines-log-analysis", "cf12-network-browser-cloud-forensics"],
+      "evidenceIds": ["E-02", "E-06", "E-07"],
+      "activities": [
+        {
+          "id": "act-3-1",
+          "title": "Volatility Process Scanning",
+          "instruction": "Analyze the output of Volatility plugins on switch_memory.raw.",
+          "type": "select",
+          "prompt": "windows.pslist showed no unknown processes, but windows.psscan revealed PID 1220 unknown.exe. What technique did the adversary use?",
+          "options": [
+            { "id": "opt-1", "label": "Direct Kernel Object Manipulation (DKOM) to unlink the process from ActiveProcessLinks", "feedback": "CORRECT: DKOM unlinks processes from the standard doubly-linked list, hiding them from pslist while psscan detects pool tags.", "isCorrect": true },
+            { "id": "opt-2", "label": "Overwriting the MBR partition table", "feedback": "INCORRECT: MBR manipulation affects disk bootloaders, not live in-memory process lists.", "isCorrect": false },
+            { "id": "opt-3", "label": "Formatting the primary NTFS volume", "feedback": "INCORRECT: The server was running actively.", "isCorrect": false }
+          ],
+          "explanation": "DKOM rootkits modify kernel structures to hide processes from standard enumeration APIs, but memory pool scanners locate them."
+        },
+        {
+          "id": "act-3-2",
+          "title": "C2 Network Beaconing Identification",
+          "instruction": "Evaluate the firewall PCAP log displaying periodic connections to 198.51.100.44:443.",
+          "type": "quiz",
+          "prompt": "Why is 60-second periodic outbound traffic with 5% jitter characteristic of advanced malware command-and-control?",
+          "options": [
+            { "id": "opt-a", "label": "It represents standard Windows NTP clock synchronization", "feedback": "Incorrect: NTP operates via UDP port 123 at much longer intervals.", "isCorrect": false },
+            { "id": "opt-b", "label": "Adversary implants use randomized sleep intervals (jitter) to blend into regular traffic and evade threshold alarms", "feedback": "Correct: Jitter prevents simple static periodicity detection while maintaining regular heartbeat checks.", "isCorrect": true },
+            { "id": "opt-c", "label": "It proves the employee was streaming YouTube videos", "feedback": "Incorrect: Video streaming uses continuous high-throughput media connections.", "isCorrect": false }
+          ],
+          "explanation": "Adversary implants add jitter (random variance) to prevent deterministic beaconing alerts."
+        }
+      ]
+    },
+    {
+      "id": "stage-4",
+      "unitId": "unit-4",
+      "unitNumber": 4,
+      "title": "Stage 4: Specialized Device & IoT Investigation",
+      "subtitle": "Mobile Extraction, SQLite Parsing & CCTV Correlation",
+      "objective": "Acquire employee smartphone file system, parse SQLite WAL logs for SMS OTPs and Signal chats, extract IoT CCTV firmware, and correlate physical presence.",
+      "conceptIds": ["cf13-mobile-os-architecture-security", "cf14-mobile-acquisition-methods", "cf15-smartphone-app-artifacts", "cf16-iot-embedded-cctv-forensics"],
+      "evidenceIds": ["E-05", "E-08"],
+      "activities": [
+        {
+          "id": "act-4-1",
+          "title": "SQLite WAL Journal Analysis",
+          "instruction": "Examine the extracted mmssms.db-wal file from the employee's smartphone.",
+          "type": "select",
+          "prompt": "The primary database mmssms.db did not show the incoming bank OTP, but mmssms.db-wal contained the OTP received at 14:14:22 UTC. Why?",
+          "options": [
+            { "id": "opt-1", "label": "The Write-Ahead Log holds recent transactions that have not yet been checkpointed into the master database", "feedback": "CORRECT: In SQLite WAL mode, uncommitted or recently committed transactions remain in the WAL file until a checkpoint.", "isCorrect": true },
+            { "id": "opt-2", "label": "The employee deleted the entire operating system", "feedback": "INCORRECT: The device was fully operational.", "isCorrect": false },
+            { "id": "opt-3", "label": "The WAL file is an encrypted BitLocker volume", "feedback": "INCORRECT: WAL is a standard SQLite logging journal.", "isCorrect": false }
+          ],
+          "explanation": "SQLite databases write changes first to the WAL companion journal, preserving recent and deleted records before consolidation."
+        },
+        {
+          "id": "act-4-2",
+          "title": "Physical Presence vs Digital Action",
+          "instruction": "Correlate the IoT CCTV footage with the server room access log at 14:10:00 UTC.",
+          "type": "quiz",
+          "prompt": "Does the CCTV recording of the employee entering the server room prove they typed the transaction command?",
+          "options": [
+            { "id": "opt-a", "label": "Yes, entering the room conclusively proves they authorized the transfer", "feedback": "Incorrect: Presence in a room does not prove physical keystrokes on a specific server console.", "isCorrect": false },
+            { "id": "opt-b", "label": "No, it corroborates physical opportunity, but terminal keystroke or session logs are required to prove action", "feedback": "Correct: Forensic distinction between physical opportunity and direct attribution.", "isCorrect": true },
+            { "id": "opt-c", "label": "No, because CCTV footage is legally inadmissible in all courts", "feedback": "Incorrect: CCTV footage is admissible under electronic evidence rules when certified.", "isCorrect": false }
+          ],
+          "explanation": "Physical presence confirms opportunity and location, but requires digital terminal logs to substantiate action."
+        }
+      ]
+    },
+    {
+      "id": "stage-5",
+      "unitId": "unit-5",
+      "unitNumber": 5,
+      "title": "Stage 5: Final Validation & Forensic Report",
+      "subtitle": "NIST CFTT Verification, Defensible Reporting & Courtroom Testimony",
+      "objective": "Verify tool reliability against NIST CFTT assertions, review the Master Evidence Register, simulate expert witness cross-examination, and author the court report.",
+      "conceptIds": ["cf17-ediscovery-case-management", "cf18-forensic-report-drafting", "cf19-expert-witness-court-ethics", "cf20-authentication-biometrics-cftt"],
+      "evidenceIds": ["E-01", "E-02", "E-03", "E-04", "E-05", "E-06", "E-07", "E-08"],
+      "activities": [
+        {
+          "id": "act-5-1",
+          "title": "Expert Witness Cross-Examination Defense",
+          "instruction": "Answer defense counsel's challenge regarding the seized SanDisk USB drive (Item E-04).",
+          "type": "decision",
+          "prompt": "Counsel: 'Inspector, you found my client's USB drive plugged into the laptop. Doesn't that prove they stole the customer accounts?' How do you answer?",
+          "options": [
+            { "id": "opt-1", "label": "'Yes, the presence of the USB drive in the registry confirms the theft.'", "feedback": "INCORRECT: This is speculative advocacy. USBSTOR proves connection, not file exfiltration.", "isCorrect": false },
+            { "id": "opt-2", "label": "'The registry proves the USB drive was mounted at 14:02 UTC. However, no file transfer logs or shellbag entries confirm data was copied to that drive.'", "feedback": "CORRECT: Demonstrates strict forensic objectivity, separating confirmed observations from unsupported leaps.", "isCorrect": true },
+            { "id": "opt-3", "label": "'I refuse to answer because that is confidential police work.'", "feedback": "INCORRECT: Expert witnesses must answer transparently under cross-examination.", "isCorrect": false }
+          ],
+          "explanation": "Objective expert testimony avoids the advocacy trap and states precise evidentiary boundaries."
+        },
+        {
+          "id": "act-5-2",
+          "title": "NIST CFTT Tool Validation Check",
+          "instruction": "Confirm tool qualification under the Daubert evidentiary standard.",
+          "type": "quiz",
+          "prompt": "Why does citing NIST Computer Forensic Tool Testing (CFTT) test reports strengthen report admissibility in court?",
+          "options": [
+            { "id": "opt-a", "label": "It satisfies the Daubert requirement for peer-reviewed, empirically tested tools with known error rates", "feedback": "Correct: NIST CFTT provides empirical benchmarking verifying forensic tools meet rigorous test assertions.", "isCorrect": true },
+            { "id": "opt-b", "label": "It grants diplomatic immunity to the investigating team", "feedback": "Incorrect: CFTT is a technical benchmark, not a legal immunity treaty.", "isCorrect": false },
+            { "id": "opt-c", "label": "It eliminates the need to provide evidence hashes", "feedback": "Incorrect: Hashes are always mandatory.", "isCorrect": false }
+          ],
+          "explanation": "NIST CFTT reports establish known error rates and empirical reliability required under Daubert and statutory standards."
+        }
+      ]
+    }
+  ]
+}

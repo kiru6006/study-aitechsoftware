@@ -24,6 +24,11 @@ export interface SubjectMetadata {
   university: string;
   program: string;
   semester: number;
+  credits?: number;
+  totalHours?: number;
+  unitsCount?: number;
+  teachingHoursPerUnit?: number;
+  maximumMarks?: number;
   description: string;
   learningObjectives: string[];
   courseOutcomes: string[];
@@ -140,7 +145,7 @@ export interface ExamQuestion {
   id: string;
   question: string;
   unitId: string;
-  marks: 2 | 5 | 10 | 16;
+  marks: 1 | 2 | 5 | 10 | 16;
   relatedConceptIds: string[];
   importantKeywords: string[];
   answerOutline: string[];
@@ -182,4 +187,60 @@ export interface RevisionPack {
 export interface CatalogData {
   programs: Program[];
   subjects: Record<string, SubjectMetadata>;
+}
+
+export interface LearningActivityOption {
+  id: string;
+  label: string;
+  feedback: string;
+  isCorrect: boolean;
+}
+
+export interface LearningActivity {
+  id: string;
+  title: string;
+  instruction: string;
+  type: 'select' | 'sequence' | 'examine' | 'quiz' | 'decision';
+  prompt: string;
+  options?: LearningActivityOption[];
+  correctSequence?: string[];
+  explanation: string;
+}
+
+export interface InvestigationStage {
+  id: string;
+  unitId: string;
+  unitNumber: number;
+  title: string;
+  subtitle: string;
+  objective: string;
+  conceptIds: string[];
+  evidenceIds: string[];
+  activities: LearningActivity[];
+}
+
+export interface EvidenceItem {
+  id: string;
+  name: string;
+  source: string;
+  evidenceType: string;
+  simulated: boolean;
+  hash?: string;
+  status: 'Identified' | 'Acquired' | 'Examined' | 'Analyzed' | 'Reported';
+  findings: string[];
+  limitations: string[];
+  details?: Record<string, string>;
+}
+
+export interface LearningCase {
+  id: string;
+  title: string;
+  organization: string;
+  suspectedImpact: string;
+  description?: string;
+  subjectId: string;
+  isSimulated: boolean;
+  stages: InvestigationStage[];
+  evidenceSources: EvidenceItem[];
+  evidence?: EvidenceItem[];
 }

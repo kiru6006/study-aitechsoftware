@@ -10,8 +10,10 @@ import {
   Sparkles,
   CheckCircle2,
   FolderOpen,
-  Hash,
-  Eye
+  Terminal,
+  Network,
+  Activity,
+  Award
 } from 'lucide-react';
 import { getCatalog, getSubjectUnits, getCompletedConcepts } from '../../lib/contentLoader';
 
@@ -30,12 +32,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   // Extract params from pathname: /:subjectId/...
   const pathParts = location.pathname.split('/').filter(Boolean);
-  const currentSubjectId = pathParts[0] || 'ai-cyber-security';
+  const currentSubjectId = pathParts[0] || 'cyber-forensics';
   const currentUnitId = pathParts[1] === 'units' ? pathParts[2] : null;
   const currentConceptId = pathParts[1] === 'concepts' ? pathParts[2] : null;
 
   const currentSubject = catalog.subjects[currentSubjectId] || Object.values(catalog.subjects)[0];
-  const units = getSubjectUnits(currentSubject?.id || 'ai-cyber-security');
+  const units = getSubjectUnits(currentSubject?.id || 'cyber-forensics');
 
   // Track expanded units for showing topic bullet points
   const [expandedUnits, setExpandedUnits] = useState<Record<string, boolean>>(() => {
@@ -45,6 +47,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     } catch {}
     return { 'unit-1': true };
   });
+
+  const [isSemesterMenuOpen, setIsSemesterMenuOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -77,28 +81,44 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         />
       )}
 
-      {/* Subject-First Sidebar Container */}
+      {/* Subject-First Compact Sidebar */}
       <aside
-        className={`fixed top-13 bottom-0 left-0 z-40 w-72 bg-white border-r border-[#C70234]/25 flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-11 bottom-0 left-0 z-40 w-72 bg-white border-r border-[#C70234]/30 flex flex-col transition-transform duration-200 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Active Subject Selector Card */}
-        <div className="p-3 bg-[#FEF7E0]/60 border-b border-[#FBBC05]/40 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-[#92400E] flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-[#C70234]" />
-              Course Curriculum
-            </span>
-            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white text-[#C70234] border border-[#C70234]/30 font-semibold">
-              {currentSubject?.code || 'MAI-OL506A-3'}
+        {/* Semester & Subject Selection Header */}
+        <div className="p-2 bg-[#FAF9F5] border-b border-[#DADCE0] space-y-1.5">
+          {/* Semester Dropdown / Indicator */}
+          <div className="flex items-center justify-between text-[10px] font-mono font-bold text-gray-700">
+            <button
+              onClick={() => setIsSemesterMenuOpen(prev => !prev)}
+              className="flex items-center gap-1 hover:text-[#C70234] cursor-pointer"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#188038]" />
+              <span>SEMESTER 3 (Active)</span>
+              <ChevronDown className="w-3 h-3" />
+            </button>
+            <span className="px-1.5 py-0.2 rounded bg-[#FEF7E0] text-[#92400E] border border-[#FBBC05]">
+              {currentSubject?.code || 'MAI-OL507B-3'}
             </span>
           </div>
 
-          {/* If single subject, show subject card; if multiple, list selector */}
+          {isSemesterMenuOpen && (
+            <div className="p-1.5 rounded bg-white border border-[#DADCE0] text-[10px] font-mono space-y-1">
+              <div className="text-gray-400">Available Semesters:</div>
+              <div className="text-gray-400 pl-1">• Semester 1 (Prerequisites)</div>
+              <div className="text-gray-400 pl-1">• Semester 2 (Core Fundamentals)</div>
+              <div className="text-[#C70234] font-bold pl-1">• Semester 3 (2 Subjects Active)</div>
+              <div className="text-gray-400 pl-1">• Semester 4 (Capstone Research)</div>
+            </div>
+          )}
+
+          {/* Subject Switcher Cards (Cyber Forensics & AI Cyber Security) */}
           <div className="space-y-1">
             {allSubjects.map(subj => {
               const isActive = subj.id === currentSubject?.id;
+              const isCF = subj.id === 'cyber-forensics';
               return (
                 <button
                   key={subj.id}
@@ -106,35 +126,39 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     navigate(`/${subj.id}`);
                     onClose();
                   }}
-                  className={`w-full text-left p-2 rounded-lg border transition-all cursor-pointer flex items-center justify-between ${
+                  className={`w-full text-left p-1.5 rounded border transition-all cursor-pointer flex items-center justify-between ${
                     isActive
                       ? 'bg-white border-[#C70234] shadow-2xs text-[#C70234]'
-                      : 'bg-[#FAF9F5] border-[#DADCE0] text-[#202124] hover:border-[#FBBC05]'
+                      : 'bg-white border-[#DADCE0] text-gray-800 hover:border-[#FBBC05] hover:bg-[#FEF7E0]/30'
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <div className={`w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs ${
-                      isActive ? 'bg-[#C70234] text-white' : 'bg-[#FEF7E0] text-[#92400E]'
-                    }`}>
-                      AI
+                  <div className="flex items-center gap-1.5 truncate">
+                    <div
+                      className={`w-5 h-5 rounded flex items-center justify-center font-bold text-[10px] shrink-0 font-mono ${
+                        isActive
+                          ? 'bg-[#C70234] text-white'
+                          : 'bg-[#FEF7E0] text-[#92400E] border border-[#FBBC05]'
+                      }`}
+                    >
+                      {isCF ? 'CF' : 'AI'}
                     </div>
-                    <div>
-                      <h3 className="font-serif text-xs font-bold leading-tight line-clamp-1">
+                    <div className="truncate">
+                      <div className="font-serif text-xs font-bold leading-tight truncate">
                         {subj.name}
-                      </h3>
-                      <span className="text-[10px] font-mono text-[#5F6368]">
-                        5 Syllabus Units
-                      </span>
+                      </div>
+                      <div className="text-[9px] font-mono text-gray-500">
+                        {isCF ? '₹5Cr Bank Case • 5 Units' : 'AI Security • 5 Units'}
+                      </div>
                     </div>
                   </div>
-                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#C70234]" />}
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#C70234] shrink-0 ml-1" />}
                 </button>
               );
             })}
           </div>
 
-          {/* Quick Hub Navigation Pills */}
-          <div className="grid grid-cols-4 gap-1 pt-1">
+          {/* Subject-Level Modules Grid (Compact 2x4 pills) */}
+          <div className="grid grid-cols-4 gap-1 pt-0.5">
             <NavLink
               to={`/${currentSubject.id}`}
               end
@@ -142,68 +166,115 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               className={({ isActive }) =>
                 `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
                   isActive
-                    ? 'bg-[#C70234] text-white shadow-2xs'
-                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                    ? 'bg-[#C70234] text-white shadow-2xs font-bold'
+                    : 'bg-white text-gray-700 hover:bg-[#FEF7E0] hover:text-[#C70234] border border-[#DADCE0]'
                 }`
               }
-              title="Subject Overview"
+              title="Course Overview"
             >
               Overview
             </NavLink>
+
             <NavLink
               to={`/${currentSubject.id}/case-studies`}
               onClick={onClose}
               className={({ isActive }) =>
                 `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
                   isActive
-                    ? 'bg-[#C70234] text-white shadow-2xs'
-                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                    ? 'bg-[#C70234] text-white shadow-2xs font-bold'
+                    : 'bg-white text-gray-700 hover:bg-[#FEF7E0] hover:text-[#C70234] border border-[#DADCE0]'
                 }`
               }
-              title="Industry Case Studies"
+              title="Master Case Study"
             >
-              Cases
+              Case
             </NavLink>
+
             <NavLink
-              to={`/${currentSubject.id}/exam-prep`}
+              to={`/${currentSubject.id}/investigation`}
               onClick={onClose}
               className={({ isActive }) =>
                 `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
                   isActive
-                    ? 'bg-[#C70234] text-white shadow-2xs'
-                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                    ? 'bg-black text-[#FEF08A] shadow-2xs font-bold'
+                    : 'bg-[#FEF7E0] text-[#92400E] hover:bg-[#FEF08A] border border-[#FBBC05]'
                 }`
               }
-              title="Study Notes & Q&A"
+              title="Interactive Investigation"
             >
-              Notes
+              Investigate
             </NavLink>
+
+            <NavLink
+              to={`/${currentSubject.id}/mindmaps`}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs font-bold'
+                    : 'bg-white text-gray-700 hover:bg-[#FEF7E0] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Unit Mindmaps"
+            >
+              Mindmaps
+            </NavLink>
+
+            <NavLink
+              to={`/${currentSubject.id}/labs`}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs font-bold'
+                    : 'bg-white text-gray-700 hover:bg-[#FEF7E0] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Practical Labs & Simulators"
+            >
+              Labs
+            </NavLink>
+
             <NavLink
               to={`/${currentSubject.id}/revision`}
               onClick={onClose}
               className={({ isActive }) =>
                 `text-[10px] py-1 text-center rounded font-semibold transition-colors ${
                   isActive
-                    ? 'bg-[#C70234] text-white shadow-2xs'
-                    : 'bg-white text-[#5F6368] hover:bg-[#FCE8EF] hover:text-[#C70234] border border-[#DADCE0]'
+                    ? 'bg-[#C70234] text-white shadow-2xs font-bold'
+                    : 'bg-white text-gray-700 hover:bg-[#FEF7E0] hover:text-[#C70234] border border-[#DADCE0]'
                 }`
               }
-              title="Quick Revision & Flashcards"
+              title="Quick Revision"
             >
               Revision
+            </NavLink>
+
+            <NavLink
+              to={`/${currentSubject.id}/exam-prep`}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `text-[10px] py-1 text-center rounded font-semibold transition-colors col-span-2 ${
+                  isActive
+                    ? 'bg-[#C70234] text-white shadow-2xs font-bold'
+                    : 'bg-white text-gray-700 hover:bg-[#FEF7E0] hover:text-[#C70234] border border-[#DADCE0]'
+                }`
+              }
+              title="Mock Examination & 10-Mark Notes"
+            >
+              Mock Exam (20 MCQs + 5 Long)
             </NavLink>
           </div>
         </div>
 
-        {/* Units Navigation List */}
-        <div className="px-3 pt-2 pb-1 flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-[#92400E]">
-          <span>Syllabus Units</span>
-          <span className="text-[10px] font-mono text-[#5F6368] font-normal">
-            {units.length} Units
-          </span>
+        {/* Academic Syllabus Units Header */}
+        <div className="px-2.5 pt-1.5 pb-0.5 flex items-center justify-between text-[10px] font-mono font-bold uppercase text-[#92400E]">
+          <span>Academic Units ({units.length})</span>
+          <span className="text-gray-500 font-normal">Click to browse topics</span>
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-2 space-y-1.5 text-xs font-sans">
+        {/* Units List */}
+        <nav className="flex-1 overflow-y-auto p-1.5 space-y-1 text-xs">
           {units.map(unit => {
             const isUnitActive = currentUnitId === unit.id;
             const isExpanded = !!expandedUnits[unit.id];
@@ -211,25 +282,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             return (
               <div
                 key={unit.id}
-                className={`rounded-lg border transition-all overflow-hidden ${
+                className={`rounded border transition-all overflow-hidden ${
                   isUnitActive
                     ? 'border-[#C70234] bg-white shadow-2xs'
-                    : 'border-[#FBBC05]/40 bg-[#FAF9F5] hover:border-[#FBBC05]'
+                    : 'border-[#DADCE0] bg-[#FAF9F5] hover:border-[#FBBC05]'
                 }`}
               >
                 {/* Unit Header Row */}
                 <div
-                  className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${
+                  className={`flex items-center justify-between p-1.5 cursor-pointer transition-colors ${
                     isUnitActive ? 'bg-[#FEF7E0]/60' : 'hover:bg-[#FEF7E0]/30'
                   }`}
                 >
                   <NavLink
                     to={`/${currentSubject.id}/units/${unit.id}`}
                     onClick={onClose}
-                    className="flex-1 flex items-center gap-2 pr-1"
+                    className="flex-1 flex items-center gap-1.5 pr-1 truncate"
                   >
                     <span
-                      className={`w-5 h-5 rounded text-[10px] flex items-center justify-center font-bold font-mono shrink-0 ${
+                      className={`w-4 h-4 rounded text-[9px] flex items-center justify-center font-bold font-mono shrink-0 ${
                         isUnitActive
                           ? 'bg-[#C70234] text-white'
                           : 'bg-white border border-[#FBBC05] text-[#92400E]'
@@ -237,20 +308,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     >
                       U{unit.unitNumber}
                     </span>
-                    <div className="flex-1">
-                      <span
-                        className={`font-sans text-xs leading-snug line-clamp-1 block ${
-                          isUnitActive ? 'font-bold text-[#C70234]' : 'font-medium text-[#202124]'
-                        }`}
-                      >
-                        {unit.title}
-                      </span>
-                    </div>
+                    <span
+                      className={`text-xs leading-tight truncate ${
+                        isUnitActive ? 'font-bold text-[#C70234]' : 'font-medium text-black'
+                      }`}
+                    >
+                      {unit.title}
+                    </span>
                   </NavLink>
 
                   <button
                     onClick={e => toggleUnit(unit.id, e)}
-                    className="p-1 rounded hover:bg-black/5 text-[#5F6368] shrink-0 cursor-pointer"
+                    className="p-0.5 rounded text-gray-500 hover:text-[#C70234] shrink-0 cursor-pointer"
                     aria-label="Toggle unit topics"
                   >
                     {isExpanded ? (
@@ -261,20 +330,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   </button>
                 </div>
 
-                {/* Bulleted Topics List when expanded */}
+                {/* Topics & Concepts when expanded */}
                 {isExpanded && (
-                  <div className="p-2 bg-white border-t border-[#FBBC05]/30 space-y-1 pl-3">
-                    {unit.topics.map((topic, tIdx) => (
+                  <div className="p-1.5 bg-white border-t border-[#DADCE0] space-y-1 pl-2.5">
+                    {unit.topics.map(topic => (
                       <div key={topic.id} className="space-y-0.5">
-                        <div className="flex items-start gap-1.5 text-[11px] text-[#5F6368]">
-                          <span className="text-[#C70234] font-bold leading-none mt-1">•</span>
-                          <span className="font-semibold text-[#202124] line-clamp-1">
+                        <div className="flex items-start gap-1 text-[10px] text-gray-700">
+                          <span className="text-[#C70234] font-bold leading-none mt-0.5">•</span>
+                          <span className="font-semibold text-black truncate">
                             {topic.title}
                           </span>
                         </div>
 
                         {/* Concept Bullets */}
-                        <div className="pl-3 space-y-0.5">
+                        <div className="pl-2 space-y-0.5">
                           {topic.conceptIds.map(cId => {
                             const isDone = completedIds.includes(cId);
                             const isConceptActive = currentConceptId === cId;
@@ -284,17 +353,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                                 key={cId}
                                 to={`/${currentSubject.id}/concepts/${cId}`}
                                 onClick={onClose}
-                                className={`flex items-center justify-between px-1.5 py-0.5 rounded text-[10.5px] transition-colors ${
+                                className={`flex items-center justify-between px-1.5 py-0.5 rounded text-[10px] transition-colors ${
                                   isConceptActive
                                     ? 'bg-[#FCE8EF] text-[#C70234] font-bold'
-                                    : 'text-[#5F6368] hover:text-[#C70234] hover:bg-[#FAF9F5]'
+                                    : 'text-gray-600 hover:text-[#C70234] hover:bg-[#FAF9F5]'
                                 }`}
                               >
-                                <span className="line-clamp-1">
-                                  {cId.replace(/^c\d+-/, '').replace(/-/g, ' ')}
+                                <span className="truncate">
+                                  {cId.replace(/^(c\d+-|cf\d+-)/, '').replace(/-/g, ' ')}
                                 </span>
                                 {isDone && (
-                                  <CheckCircle2 className="w-3 h-3 text-[#188038] shrink-0 ml-1" />
+                                  <CheckCircle2 className="w-2.5 h-2.5 text-[#188038] shrink-0 ml-1" />
                                 )}
                               </NavLink>
                             );
@@ -309,13 +378,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           })}
         </nav>
 
-        {/* Footer info */}
-        <div className="p-2.5 border-t border-[#FBBC05]/40 bg-[#FAF9F5] text-[10px] text-[#5F6368] flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-[#92400E] font-medium">
+        {/* Compact Footer */}
+        <div className="p-2 border-t border-[#DADCE0] bg-[#FAF9F5] text-[10px] font-mono text-gray-600 flex items-center justify-between">
+          <div className="flex items-center gap-1 text-[#92400E] font-bold">
             <span className="w-1.5 h-1.5 rounded-full bg-[#188038]" />
-            <span>SubjectLab Active</span>
+            <span>SubjectLab v1.2</span>
           </div>
-          <span className="font-mono text-[#C70234] font-semibold">GitHub Pages Ready</span>
+          <span className="text-[#C70234] font-semibold">GitHub Pages</span>
         </div>
       </aside>
     </>

@@ -17,7 +17,7 @@
         {
           "id": "sem-3",
           "number": 3,
-          "subjectIds": ["ai-cyber-security"]
+          "subjectIds": ["ai-cyber-security", "cyber-forensics"]
         },
         {
           "id": "sem-4",
@@ -35,7 +35,7 @@
       "university": "Academic Curriculum Series",
       "program": "MSc Artificial Intelligence & Machine Learning",
       "semester": 3,
-      "description": "Comprehensive, subject-wise academic study engine covering machine learning, deep learning, behavioral biometrics, threat detection, and fraud prevention for digital systems.",
+      "description": "Comprehensive academic study engine covering machine learning, deep learning, behavioral biometrics, threat detection, and fraud prevention for digital systems.",
       "learningObjectives": [
         "Explain fundamental cybersecurity principles, the CIA triad, and the evolution of AI from expert systems to deep learning.",
         "Master the AI cybersecurity arsenal: classification, regression, dimensionality reduction, clustering, video anomaly analysis, NLP, and large-scale image processing.",
@@ -78,6 +78,63 @@
           "title": "Data Privacy Principles and Practice",
           "type": "Reference",
           "authorOrSource": "Natraj Venkataramanan & Ashwin Shriram, CRC Press (2017)"
+        }
+      ]
+    },
+    "cyber-forensics": {
+      "id": "cyber-forensics",
+      "name": "Cyber Forensics",
+      "code": "MAI-OL507B-3",
+      "university": "Academic Curriculum Series",
+      "program": "MSc Artificial Intelligence & Machine Learning",
+      "semester": 3,
+      "credits": 3,
+      "totalHours": 60,
+      "unitsCount": 5,
+      "teachingHoursPerUnit": 12,
+      "maximumMarks": 100,
+      "description": "Comprehensive digital forensics curriculum connecting evidence preservation, file systems, memory and network analysis, specialized devices, and defensible reporting through an interactive bank cyberattack investigation.",
+      "learningObjectives": [
+        "Understand digital forensic principles, legal compliance, Section 65B certification, Chain of Custody, and write-blocked dead/live acquisition.",
+        "Analyze storage structures (FAT, NTFS, ext4), deleted file recovery, slack space, data carving using magic bytes, and Windows OS execution artifacts.",
+        "Execute volatile memory triage, Volatility 3 rootkit analysis, RFC 3227 order of volatility, event log correlation, and Super Timeline generation.",
+        "Examine specialized endpoints, Android vs iOS security sandboxing, mobile extraction tiers (logical/FS/physical), SQLite database parsing, and IoT smart CCTV forensics.",
+        "Master large-scale case management (EDRM), court-admissible forensic report writing, expert witness testimony ethics, and NIST CFTT tool validation."
+      ],
+      "courseOutcomes": [
+        "CO1: Acquire and preserve digital evidence following RFC 3227 and statutory legal compliance standards.",
+        "CO2: Recover deleted data and analyze operating system execution artifacts (Registry, Prefetch, LNK, Shellbags).",
+        "CO3: Conduct live volatile memory triage using Volatility 3 and correlate multi-source logs into a normalized UTC Super Timeline.",
+        "CO4: Extract and evaluate smartphone SQLite databases, geolocation telemetry, and embedded IoT hardware evidence.",
+        "CO5: Produce court-defensible forensic reports and defend analytical findings under expert witness cross-examination standards."
+      ],
+      "unitIds": ["unit-1", "unit-2", "unit-3", "unit-4", "unit-5"],
+      "primaryCaseStudyId": "bank-cyberattack-investigation",
+      "resources": [
+        {
+          "title": "Digital Evidence and Computer Crime: Forensic Science, Computers and the Internet",
+          "type": "Textbook",
+          "authorOrSource": "Eoghan Casey (Academic Press, 3rd Edition)"
+        },
+        {
+          "title": "File System Forensic Analysis",
+          "type": "Textbook",
+          "authorOrSource": "Brian Carrier (Addison-Wesley Professional)"
+        },
+        {
+          "title": "The Art of Memory Forensics: Detecting Malware and Threats in Windows, Linux, and Mac Memory",
+          "type": "Reference",
+          "authorOrSource": "Michael Hale Ligh, Andrew Case, Jamie Levy, AAron Walters (Wiley)"
+        },
+        {
+          "title": "NIST SP 800-86: Guide to Integrating Forensic Techniques into Incident Response",
+          "type": "Reference",
+          "authorOrSource": "National Institute of Standards and Technology (NIST)"
+        },
+        {
+          "title": "Practical Mobile Forensics: Forensically investigate and analyze iOS, Android, and Windows 10 devices",
+          "type": "Reference",
+          "authorOrSource": "Rohit Tamma, Oleg Skulkin, Heather Mahalik, Satish Bommisetty (Packt)"
         }
       ]
     }

@@ -1,0 +1,292 @@
+[
+  {
+    "id": "cf-q-10m-1",
+    "question": "Explain the Eight-Stage Digital Forensic Lifecycle in detail. Discuss the legal requirements for evidence admissibility, search warrants, and the technical necessity of Chain of Custody and cryptographic hash verification with reference to the ABC Digital Bank investigation.",
+    "unitId": "unit-1",
+    "marks": 10,
+    "relatedConceptIds": ["cf1-forensic-fundamentals-lifecycle", "cf2-legal-compliance-admissibility", "cf3-chain-of-custody-hashing"],
+    "importantKeywords": ["Identification", "Preservation", "Collection", "Chain of Custody", "Section 65B", "SHA-256", "Write-Blocker"],
+    "answerOutline": [
+      "Definition: Digital forensics science & 8-stage lifecycle",
+      "Purpose: Guarantee legal admissibility & scientific integrity",
+      "Workflow: Diagram / sequence from Identification to Review",
+      "Explanation: Deep dive into all 8 phases & Section 65B certification",
+      "Use Case: Application to ABC Bank employee laptop & payment switch",
+      "Limitations: Hashes prove integrity not authorship; legal jurisdiction limits",
+      "Conclusion: Defensible methodology withstands judicial scrutiny"
+    ],
+    "modelAnswer": "### 1. Definition\nDigital Forensics is the application of computer science principles, investigative techniques, and legal procedures to identify, preserve, recover, analyze, and present digital evidence in a manner that maintains legal admissibility and scientific integrity in a court of law.\n\n### 2. Purpose\nThe core purpose of the Eight-Stage Lifecycle is to ensure that digital evidence is collected without modification, accounted for at every millisecond of its custody, analyzed objectively using validated tools, and presented defensibly to establish facts surrounding a cyber incident.\n\n### 3. Workflow\n```text\n[1. Identification] -> [2. Preservation] -> [3. Collection] -> [4. Examination]\n        |                                                              |\n        v                                                              v\n[8. Review]        <- [7. Presentation] <- [6. Documentation] <- [5. Analysis]\n```\n\n### 4. Technical Explanation\n- **Identification**: Detecting relevant digital artifacts across systems, networks, volatile memory, and cloud storage.\n- **Preservation**: Freezing the operational crime scene using physical isolation, Faraday enclosures, and hardware write-blockers to prevent state alteration.\n- **Collection**: Creating verified bitstream disk images (.E01 / .raw) using tools like `dd`, `dc3dd`, or Tableau forensic duplicators.\n- **Examination**: Extracting unstructured data, file systems, and hidden records while operating strictly on forensic working copies.\n- **Analysis**: Correlating evidence items to answer who, what, when, where, and how an event took place.\n- **Documentation**: Maintaining contemporaneous bench notes, photographs, and detailed Chain of Custody ledgers.\n- **Presentation**: Translating complex technical findings into neutral, factual testimony accompanied by Section 65B certificates (Indian Evidence Act) or Federal Rule of Evidence 902(11).\n- **Review**: Conducting peer reviews to evaluate tool reliability and identify methodology refinements.\n\n### 5. ABC Digital Bank Use Case\nIn the ₹5 Crore bank investigation, investigators identified the employee laptop (Dell Latitude) and payment switch server. Investigators connected a hardware write-blocker to the laptop hard drive, generated an original SHA-256 hash (`8a4f91b...`), mirrored the disk into an Expert Witness Format (.E01) container, and verified the clone matched the master hash identically. The physical Chain of Custody log documented the exact temperature, transport seal number, and custody handoff.\n\n### 6. Limitations\n- **Integrity vs Authenticity**: A matching cryptographic hash mathematically proves the bitstream has not been modified; it does **not** prove who was sitting at the keyboard or authored the file.\n- **Cloud Volatility**: Cloud-hosted instances often lack physical write-blocking mechanisms, requiring reliance on vendor API snapshots.\n\n### 7. Conclusion\nAdherence to the standardized eight-stage lifecycle transforms volatile electronic signals into robust, court-admissible evidence capable of surviving intense judicial cross-examination."
+  },
+  {
+    "id": "cf-q-10m-2",
+    "question": "Examine the architecture of modern file systems (NTFS, ext4). Detail the mechanics of deleted file recovery, slack space analysis, data carving using magic bytes, and explain how Windows artifacts (Registry, LNK, Jump Lists, Prefetch) reveal malware execution in a corporate network.",
+    "unitId": "unit-2",
+    "marks": 10,
+    "relatedConceptIds": ["cf5-filesystem-structures-metadata", "cf6-deleted-recovery-carving", "cf7-windows-forensic-artifacts", "cf8-sleuthkit-autopsy-analysis"],
+    "importantKeywords": ["$MFT", "Slack Space", "Magic Bytes", "Data Carving", "Prefetch", "LNK Files", "UserAssist"],
+    "answerOutline": [
+      "Definition: File systems, unallocated clusters, and OS forensic artifacts",
+      "Purpose: Recover scrubbed evidence and prove application execution history",
+      "Workflow: Storage Blocks -> Magic Bytes -> Header/Footer Carving -> Artifact Extraction",
+      "Explanation: NTFS $MFT records, slack space calculations, Registry hives, Prefetch parsing",
+      "Use Case: Recovering deleted customer KYC files & proving malware execution in ABC Bank",
+      "Limitations: Overwritten clusters, SSD TRIM wiping, anti-forensics timestamp stomping",
+      "Conclusion: File system forensics provides the structural timeline of local user actions"
+    ],
+    "modelAnswer": "### 1. Definition\nFile System Forensics is the structural examination of storage volumes to decode file allocations, metadata journals, deleted directory entries, and operating system execution artifacts left behind by system processes and user interactions.\n\n### 2. Purpose\nWhen attackers delete evidence or deploy wipers, file system metadata structures often retain records of the file's historical existence, cluster allocations, and execution footprints, enabling forensic reconstruction of deleted records and unauthorized tool execution.\n\n### 3. Workflow\n```text\nRaw Storage Media -> Analyze File System Metadata ($MFT / Inodes)\n                            |\n      +---------------------+---------------------+ \n      |                                           |\n[Active Files]                         [Unallocated & Slack Space]\n      |                                           |\nv     v                                           v\nExtract Windows Artifacts              Signature-Based Data Carving\n(Registry, LNK, Prefetch)              (Header/Footer Magic Byte Matching)\n      |                                           |\n      +---------------------+---------------------+ \n                            |\n                            v\n          Correlated Artifact Timeline & Findings\n```\n\n### 4. Technical Explanation\n- **NTFS $MFT**: Every file is assigned a 1024-byte record containing attributes: `$STANDARD_INFORMATION` (0x10 - flags, timestamps), `$FILE_NAME` (0x30 - namespace, size, parent directory), and `$DATA` (0x80 - resident data or runlists pointing to external clusters).\n- **Deleted File Recovery**: When a file is deleted in NTFS, the system marks the record in the $MFT as 'inactive' and updates the `$Bitmap` allocation map. Until those clusters are overwritten, the original content remains intact.\n- **Slack Space**: The gap between the logical end-of-file and the end of the allocated sector/cluster. It preserves remnant data from previously deleted files.\n- **Data Carving**: Extracting files from unallocated clusters based purely on magic byte signatures (e.g., JPEG: `FF D8 FF` to `FF D9`; PDF: `%PDF-` to `%%EOF`).\n- **Windows Artifacts**:\n  - *Prefetch (.pf)*: Confirms an executable ran, recording launch timestamps and loaded DLLs.\n  - *LNK & Jump Lists*: Proves file opening and documents target paths, volume serial numbers, and access dates.\n  - *Registry (UserAssist, Shellbags)*: Tracks executed GUI applications, window positions, and traversed directories.\n\n### 5. ABC Digital Bank Use Case\nIn the bank breach, the attacker deleted the file `Customer_Accounts.xlsx` and ran `invoice_update.exe`. Forensic analysis of the employee's laptop revealed an active Prefetch file `INVOICE_UPDATE.EXE-A3B4F5C2.pf` showing 3 executions. Using TSK `fls` and `icat`, investigators located the deleted Excel document's resident MFT record and carved deleted KYC ZIP archives from unallocated sectors.\n\n### 6. Limitations\n- **SSD TRIM**: On solid-state drives using TRIM, deleted clusters are actively zeroed by garbage collection routines, rendering traditional carving ineffective.\n- **Timestamp Timestomping**: Attackers can forge `$STANDARD_INFORMATION` timestamps using tools like Meterpreter. Investigators must cross-reference `$FILE_NAME` timestamps which are harder to alter.\n\n### 7. Conclusion\nBy synthesizing low-level file system metadata with high-level OS execution artifacts, forensic analysts establish conclusive proof of program execution and document access."
+  },
+  {
+    "id": "cf-q-10m-3",
+    "question": "Discuss the principles of Volatile Memory Forensics. Explain the acquisition and triage of physical RAM, the use of Volatility 3 plugins for rootkit and process analysis, and demonstrate how Super Timelines correlate memory, network, and event log telemetry during an advanced cyber incident.",
+    "unitId": "unit-3",
+    "marks": 10,
+    "relatedConceptIds": ["cf9-volatile-memory-triage", "cf10-volatility-process-rootkits", "cf11-super-timelines-log-analysis", "cf12-network-browser-cloud-forensics"],
+    "importantKeywords": ["Volatility 3", "Process Hollowing", "DKOM", "Super Timeline", "plaso", "PCAP", "NetFlow"],
+    "answerOutline": [
+      "Definition: Volatile memory analysis and timeline synchronization",
+      "Purpose: Capture ephemeral malware execution, active connections, and encryption keys",
+      "Workflow: RAM Acquisition -> Volatility Triage -> Event Extraction -> Super Timeline",
+      "Explanation: RFC 3227 Order of Volatility, Volatility plugins (pslist, psscan, malfind, netscan)",
+      "Use Case: Uncovering hidden rogue process and outbound C2 connection on ABC Bank server",
+      "Limitations: Hibernation file artifacts, encrypted C2 payloads, memory stomping by malware",
+      "Conclusion: Live memory analysis provides real-time forensic ground truth unavailable on disk"
+    ],
+    "modelAnswer": "### 1. Definition\nMemory Forensics is the capture and structural inspection of volatile physical Random Access Memory (RAM) to discover running processes, injected code, loaded kernel modules, network sockets, unencrypted credentials, and decrypted runtime data.\n\n### 2. Purpose\nModern advanced threats and fileless malware operate exclusively in memory, never writing persistence artifacts to physical disk. Memory forensics provides the only technical means to identify stealthy code injection, unlinked processes, and active command-and-control (C2) communications.\n\n### 3. Workflow\n```text\nTarget Machine (Running) -> Capture RAM (winpmem / LiME) -> memory.raw\n                                                                |\n             +--------------------------------------------------+ \n             |                                                  |\nv            v                                                  v\nVolatility Process Analysis                            Volatility Network Triage\n(windows.pslist, windows.pstree)                       (windows.netscan)\n             |                                                  |\n             +------------------------+-------------------------+ \n                                      |\n                                      v\n                         Code Injection Detection\n                            (windows.malfind)\n                                      |\n                                      v\n                 Synthesize with Disk & Network Logs into\n                       Unified Super Timeline\n```\n\n### 4. Technical Explanation\n- **Order of Volatility (RFC 3227)**: RAM must be gathered before disk or backup systems because rebooting or powering down permanently obliterates volatile state.\n- **Volatility 3 Plugins**:\n  - `windows.pslist`: Traverses the linked list of active `EPROCESS` structures.\n  - `windows.psscan`: Scans pool tags to find unlinked processes hidden via Direct Kernel Object Manipulation (DKOM).\n  - `windows.pstree`: Displays parent-child process hierarchies (identifying anomalous anomalies like `powershell.exe` spawned by `excel.exe`).\n  - `windows.netscan`: Identifies active and closed TCP/UDP endpoints with owning PIDs.\n  - `windows.malfind`: Scans Virtual Address Descriptors (VAD) for memory pages flagged with `PAGE_EXECUTE_READWRITE` containing injected PE headers or shellcode.\n- **Super Timeline Construction**: Using tools like Plaso (`log2timeline`), investigators parse Windows Event Logs (`Security.evtx`), filesystem MACB timestamps, browser histories, and NetFlow feeds into a normalized UTC master timeline.\n\n### 5. ABC Digital Bank Use Case\nOn the ABC Digital Bank payment switch, physical disk inspection revealed no suspicious files. Memory triage using Volatility 3 revealed an unlisted process (PID 1220 `unknown.exe`). Running `windows.malfind` confirmed injected shellcode with an MZ header inside memory offset `0x7ffe0000`. Running `windows.netscan` exposed PID 1220 maintaining an active TLS connection to external IP `198.51.100.44:443`, proving the active command-and-control channel utilized to trigger the unauthorized ₹5 crore transactions.\n\n### 6. Limitations\n- **Process Name Ambiguity**: A process named `unknown.exe` or `svchost.exe` cannot automatically be labeled malware without analyzing its behavior, digital signature, and injected memory regions.\n- **Volatile Acquisition Footprint**: Running an acquisition tool on a live system inevitably overwrites a small portion of physical RAM.\n\n### 7. Conclusion\nCorrelating live memory artifacts with network session telemetry and disk logs establishes a complete timeline, transforming isolated suspicious signals into conclusive incident proof."
+  },
+  {
+    "id": "cf-q-10m-4",
+    "question": "Evaluate the architectural differences between Android and iOS from a digital forensics perspective. Detail the extraction methodologies (Logical, File System, Physical), explain smartphone artifact analysis (SQLite, SMS, Geolocation), and formulate an IoT forensic strategy for smart CCTV evidence.",
+    "unitId": "unit-4",
+    "marks": 10,
+    "relatedConceptIds": ["cf13-mobile-os-architecture-security", "cf14-mobile-acquisition-methods", "cf15-smartphone-app-artifacts", "cf16-iot-embedded-cctv-forensics"],
+    "importantKeywords": ["Android Sandbox", "iOS Secure Enclave", "Physical Extraction", "SQLite WAL", "EXIF GPS", "IoT CCTV"],
+    "answerOutline": [
+      "Definition: Mobile and IoT embedded device forensics",
+      "Purpose: Extract communication records, physical location history, and sensor telemetry",
+      "Workflow: Device Isolation -> Acquisition Selection -> Decoding SQLite -> IoT Extraction",
+      "Explanation: Android vs iOS security comparison, 3 acquisition levels, SQLite database structures",
+      "Use Case: Analyzing privileged employee's phone & smart CCTV at ABC Digital Bank",
+      "Limitations: Hardware encryption, Secure Enclave, privacy boundaries, cloud-only IoT records",
+      "Conclusion: Mobile and IoT forensics bridge digital cyber attacks with physical human presence"
+    ],
+    "modelAnswer": "### 1. Definition\nSpecialized Device Forensics encompasses the acquisition, decoding, and analysis of non-traditional endpoints, primarily smartphones running Android or iOS, and embedded Internet of Things (IoT) hardware such as IP cameras, industrial sensors, and smart infrastructure.\n\n### 2. Purpose\nModern threat vectors frequently involve mobile banking apps, SMS multi-factor authentication intercepts, and physical access captured by IoT security sensors. Mobile forensics provides precise geolocation records, communication traces, and application records.\n\n### 3. Workflow\n```text\nMobile Device (Isolated in Faraday Bag) -> Determine OS & Encryption Status\n                                             |\n    +----------------------------------------+---------------------------------------+ \n    |                                        |                                       |\nv   v                                        v                                       v\nLogical Acquisition                     File System Acquisition                 Physical Acquisition\n(Standard Backup / ADB)                 (Agent / Jailbreak / Privilege)         (JTAG / Chip-off / Boot Exploit)\n    |                                        |                                       |\n    +----------------------------------------+---------------------------------------+ \n                                             |\n                                             v\n                              Decode SQLite Databases & Geotags\n                                             |\n                        Correlate with Embedded IoT CCTV Telemetry\n```\n\n### 4. Technical Explanation\n- **Android vs iOS Security Architecture**:\n  - *Android*: Linux-based kernel with application sandboxing enforced via SELinux and unique Linux UIDs. File-based encryption (FBE) is standard. Acquisition can often be performed via Android Debug Bridge (ADB) or vendor-specific engineering modes.\n  - *iOS*: Tightly integrated hardware-enforced security relying on the Secure Enclave processor, Data Protection API with class-based encryption keys (Class A to D), and hardware AES accelerators. Physical extraction without zero-day bootloader exploits (e.g. checkm8) is mathematically infeasible on modern A-series and M-series chips.\n- **Extraction Paradigms**:\n  - *Logical*: Copies structured user data (media, contacts, SMS) exported via standard OS backup APIs.\n  - *File System*: Dumps the full directory structure, including application `/data/data` directories, app private storage, and system logs.\n  - *Physical*: Bit-for-bit mirror of raw NAND flash memory, capturing deleted records from unallocated flash space.\n- **Artifact Analysis**: Mobile applications store records almost universally in **SQLite** databases. Forensic analysis requires parsing active database files (`.db`/`.sqlite`) as well as Write-Ahead Logging (`.wal`) and rollback journal files which often contain deleted historical chat messages and login attempts.\n- **IoT & Smart CCTV**: IoT devices feature embedded flash memory (SPI, NOR/NAND) running lightweight Linux (BusyBox). Investigators extract firmware using JTAG or serial UART interfaces, or acquire video streams directly from RTSP streams and cloud backends.\n\n### 5. ABC Digital Bank Use Case\nInvestigators secured the employee's Samsung Galaxy S23. A targeted file system acquisition extracted the mobile banking app's SQLite database (`bank_auth.db`). Analysis of the Write-Ahead Log revealed an incoming SMS verification code received at 14:14:22 UTC followed immediately by a Signal encrypted message sharing the OTP. Concurrently, firmware extracted from the server room's Smart CCTV camera showed the employee swiped into the vault at 14:10:00 UTC, confirming physical proximity.\n\n### 6. Limitations\n- **Biometric Attribution**: A biometric fingerprint unlock recorded by the phone confirms the sensor accepted the enrolled print; it does **not** prove whether the owner was conscious, coerced under duress, or unlocked by a third party.\n- **Privacy and Proportionality**: Mobile devices contain vast personal correspondence. Investigators must restrict examination strictly to parameters authorized by judicial search warrants.\n\n### 7. Conclusion\nMobile and IoT evidence establishes vital temporal linkages between virtual network attacks and real-world physical actions."
+  },
+  {
+    "id": "cf-q-10m-5",
+    "question": "Detail the Electronic Discovery Reference Model (EDRM) and digital evidence management. Formulate the structure of a court-admissible Digital Forensic Report, analyze the ethical responsibilities of an Expert Witness under cross-examination, and explain how the NIST CFTT program validates tool reliability.",
+    "unitId": "unit-5",
+    "marks": 10,
+    "relatedConceptIds": ["cf17-ediscovery-case-management", "cf18-forensic-report-drafting", "cf19-expert-witness-court-ethics", "cf20-authentication-biometrics-cftt"],
+    "importantKeywords": ["EDRM", "Forensic Report", "Expert Witness", "Daubert Standard", "NIST CFTT", "Objectivity", "FAR/FRR"],
+    "answerOutline": [
+      "Definition: E-Discovery, defensible reporting, and judicial witness standards",
+      "Purpose: Present transparent, validated, and objective evidence to judicial bodies",
+      "Workflow: EDRM 9-Stage Pipeline & Forensic Report Standard Sections",
+      "Explanation: Daubert standard factors, NIST CFTT test framework, expert witness ethics",
+      "Use Case: Presenting the ABC Digital Bank investigation findings in court",
+      "Limitations: Avoiding advocacy trap, addressing tool bugs, establishing uncertainty boundaries",
+      "Conclusion: Scientific rigor and ethical objectivity form the bedrock of forensic credibility"
+    ],
+    "modelAnswer": "### 1. Definition\nForensic Case Management and Reporting is the disciplined methodology of organizing large-scale electronic evidence, producing standardized scientific documentation, and delivering neutral, court-admissible expert testimony under statutory standards of evidence.\n\n### 2. Purpose\nThe ultimate purpose of an investigation is not merely technical discovery, but the objective presentation of findings in judicial or regulatory forums so that non-technical triers of fact (judges, juries, regulators) can make informed legal determinations.\n\n### 3. Workflow\n```text\nEDRM Pipeline:\nIdentification -> Preservation -> Collection -> Processing -> Review -> Analysis -> Production -> Presentation\n\nForensic Report Architecture:\n[1. Case Information]       -> [2. Objectives & Scope]      -> [3. Evidence Inventory & Hashes]\n[4. Tools & Methodologies]  -> [5. Chronological Findings]  -> [6. Technical Limitations]\n[7. Neutral Interpretations] -> [8. Expert Conclusion]       -> [9. Section 65B Certification]\n```\n\n### 4. Technical Explanation\n- **EDRM Framework**: Standardizes the legal lifecycle of electronic data from early identification and legal holds through processing, attorney review, and court production.\n- **Forensic Report Components**:\n  - *Evidence Inventory*: Master register containing unique item IDs, serial numbers, collection timestamps, and dual MD5/SHA-256 hashes.\n  - *Tool Documentation*: Exact software versions, hardware serial numbers, and calibration records.\n  - *Distinction of Findings*: Reports must strictly delineate between **Confirmed Observations** (e.g., 'A Prefetch file for update.exe exists'), **Supported Inferences** (e.g., 'The program executed at 08:42:15 UTC'), and **Unverified Hypotheses** (e.g., 'The employee willingly downloaded malware').\n- **Expert Witness Standards & Ethics**:\n  - *Neutrality*: The expert witness owes allegiance solely to the court and scientific truth, not the retaining party.\n  - *Daubert Admissibility Criteria*: (1) Testability of technique; (2) Peer review and publication; (3) Known or potential error rate; (4) Standards controlling operation; (5) General acceptance within the scientific community.\n- **NIST CFTT (Computer Forensic Tool Testing)**: National Institute of Standards and Technology program that establishes rigorous test assertions for disk imaging, write-blocking, and data recovery tools to benchmark error rates and operational reliability.\n\n### 5. ABC Digital Bank Use Case\nIn the final report for ABC Digital Bank, the lead investigator structured an Evidence Register detailing Items E-01 through E-08. When defense counsel asked during simulated cross-examination whether an observed USB insertion proved data theft, the investigator answered scientifically: *'The USBSTOR registry artifact proves the SanDisk drive was connected at 14:02 UTC. It does not independently prove files were copied, as volume shadow copies and link files show no evidence of outbound file transfer to that removable drive.'* This demonstrated impeccable objectivity.\n\n### 6. Limitations\n- **The Advocacy Trap**: Experts who cross the line into acting as advocates for their clients lose credibility and risk having their testimony disqualified under judicial scrutiny.\n- **Tool Blindness**: Relying on a single forensic tool without cross-validating using secondary independent tools (e.g. validating Autopsy findings with raw Sleuth Kit commands) creates unacceptable vulnerability to tool software bugs.\n\n### 7. Conclusion\nA scientifically defensible forensic report combined with objective, cross-validated testimony ensures that justice is served based on undeniable digital facts."
+  },
+  {
+    "id": "cf-mcq-1",
+    "question": "Which RFC establishes the official 'Order of Volatility' for preserving electronic evidence during a live digital investigation?",
+    "unitId": "unit-1",
+    "marks": 1,
+    "relatedConceptIds": ["cf1-forensic-fundamentals-lifecycle"],
+    "importantKeywords": ["RFC 3227", "Volatility", "Live Triage"],
+    "answerOutline": ["RFC 3227 establishes guidelines for evidence collection and archiving."],
+    "modelAnswer": "RFC 3227: Guidelines for Evidence Collection and Archiving defines the hierarchical order of volatility from CPU registers to backup archives."
+  },
+  {
+    "id": "cf-mcq-2",
+    "question": "Under Section 65B of the Indian Evidence Act, what document is mandatory to render computer-generated output admissible in court?",
+    "unitId": "unit-1",
+    "marks": 1,
+    "relatedConceptIds": ["cf2-legal-compliance-admissibility"],
+    "importantKeywords": ["Section 65B", "Admissibility", "Affidavit"],
+    "answerOutline": ["Written Certificate signed by the person in lawful control of the device."],
+    "modelAnswer": "A Section 65B Certificate signed by a person occupying a responsible official position in relation to the operation of the device."
+  },
+  {
+    "id": "cf-mcq-3",
+    "question": "What is the primary function of a hardware write-blocker during forensic disk imaging?",
+    "unitId": "unit-1",
+    "marks": 1,
+    "relatedConceptIds": ["cf3-chain-of-custody-hashing"],
+    "importantKeywords": ["Write-Blocker", "Integrity", "SCSI/SATA"],
+    "answerOutline": ["Intercept and drop write commands from the host OS to the evidence drive."],
+    "modelAnswer": "It physically intercepts and drops any write commands sent from the host operating system, ensuring the suspect drive cannot be altered."
+  },
+  {
+    "id": "cf-mcq-4",
+    "question": "If the SHA-256 hash of an acquired forensic image matches the hash of the source physical drive, what does this conclusively prove?",
+    "unitId": "unit-1",
+    "marks": 1,
+    "relatedConceptIds": ["cf3-chain-of-custody-hashing"],
+    "importantKeywords": ["SHA-256", "Integrity", "Bitstream"],
+    "answerOutline": ["Mathematical bitstream integrity of the copy."],
+    "modelAnswer": "It conclusively proves bitstream content integrity (the data has not been modified). It does not prove authorship or authenticity."
+  },
+  {
+    "id": "cf-mcq-5",
+    "question": "In the NTFS file system, what is the fixed size of each Master File Table ($MFT) record?",
+    "unitId": "unit-2",
+    "marks": 1,
+    "relatedConceptIds": ["cf5-filesystem-structures-metadata"],
+    "importantKeywords": ["$MFT", "Record Size", "NTFS"],
+    "answerOutline": ["1024 bytes (1 KB)."],
+    "modelAnswer": "Each $MFT record is exactly 1024 bytes (1 KB) in size, holding standard attributes and runlists."
+  },
+  {
+    "id": "cf-mcq-6",
+    "question": "What is the term for the unused byte space between the logical end of a file and the physical cluster boundary?",
+    "unitId": "unit-2",
+    "marks": 1,
+    "relatedConceptIds": ["cf6-deleted-recovery-carving"],
+    "importantKeywords": ["Slack Space", "Cluster", "RAM Slack"],
+    "answerOutline": ["File Slack Space."],
+    "modelAnswer": "File Slack Space (comprising RAM slack and drive slack)."
+  },
+  {
+    "id": "cf-mcq-7",
+    "question": "Which Windows artifact records execution count, first execution time, and the last 8 execution timestamps of an application?",
+    "unitId": "unit-2",
+    "marks": 1,
+    "relatedConceptIds": ["cf7-windows-forensic-artifacts"],
+    "importantKeywords": ["Prefetch", "Execution Artifact", "Windows"],
+    "answerOutline": ["Windows Prefetch (.pf) files."],
+    "modelAnswer": "Windows Prefetch files located in C:\\Windows\\Prefetch (e.g. APPNAME-HASH.pf)."
+  },
+  {
+    "id": "cf-mcq-8",
+    "question": "Which Sleuth Kit (TSK) command is used to display inode or metadata structure information for a specific file?",
+    "unitId": "unit-2",
+    "marks": 1,
+    "relatedConceptIds": ["cf8-sleuthkit-autopsy-analysis"],
+    "importantKeywords": ["istat", "TSK", "Sleuth Kit"],
+    "answerOutline": ["istat displays metadata/inode information."],
+    "modelAnswer": "istat displays the details of a specific metadata structure (inode / MFT record)."
+  },
+  {
+    "id": "cf-mcq-9",
+    "question": "Which Volatility 3 plugin identifies active network sockets and listening ports along with their associated PIDs from a memory dump?",
+    "unitId": "unit-3",
+    "marks": 1,
+    "relatedConceptIds": ["cf10-volatility-process-rootkits"],
+    "importantKeywords": ["windows.netscan", "Volatility 3", "Sockets"],
+    "answerOutline": ["windows.netscan scans memory for network socket structures."],
+    "modelAnswer": "windows.netscan identifies active and terminated network endpoints and listening ports."
+  },
+  {
+    "id": "cf-mcq-10",
+    "question": "How does Volatility's windows.psscan discover hidden processes that windows.pslist fails to show?",
+    "unitId": "unit-3",
+    "marks": 1,
+    "relatedConceptIds": ["cf10-volatility-process-rootkits"],
+    "importantKeywords": ["psscan", "Pool Tag", "DKOM"],
+    "answerOutline": ["By scanning memory for EPROCESS pool tags rather than traversing the linked list."],
+    "modelAnswer": "By scanning memory pages for pool tag allocations matching EPROCESS structures rather than relying on ActiveProcessLinks."
+  },
+  {
+    "id": "cf-mcq-11",
+    "question": "What is the primary technical limitation of NetFlow records compared to full packet capture (PCAP)?",
+    "unitId": "unit-3",
+    "marks": 1,
+    "relatedConceptIds": ["cf12-network-browser-cloud-forensics"],
+    "importantKeywords": ["NetFlow", "PCAP", "Payload"],
+    "answerOutline": ["NetFlow contains only session metadata and lacks application payload."],
+    "modelAnswer": "NetFlow records aggregate metadata (IPs, ports, protocols, byte counts) but contain zero application payload content."
+  },
+  {
+    "id": "cf-mcq-12",
+    "question": "What standard timestamp format is recommended for normalising events across distributed logs in a Super Timeline?",
+    "unitId": "unit-3",
+    "marks": 1,
+    "relatedConceptIds": ["cf11-super-timelines-log-analysis"],
+    "importantKeywords": ["UTC", "ISO 8601", "Timeline"],
+    "answerOutline": ["Coordinated Universal Time (UTC) formatted in ISO 8601."],
+    "modelAnswer": "Coordinated Universal Time (UTC) in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ) to eliminate timezone ambiguities."
+  },
+  {
+    "id": "cf-mcq-13",
+    "question": "In Android forensics, what is the default database engine used by native and third-party mobile applications?",
+    "unitId": "unit-4",
+    "marks": 1,
+    "relatedConceptIds": ["cf15-smartphone-app-artifacts"],
+    "importantKeywords": ["SQLite", "Android", "Database"],
+    "answerOutline": ["SQLite database engine."],
+    "modelAnswer": "SQLite (storing data in .db, .sqlite, and .wal journal files)."
+  },
+  {
+    "id": "cf-mcq-14",
+    "question": "Which dedicated hardware component in Apple iOS devices securely handles cryptographic operations and biometric templates?",
+    "unitId": "unit-4",
+    "marks": 1,
+    "relatedConceptIds": ["cf13-mobile-os-architecture-security"],
+    "importantKeywords": ["Secure Enclave", "iOS", "Hardware Cryptography"],
+    "answerOutline": ["Secure Enclave Processor (SEP)."],
+    "modelAnswer": "The Secure Enclave Processor (SEP), an isolated coprocessor with hardware-encrypted memory."
+  },
+  {
+    "id": "cf-mcq-15",
+    "question": "Which mobile acquisition technique provides a raw bit-by-bit image of flash storage including unallocated sectors?",
+    "unitId": "unit-4",
+    "marks": 1,
+    "relatedConceptIds": ["cf14-mobile-acquisition-methods"],
+    "importantKeywords": ["Physical Acquisition", "Flash", "NAND"],
+    "answerOutline": ["Physical Acquisition."],
+    "modelAnswer": "Physical Acquisition (dumps the entire NAND flash bitstream)."
+  },
+  {
+    "id": "cf-mcq-16",
+    "question": "When examining an IoT Smart CCTV camera, which hardware debug interface is most commonly leveraged to dump flash firmware?",
+    "unitId": "unit-4",
+    "marks": 1,
+    "relatedConceptIds": ["cf16-iot-embedded-cctv-forensics"],
+    "importantKeywords": ["UART", "JTAG", "IoT Firmware"],
+    "answerOutline": ["UART or JTAG serial debug interfaces."],
+    "modelAnswer": "UART (Universal Asynchronous Receiver-Transmitter) or JTAG (Joint Test Action Group)."
+  },
+  {
+    "id": "cf-mcq-17",
+    "question": "In the Electronic Discovery Reference Model (EDRM), which stage immediately follows 'Processing' and precedes 'Analysis'?",
+    "unitId": "unit-5",
+    "marks": 1,
+    "relatedConceptIds": ["cf17-ediscovery-case-management"],
+    "importantKeywords": ["EDRM", "Review", "Discovery"],
+    "answerOutline": ["Review."],
+    "modelAnswer": "The Review stage, where legal and forensic analysts evaluate data for privilege and relevance."
+  },
+  {
+    "id": "cf-mcq-18",
+    "question": "What is the primary ethical responsibility of a digital forensic expert witness during court testimony?",
+    "unitId": "unit-5",
+    "marks": 1,
+    "relatedConceptIds": ["cf19-expert-witness-court-ethics"],
+    "importantKeywords": ["Expert Witness", "Objectivity", "Ethics"],
+    "answerOutline": ["To remain an impartial assistant to the court adhering to objective scientific truth."],
+    "modelAnswer": "To remain completely nonpartisan, providing objective, truthful scientific evaluation regardless of who retained them."
+  },
+  {
+    "id": "cf-mcq-19",
+    "question": "What does False Acceptance Rate (FAR) represent in biometric authentication testing?",
+    "unitId": "unit-5",
+    "marks": 1,
+    "relatedConceptIds": ["cf20-authentication-biometrics-cftt"],
+    "importantKeywords": ["FAR", "Type II Error", "Biometrics"],
+    "answerOutline": ["Probability that an unauthorized imposter is incorrectly accepted as genuine."],
+    "modelAnswer": "The probability that an unauthorized impostor is incorrectly accepted as a genuine authorized user (Type II error)."
+  },
+  {
+    "id": "cf-mcq-20",
+    "question": "What is the primary purpose of the NIST Computer Forensic Tool Testing (CFTT) program?",
+    "unitId": "unit-5",
+    "marks": 1,
+    "relatedConceptIds": ["cf20-authentication-biometrics-cftt"],
+    "importantKeywords": ["NIST CFTT", "Tool Validation", "Error Rate"],
+    "answerOutline": ["To establish methodologies and test assertions validating the reliability and accuracy of forensic software and hardware."],
+    "modelAnswer": "To test and validate the reliability, repeatability, and error rates of forensic tools against standardized test assertions."
+  }
+]

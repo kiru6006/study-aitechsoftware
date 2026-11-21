@@ -1,9 +1,16 @@
 import catalogData from '../content/catalog.json';
-import unitsData from '../content/msc-ai-ml/semester-3/ai-cyber-security/units.json';
-import conceptsData from '../content/msc-ai-ml/semester-3/ai-cyber-security/concepts.json';
-import useCasesData from '../content/msc-ai-ml/semester-3/ai-cyber-security/use-cases.json';
-import questionsData from '../content/msc-ai-ml/semester-3/ai-cyber-security/questions.json';
-import revisionData from '../content/msc-ai-ml/semester-3/ai-cyber-security/revision.json';
+import unitsDataACS from '../content/msc-ai-ml/semester-3/ai-cyber-security/units.json';
+import conceptsDataACS from '../content/msc-ai-ml/semester-3/ai-cyber-security/concepts.json';
+import useCasesDataACS from '../content/msc-ai-ml/semester-3/ai-cyber-security/use-cases.json';
+import questionsDataACS from '../content/msc-ai-ml/semester-3/ai-cyber-security/questions.json';
+import revisionDataACS from '../content/msc-ai-ml/semester-3/ai-cyber-security/revision.json';
+
+import unitsDataCF from '../content/msc-ai-ml/semester-3/cyber-forensics/units.json';
+import conceptsDataCF from '../content/msc-ai-ml/semester-3/cyber-forensics/concepts.json';
+import useCasesDataCF from '../content/msc-ai-ml/semester-3/cyber-forensics/use-cases.json';
+import questionsDataCF from '../content/msc-ai-ml/semester-3/cyber-forensics/questions.json';
+import revisionDataCF from '../content/msc-ai-ml/semester-3/cyber-forensics/revision.json';
+import investigationDataCF from '../content/msc-ai-ml/semester-3/cyber-forensics/investigation.json';
 
 import {
   CatalogData,
@@ -12,7 +19,8 @@ import {
   Concept,
   IndustryUseCase,
   ExamQuestion,
-  RevisionPack
+  RevisionPack,
+  LearningCase
 } from '../types/content';
 
 // Static registry mapping subject IDs to their respective content sets
@@ -22,13 +30,22 @@ const subjectsContent: Record<string, {
   useCases: IndustryUseCase[];
   questions: ExamQuestion[];
   revision: RevisionPack;
+  investigation?: LearningCase;
 }> = {
   'ai-cyber-security': {
-    units: unitsData as Unit[],
-    concepts: conceptsData as Concept[],
-    useCases: useCasesData as IndustryUseCase[],
-    questions: questionsData as ExamQuestion[],
-    revision: revisionData as RevisionPack
+    units: unitsDataACS as Unit[],
+    concepts: conceptsDataACS as Concept[],
+    useCases: useCasesDataACS as IndustryUseCase[],
+    questions: questionsDataACS as ExamQuestion[],
+    revision: revisionDataACS as RevisionPack
+  },
+  'cyber-forensics': {
+    units: unitsDataCF as Unit[],
+    concepts: conceptsDataCF as Concept[],
+    useCases: useCasesDataCF as IndustryUseCase[],
+    questions: questionsDataCF as ExamQuestion[],
+    revision: revisionDataCF as RevisionPack,
+    investigation: investigationDataCF as unknown as LearningCase
   }
 };
 
@@ -64,6 +81,10 @@ export function getSubjectExamQuestions(subjectId: string): ExamQuestion[] {
 
 export function getSubjectRevision(subjectId: string): RevisionPack | undefined {
   return subjectsContent[subjectId]?.revision;
+}
+
+export function getSubjectInvestigation(subjectId: string): LearningCase | undefined {
+  return subjectsContent[subjectId]?.investigation;
 }
 
 // LocalStorage helpers for persistence
@@ -145,4 +166,48 @@ export function toggleChecklistItem(itemId: string): Record<string, boolean> {
   } catch {
     return {};
   }
+}
+
+export interface InvestigationProgress {
+  completedActivities: Record<string, boolean>;
+  score: number;
+  totalAttempts: number;
+  lastUpdated: string;
+}
+
+export function getInvestigationProgress(subjectId: string): InvestigationProgress {
+  try {
+    const raw = localStorage.getItem(`${STORAGE_PREFIX}inv_progress_${subjectId}`);
+    return raw ? JSON.parse(raw) : { completedActivities: {}, score: 0, totalAttempts: 0, lastUpdated: new Date().toISOString() };
+  } catch {
+    return { completedActivities: {}, score: 0, totalAttempts: 0, lastUpdated: new Date().toISOString() };
+  }
+}
+
+export function recordInvestigationActivity(
+  subjectId: string,
+  activityId: string,
+  isCorrect: boolean
+): InvestigationProgress {
+  try {
+    const prev = getInvestigationProgress(subjectId);
+    const completed = { ...prev.completedActivities, [activityId]: isCorrect };
+    const score = Object.values(completed).filter(Boolean).length * 10;
+    const next: InvestigationProgress = {
+      completedActivities: completed,
+      score,
+      totalAttempts: prev.totalAttempts + 1,
+      lastUpdated: new Date().toISOString()
+    };
+    localStorage.setItem(`${STORAGE_PREFIX}inv_progress_${subjectId}`, JSON.stringify(next));
+    return next;
+  } catch {
+    return { completedActivities: {}, score: 0, totalAttempts: 0, lastUpdated: new Date().toISOString() };
+  }
+}
+
+export function resetInvestigationProgress(subjectId: string): void {
+  try {
+    localStorage.removeItem(`${STORAGE_PREFIX}inv_progress_${subjectId}`);
+  } catch {}
 }

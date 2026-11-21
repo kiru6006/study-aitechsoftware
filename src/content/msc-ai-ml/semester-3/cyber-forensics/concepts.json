@@ -1,0 +1,1250 @@
+[
+  {
+    "id": "cf1-forensic-fundamentals-lifecycle",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-1",
+    "title": "Digital Forensic Fundamentals & Eight-Stage Lifecycle",
+    "understanding": {
+      "definition": "Digital Forensics is the specialized discipline of forensic science that identifies, acquires, preserves, examines, analyzes, and documents electronic evidence in a manner that ensures strict integrity, reproducibility, and admissibility in judicial proceedings. The discipline operates across an eight-stage lifecycle: Identification, Preservation, Collection, Examination, Analysis, Documentation, Presentation, and Review.",
+      "rationale": "Digital evidence is inherently fragile, volatile, and easily tampered with. Without a standardized, scientifically defensible lifecycle, electronic artifacts risk contamination, judicial exclusion, and failure under evidentiary standards like Daubert or Section 65B.",
+      "terminology": [
+        { "term": "Locard's Exchange Principle", "explanation": "Every contact leaves a trace; whenever an intruder interacts with a digital system, they leave artifacts and take away digital traces." },
+        { "term": "Order of Volatility", "explanation": "The sequence in which electronic data degrades or is lost (defined in RFC 3227: Registers/Cache -> RAM -> Network State -> Disk -> Backups)." },
+        { "term": "Bitstream Image", "explanation": "A sector-by-sector, bit-for-bit physical clone of storage media that captures allocated, unallocated, and slack space." }
+      ],
+      "markdownContent": "### The Eight-Stage Digital Forensic Lifecycle\n```text\n[1. Identification] -> [2. Preservation] -> [3. Collection] -> [4. Examination]\n        ^                                                              |\n        |                                                              v\n[8. Review]        <- [7. Presentation] <- [6. Documentation] <- [5. Analysis]\n```\n\n| Stage | Core Objective | ABC Digital Bank Practical Application |\n| :--- | :--- | :--- |\n| **1. Identification** | Detect relevant endpoints & logs | Flagged employee laptop, payment switch server, and firewall taps |\n| **2. Preservation** | Secure scene & prevent tampering | Write-blocking laptop NVMe drive, Faraday bag for employee mobile |\n| **3. Collection** | Bitstream imaging & RAM capture | `winpmem` memory dump and `.E01` disk mirror with SHA-256 hashes |\n| **4. Examination** | Parse file systems & carved data | Carved deleted invoices and parsed NTFS Master File Table ($MFT) |\n| **5. Analysis** | Formulate root cause & correlation | Identified PID 1220 rogue process beaconing to C2 external IP |\n| **6. Documentation** | Log contemporaneous bench records | Recorded serial numbers, acquisition times, and tool versions |\n| **7. Presentation** | Deliver court-admissible testimony | Drafted formal report and Section 65B electronic certificate |\n| **8. Review** | Post-incident lessons & validation | Evaluated tool performance against NIST CFTT test assertions |"
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "Eight-Stage Forensic Lifecycle",
+      "diagramSource": "graph TD\n  S1[1. Identification: Detect Artifacts] --> S2[2. Preservation: Write-Block & Isolate]\n  S2 --> S3[3. Collection: Bitstream Image & RAM]\n  S3 --> S4[4. Examination: TSK / Carving / Registry]\n  S4 --> S5[5. Analysis: Timeline Correlation & Root Cause]\n  S5 --> S6[6. Documentation: Chain of Custody & Notes]\n  S6 --> S7[7. Presentation: Court Testimony & Sec 65B]\n  S7 --> S8[8. Review: Post-Mortem & Tool Validation]",
+      "explanation": "A continuous, auditable pipeline ensuring every piece of electronic evidence remains untampered from crime scene discovery to courtroom presentation."
+    },
+    "application": {
+      "industry": "Banking & Financial Services",
+      "scenario": "A tier-1 commercial bank notices anomalous payment gateway transactions. First responders apply the eight-stage lifecycle to secure the server before attackers trigger a disk-wiping script.",
+      "inputExample": "Evidence Items: [Laptop E-01 (Dell), Server E-02 (HP DL380), Network Tap E-06 (PCAP)]",
+      "processSteps": [
+        "Isolate network switch port to stop ongoing exfiltration without powering off machine.",
+        "Execute volatile memory capture script to grab physical RAM.",
+        "Attach hardware write-blocker to SATA controller and dump physical disk to .E01 image.",
+        "Calculate and record baseline SHA-256 hash immediately upon completion."
+      ],
+      "outputExample": "Acquisition Log: Item E-02 | SHA-256: 3c9b11e42a... | Verification: MATCH CONFIRMED",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Cryptographic Hash & Raw Bitstream Acquisition",
+        "code": "# Forensic bitstream clone with dual hashing\ndc3dd if=/dev/nvme0n1 of=/evidence/laptop_disk.raw hash=sha256 hash=md5 log=/evidence/acquisition.log"
+      },
+      "numericalExample": {
+        "problem": "An evidence drive has 512,000,000 sectors of 512 bytes each. Calculate total raw capacity in GB and time to clone at 120 MB/s write-blocked speed.",
+        "formula": "Capacity = (Sectors * Sector_Size) / (1024^3); Time = (Capacity_MB) / Speed_MBs",
+        "solution": "Total bytes = 262,144,000,000 bytes = 244.14 GiB (262.14 GB). Time = 262,144 MB / 120 MB/s = 2,184 seconds = ~36.4 minutes."
+      }
+    },
+    "memory": {
+      "mnemonic": "I-P-C-E-A-D-P-R",
+      "keywords": ["Identification", "Preservation", "Collection", "Examination", "Analysis", "Documentation", "Presentation", "Review"],
+      "comparison": [
+        { "otherConcept": "Incident Response (IR)", "difference": "IR focuses on containment and business recovery; Digital Forensics prioritizes legal evidence preservation and court admissibility." }
+      ],
+      "commonMistakes": [
+        "Powering off a live system immediately, destroying all volatile RAM and running process data.",
+        "Analyzing original suspect drives directly without write-blockers rather than on forensic copies."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "The Eight-Stage Digital Forensic Lifecycle is a standardized procedural framework (Identification, Preservation, Collection, Examination, Analysis, Documentation, Presentation, Review) governing evidence handling to ensure scientific integrity and legal admissibility.",
+      "fiveMarkAnswer": "The Digital Forensic Lifecycle standardizes forensic science into eight interconnected phases: 1) Identification identifies relevant physical and cloud sources; 2) Preservation isolates the scene using write-blockers and Faraday bags; 3) Collection performs bitstream imaging (.E01); 4) Examination extracts file systems and carved data; 5) Analysis correlates timestamps and establishes causality; 6) Documentation records contemporaneous bench notes; 7) Presentation delivers expert testimony with Section 65B certificates; 8) Review audits tool error rates and process improvements.",
+      "tenMarkAnswer": "Refer to Model Answer for CF-Q-10M-1 covering definition, lifecycle phases, Section 65B legal admissibility, hash integrity verification, and bank case study application."
+    },
+    "quiz": [
+      {
+        "id": "cf1-q1",
+        "question": "Which stage in the digital forensic lifecycle involves establishing a Faraday enclosure to prevent remote wiping?",
+        "options": ["Identification", "Preservation", "Examination", "Presentation"],
+        "correctIndex": 1,
+        "explanation": "Preservation involves freezing the evidence state, including placing mobile devices in Faraday enclosures to prevent remote wipe commands."
+      }
+    ]
+  },
+  {
+    "id": "cf2-legal-compliance-admissibility",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-1",
+    "title": "Legal Compliance, Evidence Admissibility & Cyber Law",
+    "understanding": {
+      "definition": "Digital Evidence Admissibility governs whether electronic records may be received and weighed by a court of law. Legal standards require establishing relevance, authenticity, integrity, compliance with constitutional search warrant boundaries, and statutory certification (such as Section 65B of the Indian Evidence Act / Section 63 of Bharatiya Sakshya Adhiniyam, and the US Federal Rules of Evidence 901/902).",
+      "rationale": "The most sophisticated technical discovery is judicially worthless if the evidence is ruled inadmissible due to lack of certification, unlawful search, or broken procedural protocols.",
+      "terminology": [
+        { "term": "Section 65B Certificate", "explanation": "Mandatory written certification by the lawful custodian of an electronic device certifying proper functioning during record creation." },
+        { "term": "Fruit of the Poisonous Tree", "explanation": "Legal doctrine holding that evidence gathered via an illegal search or seizure is tainted and inadmissible." },
+        { "term": "Daubert Standard", "explanation": "Rule of evidence regarding the admissibility of expert witness testimony based on scientific testing, peer review, error rates, and general acceptance." }
+      ],
+      "markdownContent": "### Core Pillars of Evidence Admissibility\n1. **Authenticity**: Proof that the evidence is what its proponent claims it to be.\n2. **Integrity**: Proof that the evidence has remained unmodified since acquisition.\n3. **Chain of Custody**: A continuous, documented history of custody, transfer, and disposition.\n4. **Statutory Admissibility**: Adherence to electronic evidence certification laws.\n\n```text\nEvidence Acquired -> Verified Hash -> Contemporaneous Log -> Signed Certificate -> Admissible in Court\n```"
+    },
+    "visualization": {
+      "diagramType": "architecture",
+      "diagramTitle": "Legal Admissibility Verification Framework",
+      "diagramSource": "graph LR\n  Source[Digital Artifact] --> Hash[Cryptographic Hash Verification]\n  Source --> Custody[Unbroken Chain of Custody]\n  Source --> Warrant[Authorized Search Warrant Scope]\n  Hash & Custody & Warrant --> Cert[Section 65B / 902(11) Certificate]\n  Cert --> Court[Court Admissible Evidence]",
+      "explanation": "Three structural pillars—cryptographic integrity, chain of custody, and legal search authorization—are unified through statutory certification to establish court admissibility."
+    },
+    "application": {
+      "industry": "Legal & Corporate Compliance",
+      "scenario": "During the ABC Digital Bank trial, defense counsel challenges the admission of firewall NetFlow records, claiming electronic records can be faked. The prosecution submits a signed Section 65B affidavit with SHA-256 hash verifications.",
+      "inputExample": "Firewall NetFlow Export (14.2 GB) | Certificate: Signed by Chief Information Security Officer (CISO)",
+      "processSteps": [
+        "Confirm device was operating normally during incident window.",
+        "Generate electronic record directly without manual intermediate transformation.",
+        "Verify cryptographic hash matches original forensic acquisition log.",
+        "Sign Section 65B affidavit detailing device serial number and custody control."
+      ],
+      "outputExample": "Status: Formally Admitted as Exhibit P-14 under Section 65B.",
+      "codeSnippet": {
+        "language": "text",
+        "caption": "Section 65B Certificate Excerpt",
+        "code": "I, CISO of ABC Bank, certify that the Cisco ASA Firewall (S/N: JMX1928) was operating in its ordinary course of business during Nov 18, 2026, and output logs were generated under controlled system authority."
+      }
+    },
+    "memory": {
+      "mnemonic": "R-A-I-C-S",
+      "keywords": ["Relevance", "Authenticity", "Integrity", "Chain of Custody", "Statutory Certification"],
+      "commonMistakes": [
+        "Submitting raw printouts of digital logs without an accompanying statutory Section 65B certificate.",
+        "Assuming that a search warrant for a physical building automatically authorizes cloud mailbox downloads."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Legal evidence admissibility requires proof of authenticity, integrity, legal warrant scope, and compliance with statutory electronic record certifications like Section 65B.",
+      "fiveMarkAnswer": "Section 65B of the Indian Evidence Act makes electronic records admissible without presenting the original computer in court, provided: 1) The output was produced during regular system usage; 2) The computer was operating properly; 3) The information reproduces electronic feeding accurately; 4) A certificate is signed by a responsible official identifying the record and describing the device."
+    },
+    "quiz": [
+      {
+        "id": "cf2-q1",
+        "question": "Which landmark legal standard evaluates expert witness testimony based on testability, peer review, and known error rates?",
+        "options": ["Frye Standard", "Daubert Standard", "Locard Principle", "Kerckhoffs's Principle"],
+        "correctIndex": 1,
+        "explanation": "The Daubert standard assesses whether scientific methodology has been tested, peer reviewed, has a known error rate, and enjoys general acceptance."
+      }
+    ]
+  },
+  {
+    "id": "cf3-chain-of-custody-hashing",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-1",
+    "title": "Chain of Custody, Documentation & Hash Verification",
+    "understanding": {
+      "definition": "Chain of Custody is a chronological, legally binding documentation trail that records the seizure, custody, transfer, analysis, and disposition of digital and physical evidence. Cryptographic Hashing applies one-way mathematical algorithms (e.g. SHA-256, MD5) to generate unique fixed-length bitstream fingerprints that prove evidence integrity.",
+      "rationale": "Any unaccounted time gap in evidence custody or any discrepancy between acquisition and trial hashes creates reasonable doubt that evidence was tampered with or planted, leading to dismissal.",
+      "terminology": [
+        { "term": "Chain of Custody Form", "explanation": "A document recording Item Number, Description, Source, Serial Number, Date/Time, Released By, Received By, and Purpose of Transfer." },
+        { "term": "Cryptographic Hash Function", "explanation": "A deterministic mathematical algorithm producing a fixed-size bit string with pre-image resistance and collision resistance (e.g., SHA-256)." },
+        { "term": "Dual Hashing", "explanation": "Calculating two distinct algorithms (e.g., MD5 + SHA-256) simultaneously to defeat collision vulnerabilities." }
+      ],
+      "markdownContent": "### The Integrity vs Authenticity Distinction\n- **Cryptographic Hash Match** proves **Integrity**: *'These exact bits have not altered by even a single byte.'*\n- **Cryptographic Hash Match** does **NOT** prove **Authenticity**: *'It does not prove who authored the document or who triggered the download.'*\n\n```text\nEvidence Drive -> [Hardware Write-Blocker] -> Hash Original: e3b0c442...\n                                                    |\n                                            Clone to Working Copy\n                                                    |\n                                            Hash Copy:     e3b0c442... [MATCH: INTEGRITY PRESERVED]\n```"
+    },
+    "visualization": {
+      "diagramType": "sequence",
+      "diagramTitle": "Chain of Custody & Hash Lifecycle",
+      "diagramSource": "sequenceDiagram\n  autonumber\n  participant S as Suspect Laptop\n  participant R as Lead Responder\n  participant L as Forensic Lab\n  participant C as Court of Law\n  R->>S: Attach Write-Blocker & Calculate SHA-256\n  R->>R: Seal Evidence Bag & Sign Custody Form\n  R->>L: Secure Transport with Dual Signatures\n  L->>L: Verify SHA-256 Matches Original Log\n  L->>L: Work Exclusively on Forensic Image\n  L->>C: Submit Report with Verified Custody Log",
+      "explanation": "Illustrates how unbroken chain of custody records and dual hash checks preserve digital evidence from seizure to judicial submission."
+    },
+    "application": {
+      "industry": "Digital Forensics & Law Enforcement",
+      "scenario": "Investigators seize an employee laptop (Item E-01). They record dual hashes upon seizure and re-verify before beginning analysis in Autopsy.",
+      "inputExample": "Item E-01: Dell Latitude 7420 | Pre-imaging Hash: SHA256: 8a4f91b6... | Post-imaging Hash: SHA256: 8a4f91b6...",
+      "processSteps": [
+        "Photograph physical state, model, serial number, and active port connections.",
+        "Remove storage media or attach write-blocker to boot interface.",
+        "Compute SHA-256 hash of original physical block device.",
+        "Acquire raw image into forensic container (.E01); calculate hash of resulting image.",
+        "Verify bit-for-bit equality and log onto physical Chain of Custody card."
+      ],
+      "outputExample": "Result: 100% Hash Verification Passed. Verification status logged in master evidence register.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Verifying Forensic Image Hash in Linux",
+        "code": "# Calculate SHA-256 of physical disk\nsha256sum /dev/sdb\n# Calculate SHA-256 of forensic image\nsha256sum /evidence/case_01/laptop_disk.raw"
+      }
+    },
+    "memory": {
+      "mnemonic": "I-C-H-O",
+      "keywords": ["Itemization", "Custody Trail", "Hash Verification", "Objectivity"],
+      "commonMistakes": [
+        "Failing to record the name of the lab technician receiving the drive on the physical custody sheet.",
+        "Relying on MD5 alone without SHA-256, ignoring theoretical collision vulnerabilities."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Chain of Custody is the documented chronological record of evidence handling, while cryptographic hashing mathematically verifies that evidence bits have not changed.",
+      "fiveMarkAnswer": "Chain of Custody documents who seized evidence, when, where, under what authority, and every subsequent handoff. Cryptographic hashing (e.g. SHA-256) creates an irreversible digital fingerprint. Before analysis, investigators hash the source disk and forensic clone. If hashes match, bitstream integrity is confirmed. The hash proves integrity, while the custody sheet proves handling validity."
+    },
+    "quiz": [
+      {
+        "id": "cf3-q1",
+        "question": "What does an exact SHA-256 hash match between a suspect drive and an acquired forensic image prove?",
+        "options": [
+          "The suspect is guilty of cyber espionage",
+          "The file was created by the logged-in user",
+          "The bitstream contents of the image are identical to the source drive",
+          "The drive contains no malware or hidden partitions"
+        ],
+        "correctIndex": 2,
+        "explanation": "A matching hash proves content integrity (identical bits) but does not prove who authored files or whether malware exists."
+      }
+    ]
+  },
+  {
+    "id": "cf4-forensic-imaging-standards",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-1",
+    "title": "Forensic Imaging: Live vs Dead, Physical vs Logical",
+    "understanding": {
+      "definition": "Forensic Imaging is the extraction of electronic media into standardized container formats. Dead Acquisition (Static) is performed while the device is powered off using hardware write-blockers. Live Acquisition is conducted on running systems to capture volatile memory, network connections, and unencrypted volumes. Physical Imaging copies every raw sector, whereas Logical Imaging extracts only the active directory file structure.",
+      "rationale": "Full-disk encryption (BitLocker, FileVault) means pulling the plug renders stored data inaccessible. Investigators must weigh the trade-offs of live triage versus dead write-blocked acquisition.",
+      "terminology": [
+        { "term": "Hardware Write-Blocker", "explanation": "A specialized bridge device that physically drops ATA/SCSI/NVMe write signals while passing read commands." },
+        { "term": "Expert Witness Format (.E01)", "explanation": "Industry standard image format supporting internal metadata, compression, segment splitting, and embedded MD5/SHA-256 checksums." },
+        { "term": "Raw / DD Image (.raw)", "explanation": "A pure sector-by-sector stream of bytes without container headers or metadata." }
+      ],
+      "markdownContent": "### Acquisition Matrix\n| Dimension | Physical Acquisition | Logical Acquisition |\n| :--- | :--- | :--- |\n| **Scope** | All sectors (allocated + unallocated + slack) | Active files and folder hierarchy only |\n| **Deleted Recovery** | Full carving and slack recovery possible | Cannot recover deleted or unallocated clusters |\n| **Speed & Size** | Larger image size, longer acquisition time | Rapid extraction, small target footprint |\n\n| Dimension | Dead (Static) Acquisition | Live Acquisition |\n| :--- | :--- | :--- |\n| **Power State** | System powered OFF | System running & active |\n| **Safety** | Zero risk of altering disk bits | Modifies tiny RAM footprint by executing collector |\n| **RAM & Crypto** | Destroys volatile RAM & plaintext keys | Captures RAM, active sockets, decrypted BitLocker |"
+    },
+    "visualization": {
+      "diagramType": "architecture",
+      "diagramTitle": "Physical vs Logical & Dead vs Live Decision Tree",
+      "diagramSource": "graph TD\n  State{Is Target Powered On?}\n  State -->|Yes - Live| Encrypted{Is Full Disk Encryption Active?}\n  Encrypted -->|Yes| LiveRAM[1. Capture Volatile RAM via winpmem]\n  LiveRAM --> DecryptVol[2. Extract Decryption Keys from Memory]\n  Encrypted -->|No| CheckProcess[Capture Network Triage & Memory First]\n  State -->|No - Dead| WriteBlock[Attach Hardware Write-Blocker]\n  WriteBlock --> PhysicalClone[Physical Bitstream Clone to .E01]\n  CheckProcess --> PhysicalClone",
+      "explanation": "Decision protocol balancing volatile data preservation against risk of evidence contamination."
+    },
+    "application": {
+      "industry": "Enterprise Incident Response",
+      "scenario": "In the ABC Bank attack, the payment switch server was actively communicating with an external C2 server. Pulling the plug would kill volatile memory and active socket connections. Investigators performed live triage first.",
+      "inputExample": "System: Windows Server 2022 | Memory: 64 GB RAM | Disk: 2 TB NVMe RAID",
+      "processSteps": [
+        "Insert pre-compiled forensic USB containing read-only winpmem executable.",
+        "Stream physical RAM to external external storage (`winpmem.exe -o mem.raw`).",
+        "Record active TCP/UDP sockets using netstat and volatile triage script.",
+        "Perform graceful physical storage capture using write-blocker once RAM is captured."
+      ],
+      "outputExample": "Output: `mem.raw` (64.2 GB) + `switch_disk.E01` (1.8 TB) with verified checksums.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Live RAM Capture with WinPmem",
+        "code": "# Execute live memory triage\nwinpmem_mini_x64.exe -o D:\\evidence\\switch_memory.raw --mode 1"
+      }
+    },
+    "memory": {
+      "mnemonic": "P-L-D-L",
+      "keywords": ["Physical", "Logical", "Dead", "Live", "Write-Blocker", "E01"],
+      "commonMistakes": [
+        "Pulling the power cord on an encrypted BitLocker machine without extracting the escrow key or volume keys from memory.",
+        "Creating a logical image when deleted file carving or slack space recovery is required."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Physical imaging copies all raw sectors including deleted clusters, while logical imaging copies active directory files. Dead imaging operates powered-off via write-blockers; live imaging captures volatile RAM on running systems.",
+      "fiveMarkAnswer": "Compare Dead vs Live Imaging: Dead imaging powers off the device and clones through a write-blocker, ensuring zero disk alteration, but loses RAM, running processes, and decrypted cryptographic volumes. Live imaging runs on active systems, capturing volatile memory (RFC 3227) and decrypted BitLocker volumes, but inherently modifies a minimal RAM footprint."
+    },
+    "quiz": [
+      {
+        "id": "cf4-q1",
+        "question": "Which forensic image format includes embedded metadata, SHA-256 hashes, compression, and segment splitting?",
+        "options": ["Raw / DD (.raw)", "Expert Witness Format (.E01)", "ISO Image (.iso)", "VHDX (.vhdx)"],
+        "correctIndex": 1,
+        "explanation": "The Expert Witness Format (.E01) stores metadata, case info, block-level checksums, and compression within the container."
+      }
+    ]
+  },
+  {
+    "id": "cf5-filesystem-structures-metadata",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-2",
+    "title": "File Systems Architecture, Metadata & Allocation",
+    "understanding": {
+      "definition": "File Systems (NTFS, FAT32/exFAT, ext4, APFS) manage how digital data is named, stored, organized, and accessed on physical media. Forensic analysis focuses on metadata records: directory pointers, allocation bitmaps, timestamps (MACB: Modified, Accessed, Changed, Born), permissions, and file system journals ($MFT, $LogFile, $UsnJrnl in NTFS; Inodes and JBD2 in Linux).",
+      "rationale": "Attackers can rename files or change superficial desktop icons, but file system metadata preserves indelible historical records of cluster allocation, true file sizes, and creation timestamps.",
+      "terminology": [
+        { "term": "NTFS Master File Table ($MFT)", "explanation": "A specialized database where every file and folder on an NTFS volume has at least one 1024-byte record." },
+        { "term": "Resident vs Non-Resident Data", "explanation": "Resident data is small enough (<700 bytes) to fit directly inside the MFT $DATA attribute; Non-resident data allocates external cluster runlists." },
+        { "term": "Inodes", "explanation": "Data structures in Unix/Linux ext4 file systems storing file ownership, permissions, size, and pointers to disk data blocks." }
+      ],
+      "markdownContent": "### NTFS Master File Table ($MFT) Record Layout\nEach $MFT record is exactly 1024 bytes, beginning with the magic signature `FILE` (`46 49 4C 45`):\n\n```text\n+--------------------------------------------------------------------------+\n| MFT Record Header (Magic: 'FILE', Offset to First Attribute)              |\n+--------------------------------------------------------------------------+\n| Attribute 0x10: $STANDARD_INFORMATION (Flags, MACB Timestamps)            |\n+--------------------------------------------------------------------------+\n| Attribute 0x30: $FILE_NAME (Namespace, Parent Directory, Real File Size)  |\n+--------------------------------------------------------------------------+\n| Attribute 0x80: $DATA (Resident Byte Payload OR Cluster Runlists)         |\n+--------------------------------------------------------------------------+\n| End-of-Record Marker (0xFFFFFFFF)                                        |\n+--------------------------------------------------------------------------+\n```\n\n- **$STANDARD_INFORMATION (0x10)**: User-visible timestamps; susceptible to anti-forensic timestomping.\n- **$FILE_NAME (0x30)**: Kernel-managed timestamps; updated only by the OS during rename or move operations, providing a cross-check against timestomping."
+    },
+    "visualization": {
+      "diagramType": "architecture",
+      "diagramTitle": "NTFS $MFT Record Decomposition",
+      "diagramSource": "graph TD\n  MFT[1024-Byte MFT Record] --> Hdr[Header: Magic 'FILE' 0x46494C45]\n  MFT --> A10[0x10: $STANDARD_INFORMATION: MACB Timestamps]\n  MFT --> A30[0x30: $FILE_NAME: Parent MFT Pointer & Name]\n  MFT --> A80[0x80: $DATA]\n  A80 -->|Size <= 700B| Resident[Resident: Raw Bytes Stored in MFT Record]\n  A80 -->|Size > 700B| NonResident[Non-Resident: Data Runs -> External Clusters]",
+      "explanation": "Illustrates how NTFS structures file metadata and stores payload data directly inside the MFT record when files are small."
+    },
+    "application": {
+      "industry": "Corporate Cyber Investigations",
+      "scenario": "An employee deleted `Customer_Accounts.xlsx`. Forensic examination of the $MFT parsed record #4812, revealing the original file size (42 KB) and non-resident cluster runs.",
+      "inputExample": "MFT Record #4812 | $FILE_NAME: Customer_Accounts.xlsx | Runlist: 0x32 0x14 0x0A 0x40 0x12",
+      "processSteps": [
+        "Extract raw $MFT from forensic disk image using TSK `icat`.",
+        "Parse record attributes using an MFT parser (e.g. `MFTECmd`).",
+        "Compare `$STANDARD_INFORMATION` and `$FILE_NAME` timestamps to detect timestomping.",
+        "Locate cluster runlist offsets to extract non-resident file payload."
+      ],
+      "outputExample": "File Recovered: Yes | Deleted Status: Marked Inactive in Record Header",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Extracting Inode Information with Sleuth Kit",
+        "code": "# Inspect file system statistics and specific MFT record\nfsstat -o 2048 /evidence/laptop_disk.raw\nistat -o 2048 /evidence/laptop_disk.raw 4812"
+      }
+    },
+    "memory": {
+      "mnemonic": "M-S-F-D",
+      "keywords": ["$MFT", "$STANDARD_INFORMATION", "$FILE_NAME", "$DATA"],
+      "commonMistakes": [
+        "Trusting $STANDARD_INFORMATION timestamps blindly without verifying against $FILE_NAME timestamps and $LogFile transactions."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "File system architecture defines how storage volumes organize files and metadata. In NTFS, the $MFT stores records with $STANDARD_INFORMATION, $FILE_NAME, and $DATA attributes.",
+      "fiveMarkAnswer": "Describe NTFS $MFT attributes: Each 1024-byte MFT record starts with magic bytes 'FILE'. 1) Attribute 0x10 ($STANDARD_INFORMATION) holds MACB timestamps, permissions, and security flags, often targeted by timestomping. 2) Attribute 0x30 ($FILE_NAME) holds the namespace, parent directory reference, and kernel-updated timestamps resistant to modification. 3) Attribute 0x80 ($DATA) holds file payload, stored resident inside the record if under ~700 bytes, or as cluster runlists if non-resident."
+    },
+    "quiz": [
+      {
+        "id": "cf5-q1",
+        "question": "In NTFS, what attribute contains resident file data if the file is smaller than approximately 700 bytes?",
+        "options": ["$STANDARD_INFORMATION (0x10)", "$FILE_NAME (0x30)", "$DATA (0x80)", "$BITMAP (0xB0)"],
+        "correctIndex": 2,
+        "explanation": "Attribute 0x80 ($DATA) holds the actual file content, storing it resident within the 1024-byte MFT record for small files."
+      }
+    ]
+  },
+  {
+    "id": "cf6-deleted-recovery-carving",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-2",
+    "title": "Deleted File Recovery, Slack Space & Data Carving",
+    "understanding": {
+      "definition": "Deleted File Recovery restores files whose directory references have been marked unallocated by the OS. Data Carving is a signature-based extraction technique that recovers files from unallocated clusters based purely on magic byte headers and footers without relying on file system metadata.",
+      "rationale": "When perpetrators or wipers scrub incriminating evidence, the operating system rarely zeroes the actual data blocks immediately; it merely updates allocation tables, allowing recovery until overwritten.",
+      "terminology": [
+        { "term": "Unallocated Space", "explanation": "Clusters on a storage volume not currently assigned to any active file, which may contain deleted historical data." },
+        { "term": "File Slack Space", "explanation": "The unused space between the logical end of file and the end of the assigned physical sector/cluster." },
+        { "term": "Magic Bytes (File Signatures)", "explanation": "Unique leading and trailing hex bytes identifying file formats (e.g. PDF: `%PDF-` `25 50 44 46` ... `%%EOF` `25 25 45 4F 46`)." }
+      ],
+      "markdownContent": "### The Data Carving Workflow\n```text\nRaw Unallocated Clusters -> Scan for Magic Header (e.g. %PDF-)\n                                  |\n                      Validate Structural Tags\n                                  |\n                      Scan for Magic Footer (e.g. %%EOF)\n                                  |\n                      Extract Contiguous / Run Block Payload\n                                  |\n                      Verify File Integrity & Checksum\n```\n\n### Common Forensic File Signatures\n| Format | Magic Header (Hex) | Magic Footer (Hex) |\n| :--- | :--- | :--- |\n| **JPEG** | `FF D8 FF E0` or `FF D8 FF E1` | `FF D9` |\n| **PDF** | `25 50 44 46` (`%PDF-`) | `25 25 45 4F 46` (`%%EOF`) |\n| **ZIP / DOCX** | `50 4B 03 04` (`PK..`) | `50 4B 05 06` |\n| **PNG** | `89 50 4E 47 0D 0A 1A 0A` | `49 45 4E 44 AE 42 60 82` |"
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "Data Carving and Slack Space Extraction",
+      "diagramSource": "graph TD\n  Cluster[Allocated Cluster: 4096 Bytes] --> LogData[Logical File Data: 2500 Bytes]\n  Cluster --> RAMSlack[RAM Slack: 52 Bytes to Sector Boundary]\n  Cluster --> DriveSlack[Drive Slack: 1544 Bytes to Cluster Boundary]\n  Unalloc[Unallocated Space] --> Carve[Carver: Scan Header -> Extract Blocks -> Locate Footer]",
+      "explanation": "Illustrates how remnant historical data hides in cluster slack space and how carving recovers files without metadata."
+    },
+    "application": {
+      "industry": "Fraud & Financial Forensics",
+      "scenario": "In the bank case, rogue actors executed a batch script deleting customer account spreadsheets. Data carving tools (scalpel/photorec) carved 18 deleted Excel documents directly from unallocated sectors.",
+      "inputExample": "Target: Unallocated image stream `unalloc.raw` (12 GB) | Signatures: `PK..` (ZIP/XLSX)",
+      "processSteps": [
+        "Extract unallocated clusters using Sleuth Kit `blkls`.",
+        "Configure signature configuration file targeting Microsoft OpenXML format (`50 4B 03 04`).",
+        "Execute carver to scan raw offsets and carve continuous byte streams.",
+        "Validate carved ZIP containers and inspect internal `xl/worksheets/sheet1.xml`."
+      ],
+      "outputExample": "Recovered: `carved_0042.xlsx` | Integrity: Valid Excel Workbook with customer loan numbers.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Extracting Unallocated Space and Carving with Foremost",
+        "code": "# Extract unallocated space\nblkls /evidence/laptop_disk.raw > /evidence/unallocated.raw\n# Carve files using Foremost\nforemost -t docx,pdf,jpg -i /evidence/unallocated.raw -o /evidence/carved_output"
+      }
+    },
+    "memory": {
+      "mnemonic": "U-S-H-F-C",
+      "keywords": ["Unallocated", "Slack Space", "Header", "Footer", "Carving"],
+      "commonMistakes": [
+        "Assuming that a fragmented file can always be carved linearly; fragmented files require bifragment gap carving or metadata reconstruction.",
+        "Ignoring SSD TRIM, which wipes unallocated clusters automatically in the background."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Data carving is the extraction of deleted files from unallocated clusters using file header and footer signatures (magic bytes) independent of file system metadata.",
+      "fiveMarkAnswer": "Explain File Slack Space and Data Carving: Slack space occurs when a file's logical size does not fill its allocated cluster. It consists of RAM slack (from file end to next 512-byte sector boundary) and Drive slack (remaining sectors in cluster). Data carving scans unallocated storage for magic byte signatures (e.g., JPEG: FF D8 FF to FF D9; PDF: %PDF- to %%EOF), extracting intervening bytes to reconstruct deleted files."
+    },
+    "quiz": [
+      {
+        "id": "cf6-q1",
+        "question": "What hex sequence represents the standard magic header for PDF documents?",
+        "options": ["FF D8 FF E0", "25 50 44 46 (%PDF-)", "50 4B 03 04 (PK..)", "89 50 4E 47"],
+        "correctIndex": 1,
+        "explanation": "25 50 44 46 translates to `%PDF-` in ASCII, marking the start of a PDF file."
+      }
+    ]
+  },
+  {
+    "id": "cf7-windows-forensic-artifacts",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-2",
+    "title": "Windows Artifacts: Registry, LNK, Jump Lists & Prefetch",
+    "understanding": {
+      "definition": "Windows Forensic Artifacts are operating system generated records that log user activity, program execution, peripheral device connections, and file access history. Key artifacts include the Windows Registry hives (SAM, SYSTEM, SOFTWARE, NTUSER.DAT), Shortcut (.LNK) files, Jump Lists, Prefetch (.pf) files, Shellbags, and SRUM (System Resource Usage Monitor).",
+      "rationale": "Even if malware deletes its source binary and scrubs the terminal console, Windows automatically records execution counts, timestamps, directory browsing, and USB connections across these artifacts.",
+      "terminology": [
+        { "term": "Prefetch (.pf)", "explanation": "Performance files in C:\\Windows\\Prefetch tracking executable launch, execution counts, run timestamps, and loaded DLLs." },
+        { "term": "LNK Files", "explanation": "Windows shortcut files created automatically when a user opens a file, recording target path, volume serial number, and timestamps." },
+        { "term": "UserAssist", "explanation": "Registry keys in NTUSER.DAT (encoded in ROT13) tracking GUI applications launched via Windows Explorer." },
+        { "term": "USBSTOR", "explanation": "SYSTEM registry key recording Vendor ID, Product ID, and unique serial numbers of connected USB devices." }
+      ],
+      "markdownContent": "### The Windows Execution Artifact Matrix\n| Artifact | File Location | Key Evidence Provided | Forensic Limitation |\n| :--- | :--- | :--- | :--- |\n| **Prefetch** | `C:\\Windows\\Prefetch\\*.pf` | Proves execution, run count, last 8 timestamps | Does not record what user did inside app |\n| **LNK Files** | `%APPDATA%\\Recent\\*.lnk` | Target path, volume serial, MACB timestamps | Proves file opened, not whether it was copied |\n| **Jump Lists** | `%APPDATA%\\Recent\\Custom/AutomaticDestinations` | Recent files opened per application | Subject to OS rolling buffer limits |\n| **Registry USBSTOR** | `SYSTEM\\CurrentControlSet\\Enum\\USBSTOR` | USB device make, model, serial, first/last insertion | Proves connection, NOT that data was stolen |"
+    },
+    "visualization": {
+      "diagramType": "architecture",
+      "diagramTitle": "Windows Forensic Artifact Correlation",
+      "diagramSource": "graph TD\n  Malware[Rogue Tool: update.exe] --> Prefetch[Prefetch .pf: Execution Count & Loaded DLLs]\n  User[User Activity] --> LNK[LNK / Jump Lists: Opened Invoices & Paths]\n  User --> Registry[UserAssist ROT13: Explorer Launch Count]\n  USB[USB Inserted] --> USBSTOR[SYSTEM\\Enum\\USBSTOR: Serial Number & Mount Time]\n  USBSTOR -.->|Does NOT Prove| Theft[Data Exfiltration - Requires Corroboration]",
+      "explanation": "Illustrates how disparate Windows artifacts combine to prove execution and device connections."
+    },
+    "application": {
+      "industry": "Corporate Forensics & Insider Threat",
+      "scenario": "In the bank breach, the employee claimed they never ran `invoice_update.exe`. Prefetch analysis revealed `INVOICE_UPDATE.EXE-B2C4E1A0.pf` with execution count = 3 and last execution timestamp matching the exact phishing email delivery time.",
+      "inputExample": "Artifact: `C:\\Windows\\Prefetch\\INVOICE_UPDATE.EXE-B2C4E1A0.pf`",
+      "processSteps": [
+        "Extract Prefetch file using PECmd tool.",
+        "Parse execution counter, volume serial number, and timestamps.",
+        "Cross-reference LNK files in Recent directory for associated document paths.",
+        "Inspect USBSTOR registry keys to verify if removable storage was mounted during that hour."
+      ],
+      "outputExample": "Confirmed Execution: 3 runs. First: 08:42:15 UTC. Last: 08:45:10 UTC.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Parsing Windows Prefetch with PECmd",
+        "code": "# Parse prefetch artifact using Eric Zimmerman's PECmd\nPECmd.exe -f \"C:\\evidence\\Prefetch\\INVOICE_UPDATE.EXE-B2C4E1A0.pf\" --csv /evidence/output"
+      }
+    },
+    "memory": {
+      "mnemonic": "P-L-J-R-S",
+      "keywords": ["Prefetch", "LNK Files", "Jump Lists", "Registry", "Shellbags"],
+      "commonMistakes": [
+        "Equating a USBSTOR connection entry with confirmed data exfiltration; you must find corresponding LNK, Shellbag, or event logs showing files moved to that drive.",
+        "Forgetting that UserAssist registry values are encoded in ROT13."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Windows forensic artifacts are OS records (Registry, Prefetch, LNK files, Jump Lists) documenting program execution, document access, and USB hardware connectivity.",
+      "fiveMarkAnswer": "Describe Windows execution artifacts: 1) Prefetch (.pf) files record application name, run count, execution timestamps, and referenced DLLs; 2) Shortcut (LNK) files log when documents were opened, capturing target paths and drive serial numbers; 3) Jump Lists organize recently accessed files per taskbar application; 4) Registry UserAssist tracks GUI application launches via ROT13 encoding; 5) USBSTOR logs vendor, product, and serial numbers of connected external drives."
+    },
+    "quiz": [
+      {
+        "id": "cf7-q1",
+        "question": "What simple encoding algorithm is used by Windows in the UserAssist registry keys to store execution history?",
+        "options": ["Base64", "ROT13", "AES-128", "RC4"],
+        "correctIndex": 1,
+        "explanation": "Windows encodes subkey names and values in the UserAssist registry key using ROT13."
+      }
+    ]
+  },
+  {
+    "id": "cf8-sleuthkit-autopsy-analysis",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-2",
+    "title": "Autopsy & The Sleuth Kit (mmls, fsstat, fls, istat, icat)",
+    "understanding": {
+      "definition": "The Sleuth Kit (TSK) is a modular C library and collection of command-line forensic tools for inspecting raw disk images, partition layouts, and file systems. Autopsy is the graphical user interface built on TSK, providing automated ingest modules for keyword search, email parsing, hash lookup, and artifact extraction.",
+      "rationale": "While graphical tools like Autopsy streamline case triage, mastery of TSK CLI commands is critical for scripting, automated CI/CD evidence pipelines, and verifying tool findings under cross-examination.",
+      "terminology": [
+        { "term": "mmls", "explanation": "Displays the partition layout and volume structures of an evidence image (MBR/GPT)." },
+        { "term": "fsstat", "explanation": "Displays general file system details (cluster size, block count, OS type, allocation bitmap)." },
+        { "term": "fls", "explanation": "Lists file and directory names in an image, explicitly showing deleted entries with an asterisk (*)." },
+        { "term": "istat", "explanation": "Displays metadata attribute details for a specific inode or MFT record number." },
+        { "term": "icat", "explanation": "Extracts the raw file contents of a specific inode/MFT record directly to standard output." }
+      ],
+      "markdownContent": "### The Sleuth Kit (TSK) Command Suite\n```text\n[Evidence Image] --mmls--> Identify Partition Offsets\n                              |\n                     --fsstat--> Identify File System & Cluster Size\n                              |\n                     --fls--> List Directory Entries & Deleted Files (*)\n                              |\n                     --istat--> Inspect Inode / MFT Metadata Structure\n                              |\n                     --icat--> Extract File Payload to Local Disk\n```"
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "TSK Tool Execution Pipeline",
+      "diagramSource": "graph LR\n  Image[laptop.E01] --> MMLS[mmls: Find Partition Start Offset]\n  MMLS --> FSSTAT[fsstat -o offset: File System Geometry]\n  FSSTAT --> FLS[fls -o offset -r: Find Deleted File Inode]\n  FLS --> ISTAT[istat -o offset inode: View MACB Timestamps]\n  ISTAT --> ICAT[icat -o offset inode > recovered_file.xlsx]",
+      "explanation": "Step-by-step TSK command sequence moving from physical partition inspection to file payload recovery."
+    },
+    "application": {
+      "industry": "Forensic Laboratory Operations",
+      "scenario": "In the bank breach investigation, an analyst uses TSK CLI on a headless Linux forensic workstation to carve out deleted customer loan spreadsheets from the employee laptop image.",
+      "inputExample": "Image: `laptop_disk.raw` | Target File: Deleted `Customer_Accounts.xlsx`",
+      "processSteps": [
+        "Run `mmls laptop_disk.raw` to identify NTFS partition starting at sector 2048.",
+        "Run `fls -o 2048 -r laptop_disk.raw` to find entry `* r/rr 4812: Customer_Accounts.xlsx`.",
+        "Run `istat -o 2048 laptop_disk.raw 4812` to examine allocation runlists and timestamps.",
+        "Run `icat -o 2048 laptop_disk.raw 4812 > /cases/recovered_accounts.xlsx`."
+      ],
+      "outputExample": "File extracted: 43,008 bytes. SHA-256 matches historical backup hash.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Sleuth Kit Deleted File Recovery Pipeline",
+        "code": "# 1. Locate partition\nmmls /evidence/laptop_disk.raw\n# 2. List directory showing deleted files\nfls -o 2048 -r -p /evidence/laptop_disk.raw | grep -i \"Customer\"\n# 3. Extract inode 4812\nicat -o 2048 /evidence/laptop_disk.raw 4812 > /evidence/Customer_Accounts.xlsx"
+      }
+    },
+    "memory": {
+      "mnemonic": "M-F-F-I-I",
+      "keywords": ["mmls", "fsstat", "fls", "istat", "icat"],
+      "commonMistakes": [
+        "Forgetting to provide the partition sector offset flag (`-o 2048`) when running TSK commands against full disk images."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "The Sleuth Kit (TSK) is a suite of forensic CLI utilities (mmls, fsstat, fls, istat, icat) used to analyze partitions, file systems, and extract deleted inodes.",
+      "fiveMarkAnswer": "Detail core TSK commands: 1) `mmls` displays partition tables and sector offsets; 2) `fsstat` displays file system details like block size and metadata count; 3) `fls` lists directory entries, denoting deleted files with an asterisk (*); 4) `istat` inspects inode or MFT metadata, timestamps, and cluster runlists; 5) `icat` extracts the file payload of a specific inode directly to disk."
+    },
+    "quiz": [
+      {
+        "id": "cf8-q1",
+        "question": "Which TSK command displays deleted files prefixed with an asterisk (*) in its directory listing output?",
+        "options": ["fsstat", "fls", "istat", "icat"],
+        "correctIndex": 1,
+        "explanation": "`fls` displays files in a directory; entries that have been deleted are flagged with an asterisk (*)."
+      }
+    ]
+  },
+  {
+    "id": "cf9-volatile-memory-triage",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-3",
+    "title": "Live Triage & Volatile Memory Preservation",
+    "understanding": {
+      "definition": "Volatile Memory Triage is the live capture and analysis of dynamic Random Access Memory (RAM) before a system is powered off or altered. It preserves transient runtime artifacts: process structures, DLLs, unencrypted master keys, active network sockets, injected shellcode, and console command history.",
+      "rationale": "Advanced threats, Cobalt Strike beacons, and ransomware staging scripts frequently reside solely in memory (fileless malware), leaving zero footprint on permanent disk drives.",
+      "terminology": [
+        { "term": "Order of Volatility (RFC 3227)", "explanation": "Guidelines mandating capture priority: Registers/Cache -> RAM -> Network State -> Disk -> Backups." },
+        { "term": "Heisenbug Effect in Live Triage", "explanation": "The reality that executing any software tool on a live system inevitably modifies a small portion of physical RAM." },
+        { "term": "LiME (Linux Memory Extractor)", "explanation": "Loadable Kernel Module (LKM) allowing physical memory acquisition from Linux machines." }
+      ],
+      "markdownContent": "### The RFC 3227 Order of Volatility\n1. **Registers, cache** (nanoseconds)\n2. **Routing table, ARP cache, process table, kernel stats, RAM** (milliseconds)\n3. **Temporary file systems, swap space** (seconds)\n4. **Disk storage** (minutes to days)\n5. **Remote logging, network telemetry** (days to weeks)\n6. **Physical topology, cable configuration** (permanent unless changed)\n7. **Archival media, backup tapes** (years)\n\n```text\nLive Incident -> Do NOT Pull Plug -> Attach Pre-compiled USB -> Dump RAM -> Hash Image -> Network Disconnect\n```"
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "RFC 3227 Order of Volatility Hierarchy",
+      "diagramSource": "graph TD\n  V1[1. CPU Registers & Cache: Highest Volatility] --> V2[2. Physical RAM & Routing/Process Table]\n  V2 --> V3[3. Temporary Filesystems & Swap]\n  V3 --> V4[4. Physical Hard Disk & NVMe]\n  V4 --> V5[5. Network Telemetry & Syslogs]\n  V5 --> V6[6. Archival Media & Offsite Backup: Lowest Volatility]",
+      "explanation": "Illustrates evidentiary priority ensuring most perishable dynamic memory is captured first."
+    },
+    "application": {
+      "industry": "Financial Crime Incident Response",
+      "scenario": "A core payment switch at ABC Bank showed anomalous outward connection alerts. The team ran winpmem via a forensic thumbdrive, capturing 64 GB of physical RAM within 8 minutes.",
+      "inputExample": "Command: `winpmem_mini_x64.exe -o E:\\switch_mem.raw --mode 1`",
+      "processSteps": [
+        "Document on-screen clock, open windows, and logged-in user accounts.",
+        "Insert write-protected USB containing statically linked memory capture binary.",
+        "Execute memory acquisition tool directing output to dedicated external forensic drive.",
+        "Generate SHA-256 hash of output raw dump immediately upon process completion.",
+        "Sever physical network patch cable to contain lateral spread while leaving machine powered on."
+      ],
+      "outputExample": "Artifact: `switch_mem.raw` | SHA-256: `9f8e7d...` | Integrity: 100% verified.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Live Memory Acquisition with LiME on Linux",
+        "code": "# Load kernel module to stream physical RAM to raw file\ninsmod lime-6.1.ko \"path=/evidence/linux_mem.lime format=raw\"\nsha256sum /evidence/linux_mem.lime > /evidence/mem_hash.txt"
+      }
+    },
+    "memory": {
+      "mnemonic": "R-R-T-D-N-A",
+      "keywords": ["Registers", "RAM", "Temporary Files", "Disk", "Network", "Archival"],
+      "commonMistakes": [
+        "Rebooting a suspect server to 'clean' it, permanently deleting active memory and injection artifacts.",
+        "Saving the memory dump directly onto the suspect's local C: drive, overwriting valuable unallocated sectors."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Live memory triage captures physical RAM and volatile network sockets following the RFC 3227 order of volatility before system shutdown.",
+      "fiveMarkAnswer": "Explain the Order of Volatility according to RFC 3227: Volatile data degrades quickly and must be captured before shutdown: 1) CPU registers and cache; 2) Physical RAM, routing tables, process lists, and ARP cache; 3) Temporary file systems and swap space; 4) Non-volatile disk storage; 5) Network monitoring and remote log servers; 6) Archival backups. Live memory triage captures RAM to preserve in-memory malware, decrypted keys, and active network connections."
+    },
+    "quiz": [
+      {
+        "id": "cf9-q1",
+        "question": "According to RFC 3227, which digital evidence source has the highest volatility and must be collected first?",
+        "options": ["Physical hard disk storage", "Routing table and RAM", "CPU registers and cache", "Backup tapes"],
+        "correctIndex": 2,
+        "explanation": "CPU registers and processor cache hold the most volatile state, changing billions of times per second."
+      }
+    ]
+  },
+  {
+    "id": "cf10-volatility-process-rootkits",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-3",
+    "title": "Memory Forensics: Volatility Framework & Process Tree",
+    "understanding": {
+      "definition": "Memory Forensics using the Volatility Framework (Volatility 3) reconstructs system runtime state from physical memory dumps without executing guest OS code. Key analysis tasks include building process trees (pstree), scanning for unlinked hidden processes (psscan), identifying network sockets (netscan), and detecting injected code or hollowed processes (malfind).",
+      "rationale": "Kernel-level rootkits use Direct Kernel Object Manipulation (DKOM) to unlink malicious processes from the `ActiveProcessLinks` list, rendering them invisible to Task Manager and `pslist`, but pool-tag scanning in Volatility exposes them.",
+      "terminology": [
+        { "term": "windows.pslist", "explanation": "Traverses the active doubly-linked list of EPROCESS structures." },
+        { "term": "windows.psscan", "explanation": "Scans memory pool allocations for EPROCESS tags, discovering unlinked or terminated processes." },
+        { "term": "windows.netscan", "explanation": "Scans memory for active, listening, or closed network endpoint structures." },
+        { "term": "windows.malfind", "explanation": "Identifies memory pages marked PAGE_EXECUTE_READWRITE that contain injected portable executable (PE) headers or shellcode." }
+      ],
+      "markdownContent": "### Core Volatility 3 Command Reference\n```bash\n# 1. List active processes via linked list\nvol -f memory.raw windows.pslist\n\n# 2. Reconstruct parent-child process tree\nvol -f memory.raw windows.pstree\n\n# 3. Discover unlinked processes hidden via DKOM\nvol -f memory.raw windows.psscan\n\n# 4. Enumerate active and closed network connections\nvol -f memory.raw windows.netscan\n\n# 5. Detect injected shellcode and hollowed processes\nvol -f memory.raw windows.malfind\n```\n\n### Sample Memory Investigation Process Table\n| PID | PPID | Process Name | Threads | Observation | Action |\n| :--- | :--- | :--- | :--- | :--- | :--- |\n| 100 | 4 | `System` | 142 | Expected core OS | Baseline |\n| 420 | 100 | `explorer.exe` | 38 | Expected shell | Baseline |\n| 810 | 420 | `browser.exe` | 14 | Expected user app | Baseline |\n| 1220 | 810 | `unknown.exe` | 6 | Unsigned, unlinked | **Requires deep investigation** |"
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "Volatility Process Tree & Code Injection Detection",
+      "diagramSource": "graph TD\n  RAM[memory.raw] --> PL[windows.pslist: Linked List Active Process]\n  RAM --> PS[windows.psscan: Pool Tag Scan Hidden Process]\n  PL & PS --> Tree[windows.pstree: Parent-Child Lineage]\n  Tree --> Net[windows.netscan: Associate Sockets with PIDs]\n  Tree --> Mal[windows.malfind: Locate RWX Injected Memory & Shellcode]\n  Mal --> Dump[vol -f mem.raw windows.dumpfiles --pid 1220: Extract Binary]",
+      "explanation": "Illustrates how Volatility correlates process hierarchies, network sockets, and memory injection."
+    },
+    "application": {
+      "industry": "Threat Hunting & Cyber Forensics",
+      "scenario": "On the ABC Bank switch, `windows.pslist` showed normal processes. Running `windows.psscan` revealed PID 1220 (`unknown.exe`) unlinked from the kernel list. `windows.malfind` identified an MZ header in an RWX page, and `windows.netscan` linked it to IP `198.51.100.44:443`.",
+      "inputExample": "Memory Image: `switch_memory.raw` | Target PID: 1220",
+      "processSteps": [
+        "Execute `vol -f switch_memory.raw windows.pstree` to map lineage.",
+        "Execute `vol -f switch_memory.raw windows.psscan` to detect unlinked rootkit processes.",
+        "Execute `vol -f switch_memory.raw windows.netscan` to tie PID 1220 to outbound socket.",
+        "Execute `vol -f switch_memory.raw windows.malfind --pid 1220` to dump injected memory.",
+        "Extract binary using `windows.dumpfiles` for static malware analysis."
+      ],
+      "outputExample": "Extracted binary SHA-256 matches Cobalt Strike Beacon stager.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Detecting Injected Code with Volatility 3",
+        "code": "# Scan for injected code in suspicious process PID 1220\nvol -f /evidence/switch_memory.raw windows.malfind --pid 1220"
+      }
+    },
+    "memory": {
+      "mnemonic": "P-P-T-N-M",
+      "keywords": ["pslist", "psscan", "pstree", "netscan", "malfind"],
+      "commonMistakes": [
+        "Automatically declaring an unfamiliar process name to be malware without verifying its digital signature, memory permissions, or network connections."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Memory forensics with Volatility extracts runtime processes, parent-child hierarchies, network sockets, and injected rootkit shellcode from raw RAM dumps.",
+      "fiveMarkAnswer": "Differentiate Volatility plugins: `windows.pslist` traverses active process links; `windows.psscan` finds hidden/unlinked processes by scanning for EPROCESS pool tags; `windows.pstree` organizes processes into visual parent-child hierarchies; `windows.netscan` discovers TCP/UDP connections; `windows.malfind` scans for memory pages with execute-read-write (PAGE_EXECUTE_READWRITE) permissions harboring injected code."
+    },
+    "quiz": [
+      {
+        "id": "cf10-q1",
+        "question": "Which Volatility plugin is designed to detect hidden processes that have been unlinked from the kernel ActiveProcessLinks list by a rootkit?",
+        "options": ["windows.pslist", "windows.psscan", "windows.info", "windows.modules"],
+        "correctIndex": 1,
+        "explanation": "`windows.psscan` scans physical memory pages for EPROCESS pool allocations rather than following the active process linked list."
+      }
+    ]
+  },
+  {
+    "id": "cf11-super-timelines-log-analysis",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-3",
+    "title": "Super Timelines & Normalized Event Log Correlation",
+    "understanding": {
+      "definition": "A Super Timeline is a consolidated, chronological aggregation of all timestamped forensic events extracted across a system—including file system MACB records ($MFT), Windows Event Logs (.evtx), web browser history, registry transaction logs, email metadata, and network flows—normalized to Coordinated Universal Time (UTC) in ISO 8601 format.",
+      "rationale": "Attackers operate across multiple subsystems. Isolated log analysis presents fragmented views, whereas a unified Super Timeline reconstructs the exact sequence of adversarial movement before, during, and after an incident.",
+      "terminology": [
+        { "term": "plaso / log2timeline", "explanation": "Industry-standard open-source engine that parses multi-source evidence into unified SQLite/CSV super timelines." },
+        { "term": "MACB Timestamps", "explanation": "Modified (data altered), Accessed (data read), Changed ($MFT metadata altered), Born / Created (file instantiated)." },
+        { "term": "Event ID 4624 / 4672 / 7045", "explanation": "Critical Windows Security events: 4624 (Successful Logon), 4672 (Admin Privilege Assigned), 7045 (New Service Installed)." }
+      ],
+      "markdownContent": "### Windows Event Log Security Indicators\n- **Event ID 4624**: Successful logon (Logon Type 2 = Interactive console; Logon Type 3 = Network share; Logon Type 10 = Remote Desktop).\n- **Event ID 4625**: Failed logon attempt (indicates brute-force or credential stuffing).\n- **Event ID 4672**: Special privileges assigned to new logon (privilege escalation).\n- **Event ID 7045**: A service was installed on the system (persistence mechanism).\n- **Event ID 1102**: Audit log was cleared (anti-forensics evasion).\n\n```text\nFile System ($MFT) + Event Logs (.evtx) + Browser History + Registry Logs -> [log2timeline] -> UTC Super Timeline\n```"
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "Super Timeline Generation Pipeline",
+      "diagramSource": "graph LR\n  MFT[NTFS $MFT MACB] --> Plaso[log2timeline / Plaso Engine]\n  EVTX[Windows Event Logs] --> Plaso\n  Web[Browser Cache & History] --> Plaso\n  Net[NetFlow & Firewall Logs] --> Plaso\n  Plaso --> SQLite[Unified Plaso Storage .plaso]\n  SQLite --> Psort[psort.py: Filter Date Window & Normalize UTC]\n  Psort --> FinalTimeline[Unified Super Timeline CSV / Elastic]",
+      "explanation": "Illustrates how disparate log feeds are extracted, parsed, and merged into a synchronized UTC timeline."
+    },
+    "application": {
+      "industry": "Incident Investigation & Reconstruction",
+      "scenario": "In the bank cyberattack, investigators parsed the employee laptop and server logs between 08:00 UTC and 17:00 UTC to pinpoint the exact lateral movement path.",
+      "inputExample": "Evidence Sources: [Laptop Disk E-01, Switch Server Disk E-02, Core Firewall PCAP E-06]",
+      "processSteps": [
+        "Run `log2timeline.py` across disk images to extract timestamps into `.plaso` database.",
+        "Execute `psort.py` filtering the incident window (2026-11-18 08:00:00 to 18:00:00 UTC).",
+        "Correlate Event ID 4624 (Logon Type 3) from employee workstation IP to payment switch.",
+        "Map subsequent Event ID 7045 (service installation of `unknown.exe`) 4 minutes later."
+      ],
+      "outputExample": "Timeline: 08:42:15 Inbound Phishing -> 09:15:30 Lateral SMB -> 14:15:00 Fraud Wire -> 16:30 Wiper.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Generating a Super Timeline with Plaso",
+        "code": "# Generate timeline storage from disk image\nlog2timeline.py --storage-file case.plaso /evidence/laptop_disk.raw\n# Export normalized CSV filtered by date range\npsort.py -o l2tcsv -w /evidence/super_timeline.csv case.plaso \"date > '2026-11-18 00:00:00'\""
+      }
+    },
+    "memory": {
+      "mnemonic": "M-A-C-B-U",
+      "keywords": ["Modified", "Accessed", "Changed", "Born", "UTC Normalization"],
+      "commonMistakes": [
+        "Failing to normalize all log sources to UTC, leading to erroneous event sequences across multi-timezone systems.",
+        "Ignoring clock drift between internal domain servers and unmanaged perimeter appliances."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "A Super Timeline is a unified, normalized UTC aggregation of all timestamped events (MFT, Event Logs, browser history, registry) across an investigated environment.",
+      "fiveMarkAnswer": "Describe Super Timeline construction: Using engines like Plaso/log2timeline, forensic examiners extract timestamps from file systems ($MFT MACB), Windows Event Logs (e.g., 4624 logon, 7045 service creation), browser history, and network records. Events are normalized to UTC in ISO 8601 format to eliminate timezone distortions. The resulting super timeline reveals the end-to-end attack progression."
+    },
+    "quiz": [
+      {
+        "id": "cf11-q1",
+        "question": "Which Windows Event ID signifies that a new system service was installed, often indicating adversary persistence?",
+        "options": ["Event ID 4624", "Event ID 4672", "Event ID 7045", "Event ID 1102"],
+        "correctIndex": 2,
+        "explanation": "Event ID 7045 in the System log indicates a new service was installed on the host."
+      }
+    ]
+  },
+  {
+    "id": "cf12-network-browser-cloud-forensics",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-3",
+    "title": "Network Forensics: PCAP vs NetFlow, Browser & Cloud",
+    "understanding": {
+      "definition": "Network and Cloud Forensics involves capturing, inspecting, and reconstructing network communications, web browser sessions, and cloud service provider audit telemetry (AWS CloudTrail, Azure Activity Logs, M365 Unified Audit Logs). It compares full packet capture (PCAP) with session metadata (NetFlow/IPFIX) to detect exfiltration, command-and-control beacons, and cloud account compromise.",
+      "rationale": "Disk drives can be wiped and hosts terminated, but network switches and cloud API gateways retain independent transit logs of malicious activity.",
+      "terminology": [
+        { "term": "PCAP (Packet Capture)", "explanation": "Full bit-level capture of packet headers and application payload; complete visibility, high storage requirement." },
+        { "term": "NetFlow / IPFIX", "explanation": "Statistical summary of network sessions (Source/Dest IP, ports, protocol, byte count, duration); scalable, zero payload." },
+        { "term": "Cloud Forensic Challenge", "explanation": "Lack of physical hardware access, shared multitenancy, dynamic instance ephemeral lifecycles, and reliance on CSP logging." }
+      ],
+      "markdownContent": "### PCAP vs NetFlow Comparative Matrix\n| Feature | Full Packet Capture (PCAP) | NetFlow / IPFIX Flow Records |\n| :--- | :--- | :--- |\n| **Data Content** | Complete packet headers + full payload | Session metadata only (5-tuple, bytes, packets) |\n| **Storage Requirement** | Massive (gigabytes to terabytes per hour) | Lightweight (~1% of raw traffic volume) |\n| **Encrypted Traffic** | Can inspect TLS handshake & SNI headers | Can only observe IP, port, and transfer volumes |\n| **Reconstruction** | Can reassemble transferred files & web pages | Cannot reconstruct file payloads |\n\n### Browser Artifacts\n- **History & Downloads**: Stored in SQLite (`History`, `places.sqlite`).\n- **Cache**: Cached images, scripts, and downloaded attachments stored in hashed data blocks.\n- **Cookies & Sessions**: Session tokens proving active web sessions."
+    },
+    "visualization": {
+      "diagramType": "architecture",
+      "diagramTitle": "Network Packet Capture vs NetFlow Flow Analysis",
+      "diagramSource": "graph TD\n  Traffic[Live Network Switch Tap / SPAN Port] --> Decider{Capture Strategy}\n  Decider -->|High Granularity| PCAP[Full Packet Capture: Wireshark / Zeek: Reassemble Files & TLS SNI]\n  Decider -->|High Volume Scale| NetFlow[NetFlow / IPFIX: Flow Collector: Detect C2 Beaconing Spikes]\n  PCAP & NetFlow --> Correlate[Correlate with CloudTrail & Proxy Logs]",
+      "explanation": "Illustrates the trade-off between deep packet payload examination and high-velocity scalable flow analysis."
+    },
+    "application": {
+      "industry": "Cloud Banking & SOC Operations",
+      "scenario": "Investigators analyzing ABC Bank's firewall identified periodic 512-byte outbound HTTPS requests to IP `198.51.100.44` occurring every 60 seconds with 5% jitter, characteristic of Cobalt Strike beaconing.",
+      "inputExample": "Firewall PCAP (14.2 GB) | Filter: `ip.dst == 198.51.100.44 && tcp.port == 443`",
+      "processSteps": [
+        "Open PCAP dump in Wireshark or process via Zeek/tshark.",
+        "Filter traffic targeting destination IP `198.51.100.44`.",
+        "Analyze TLS Client Hello Server Name Indication (SNI) to discover spoofed domain name.",
+        "Correlate packet timestamps with server memory sockets to identify initiating PID."
+      ],
+      "outputExample": "Confirmed: 1,420 beacon pulses to malicious C2 infrastructure.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Filtering C2 Traffic with TShark",
+        "code": "# Extract outbound connections with timestamps and byte counts\ntshark -r /evidence/core_firewall.pcap -Y \"ip.dst == 198.51.100.44\" -T fields -e frame.time -e ip.src -e ip.dst -e tcp.dstport -e frame.len"
+      }
+    },
+    "memory": {
+      "mnemonic": "P-N-B-C",
+      "keywords": ["PCAP", "NetFlow", "Browser Artifacts", "CloudTrail"],
+      "commonMistakes": [
+        "Assuming NetFlow captures transferred passwords or file contents; NetFlow has zero application payload.",
+        "Assuming cloud logs are enabled by default; many cloud storage and VPC flow logs must be explicitly provisioned."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Network forensics captures packets (PCAP) and metadata (NetFlow) to reconstruct sessions, identify C2 communications, and correlate cloud audit trails.",
+      "fiveMarkAnswer": "Compare PCAP vs NetFlow: PCAP (Full Packet Capture) preserves complete packet headers and application payload, enabling file reassembly and deep protocol analysis, but demands massive storage. NetFlow/IPFIX captures session summaries (Source/Dest IP, ports, protocol, byte/packet count, duration), offering scalable long-term storage and rapid beaconing detection, but contains zero application payload."
+    },
+    "quiz": [
+      {
+        "id": "cf12-q1",
+        "question": "What is the primary operational trade-off of full packet capture (PCAP) compared to NetFlow?",
+        "options": [
+          "PCAP cannot capture UDP traffic",
+          "PCAP requires massive storage capacity to retain high-throughput data streams",
+          "PCAP cannot record IP addresses",
+          "PCAP only operates on wireless networks"
+        ],
+        "correctIndex": 1,
+        "explanation": "PCAP preserves full packet payloads, resulting in enormous storage footprints compared to lightweight NetFlow metadata."
+      }
+    ]
+  },
+  {
+    "id": "cf13-mobile-os-architecture-security",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-4",
+    "title": "Android vs iOS Architecture & Security Sandboxing",
+    "understanding": {
+      "definition": "Mobile Operating System Security governs how Android and iOS enforce application sandboxing, permissions, hardware encryption, and access controls. Forensic acquisition must navigate SELinux policies, Android UID isolation, file-based encryption (FBE), Apple Secure Enclave processors (SEP), and class-based Data Protection keys.",
+      "rationale": "Smartphones contain critical evidence (SMS OTPs, chats, GPS geotags), but hardware-backed encryption makes brute-forcing modern passcodes or performing dead physical extraction mathematically infeasible without specialized exploits.",
+      "terminology": [
+        { "term": "Application Sandboxing", "explanation": "Security isolation preventing one application from reading or modifying another application's private storage." },
+        { "term": "Apple Secure Enclave Processor (SEP)", "explanation": "A dedicated hardware security chip executing its own microkernel, managing biometrics and master encryption keys." },
+        { "term": "File-Based Encryption (FBE)", "explanation": "Encrypts individual files with distinct keys, supporting Direct Boot modes on modern Android and iOS." }
+      ],
+      "markdownContent": "### Android vs iOS Forensic Comparison\n| Parameter | Android Platform | iOS Platform |\n| :--- | :--- | :--- |\n| **Core Kernel** | Linux Kernel with SELinux | XNU / Darwin Kernel |\n| **App Sandbox** | Unique Linux UID per application | Class-based sandbox containers |\n| **Hardware Security** | Hardware Root of Trust / TEE / Knox | Secure Enclave Processor (SEP) |\n| **Physical Extraction** | Feasible on unlocked devices or chip exploits | Extremely difficult; requires checkm8 or zero-day agent |\n| **Debug Access** | Android Debug Bridge (ADB) | Apple Configurator / Mobile Device Management |"
+    },
+    "visualization": {
+      "diagramType": "architecture",
+      "diagramTitle": "Android vs iOS Sandboxing and Key Management",
+      "diagramSource": "graph TD\n  subgraph Android [Android Security]\n    AKernel[Linux Kernel + SELinux]\n    AUID[UID Sandboxing: app_1024 /data/data/com.bank]\n    AFBE[File-Based Encryption FBE]\n  end\n  subgraph iOS [iOS Security]\n    XNU[XNU Kernel + Container Sandboxing]\n    SEP[Secure Enclave Processor SEP]\n    DP[Data Protection API: Class A to D Keys]\n  end",
+      "explanation": "Comparison of Android UID-based Linux sandboxing against Apple Secure Enclave and Class-based Data Protection."
+    },
+    "application": {
+      "industry": "Mobile Forensic Examination",
+      "scenario": "An employee's corporate Samsung smartphone was secured in a Faraday bag to prevent remote wiping. Forensic analysts evaluated whether to run ADB logical extraction or pursue rooted file system acquisition.",
+      "inputExample": "Target: Samsung Galaxy S23 (Android 14, Knox 3.9, FBE Enabled)",
+      "processSteps": [
+        "Place device in Faraday enclosure immediately upon seizure.",
+        "Maintain device in awake state or connect to power to prevent BFU (Before First Unlock) lockup.",
+        "Enable USB Debugging via authorized user credentials.",
+        "Perform targeted logical and file system extraction via ADB."
+      ],
+      "outputExample": "Acquired: 14.8 GB app directory structure with SQLite databases.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Extracting Application Data via ADB Backup",
+        "code": "# Perform authorized logical backup of specific mobile banking app\nadb backup -f /evidence/bank_app.ab -noapk com.abcdigitalbank.mobile"
+      }
+    },
+    "memory": {
+      "mnemonic": "S-A-F-E-I",
+      "keywords": ["Sandbox", "ADB", "FBE", "Enclave", "Isolation"],
+      "commonMistakes": [
+        "Allowing a seized mobile device to connect to cellular or Wi-Fi networks, enabling the suspect to trigger a remote wipe via Google Find My or Apple iCloud.",
+        "Powering down a modern locked smartphone, shifting it from AFU (After First Unlock) into BFU (Before First Unlock) mode where encryption keys are flushed from memory."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Android and iOS enforce security through kernel-level sandboxing, file-based encryption (FBE), and hardware coprocessors (TEE / Secure Enclave), restricting forensic acquisition.",
+      "fiveMarkAnswer": "Compare Android and iOS security architectures: Android utilizes a Linux kernel with SELinux, assigning unique Linux UIDs to each application to isolate `/data/data` storage, utilizing File-Based Encryption. iOS utilizes an XNU kernel with container sandboxing and the Secure Enclave Processor (SEP), enforcing class-based Data Protection keys (Class A through D). On modern devices, hardware encryption limits physical chip-off extraction."
+    },
+    "quiz": [
+      {
+        "id": "cf13-q1",
+        "question": "What happens when a modern locked smartphone is powered off, shifting it from AFU into BFU mode?",
+        "options": [
+          "The internal flash memory is automatically wiped",
+          "Master encryption keys are completely purged from volatile memory until the passcode is entered",
+          "The device automatically connects to emergency cell towers",
+          "All application SQLite databases are decrypted"
+        ],
+        "correctIndex": 1,
+        "explanation": "In BFU (Before First Unlock) mode, the encryption keys required to decrypt file systems are not in RAM, making acquisition significantly harder."
+      }
+    ]
+  },
+  {
+    "id": "cf14-mobile-acquisition-methods",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-4",
+    "title": "Mobile Acquisition: Logical, File System & Physical",
+    "understanding": {
+      "definition": "Mobile Acquisition classifies extraction methods into three hierarchical tiers: Logical Acquisition extracts API-accessible user records; Advanced Logical / File System Acquisition extracts the full directory tree including private application data; Physical Acquisition captures a raw sector-by-sector image of the internal flash memory, capturing deleted records from unallocated space.",
+      "rationale": "Hardware encryption and secure bootloaders on modern devices make physical extraction rare. Examiners must select the most comprehensive method permitted by legal warrant scope and device security state.",
+      "terminology": [
+        { "term": "Logical Acquisition", "explanation": "Extracts standard user data (contacts, SMS, media) using OS backup APIs (ADB, iTunes protocol)." },
+        { "term": "File System Acquisition", "explanation": "Dumps the complete active file system, accessing private app directories (`/data/data/`) and SQLite databases." },
+        { "term": "Physical Acquisition", "explanation": "Bit-level flash memory dump (JTAG, chip-off, bootrom exploit) capturing deleted databases and unallocated flash." }
+      ],
+      "markdownContent": "### The Mobile Acquisition Hierarchy\n```text\n[Tier 1: Logical]        -> Fast, standard backup APIs, active user records only\n          |\n[Tier 2: File System]    -> Complete directory tree, app private SQLite databases\n          |\n[Tier 3: Physical]       -> Raw bitstream NAND dump, unallocated clusters, deleted records\n```\n\n| Extraction Tier | Data Obtained | Limitations |\n| :--- | :--- | :--- |\n| **Logical** | SMS, Call Logs, Contacts, Photos, Audio | No deleted data, no app private databases |\n| **File System** | WhatsApp/Signal DBs, Browser History, Plists | No raw unallocated space, requires privilege |\n| **Physical** | Bit-for-bit NAND, carved deleted records | Frequently blocked by modern hardware encryption |"
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "Mobile Extraction Selection Protocol",
+      "diagramSource": "graph TD\n  Device[Seized Mobile Device] --> CheckLock{Is Passcode Known / Unlocked?}\n  CheckLock -->|No| Exploit{Vulnerable to Bootrom Exploit like checkm8?}\n  Exploit -->|Yes| Phys[Physical Extraction via Bootloader Exploit]\n  Exploit -->|No| Vendor[Specialized Hardware Brute-Force / GrayKey]\n  CheckLock -->|Yes| SelectMode{Choose Permitted Level}\n  SelectMode --> Logical[Logical Backup: Quick Triage]\n  SelectMode --> FS[File System Acquisition: App Private Storage]\n  SelectMode --> Phys",
+      "explanation": "Decision flow for determining the optimal mobile forensic acquisition tier based on passcode availability and hardware exploit status."
+    },
+    "application": {
+      "industry": "Mobile Incident Response",
+      "scenario": "In the bank case, examiners had the employee's passcode. They executed a File System Acquisition to extract the private directory of the corporate mobile banking application.",
+      "inputExample": "Device: Samsung Galaxy S23 | Access: Passcode Provided | Tool: Cellebrite UFED / ADB",
+      "processSteps": [
+        "Enable developer options and USB debugging on suspect device.",
+        "Deploy temporary forensic extraction agent to mobile storage.",
+        "Dump `/data/data/` application directory tree to forensic workstation.",
+        "Compute SHA-256 hash of extracted container image."
+      ],
+      "outputExample": "Extracted: Full file system archive `mobile_fs.tar` (22.4 GB).",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Extracting Application SQLite Files via ADB",
+        "code": "# Extract app private data directory using ADB\nadb pull /data/data/com.abcdigitalbank.mobile/databases /evidence/mobile_db"
+      }
+    },
+    "memory": {
+      "mnemonic": "L-F-P",
+      "keywords": ["Logical", "File System", "Physical", "Extraction Tiers"],
+      "commonMistakes": [
+        "Assuming a logical extraction includes deleted chat messages; deleted record recovery requires file system (WAL logs) or physical carving."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Mobile acquisition consists of Logical (standard backup APIs), File System (complete directory tree and app private databases), and Physical (raw bitstream flash dump).",
+      "fiveMarkAnswer": "Compare Mobile Acquisition Methods: 1) Logical Acquisition uses standard OS APIs (e.g., iTunes backup, ADB) to extract active user files (contacts, SMS, call logs), but misses deleted files; 2) File System Acquisition captures the full directory hierarchy including app-private `/data/data` SQLite databases and logs; 3) Physical Acquisition mirrors raw NAND flash, capturing unallocated space and deleted clusters, but requires root access or bootrom exploits."
+    },
+    "quiz": [
+      {
+        "id": "cf14-q1",
+        "question": "Which mobile acquisition method extracts the complete directory tree including private application data, but does not provide raw unallocated flash blocks?",
+        "options": ["Logical Acquisition", "File System Acquisition", "Physical Acquisition", "Manual Screen Capture"],
+        "correctIndex": 1,
+        "explanation": "File System Acquisition extracts the full directory structure and application-private folders without bit-for-bit physical unallocated space."
+      }
+    ]
+  },
+  {
+    "id": "cf15-smartphone-app-artifacts",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-4",
+    "title": "Smartphone Artifacts: SMS, Calls, SQLite & Geolocation",
+    "understanding": {
+      "definition": "Smartphone Artifact Forensics investigates communication databases, messaging platforms, application logs, and geolocation telemetry. Almost all mobile applications store relational data in SQLite databases (`.db`, `.sqlite`) supported by Write-Ahead Logging (`.wal`) and rollback journals, which often retain deleted chat messages, transaction OTPs, and GPS coordinate histories.",
+      "rationale": "In financial crimes, smartphones serve as authentication tokens. Examining SMS verification OTPs, messaging records, and location history establishes whether the account owner or an external accomplice executed transactions.",
+      "terminology": [
+        { "term": "SQLite Write-Ahead Log (WAL)", "explanation": "A companion file (`*-wal`) holding recently committed database transactions before checkpointing into the master database." },
+        { "term": "EXIF Geotags", "explanation": "Metadata embedded in smartphone camera photos recording latitude, longitude, altitude, and timestamp." },
+        { "term": "Cell Tower / Wi-Fi Triangulation", "explanation": "Location artifacts cached in system databases recording connected BSSIDs and cell IDs." }
+      ],
+      "markdownContent": "### Core Smartphone Forensic Artifact Locations\n- **SMS & MMS**: Android: `/data/data/com.android.providers.telephony/databases/mmssms.db`\n- **Call Logs**: Android: `/data/data/com.android.providers.contacts/databases/calllog.db`\n- **WhatsApp Chats**: `/data/data/com.whatsapp/databases/msgstore.db`\n- **Signal Encrypted Database**: `/data/data/org.thoughtcrime.securesms/databases/signal.db`\n- **Geolocation Cache**: iOS: `consolidated.db`; Android: `gservices.db` / Wi-Fi probe logs"
+    },
+    "visualization": {
+      "diagramType": "architecture",
+      "diagramTitle": "Smartphone SQLite and Geolocation Extraction",
+      "diagramSource": "graph TD\n  Phone[Extracted Mobile File System] --> SMS[SMS Database: mmssms.db & mmssms.db-wal]\n  Phone --> Apps[App Private Databases: bank_app.db & msgstore.db]\n  Phone --> Geo[GPS & Photos: EXIF Metadata & Wi-Fi BSSID Cache]\n  SMS --> Time[Timestamp: OTP Received 14:14:22 UTC]\n  Apps --> Share[Timestamp: Shared via Signal 14:14:45 UTC]\n  Geo --> Loc[Location: Lat 18.9220 N, Long 72.8347 E - Server Room Vault]",
+      "explanation": "Correlating SMS authentication OTPs, encrypted chat sharing, and EXIF geolocation records."
+    },
+    "application": {
+      "industry": "Financial Fraud & Insider Threat",
+      "scenario": "In the ABC Bank investigation, analysis of the employee's phone revealed an SMS containing a ₹5 crore transfer OTP at 14:14:22 UTC. Analysis of the Signal database Write-Ahead Log showed the OTP forwarded to an unknown contact at 14:14:45 UTC.",
+      "inputExample": "Database: `bank_auth.db` and `bank_auth.db-wal`",
+      "processSteps": [
+        "Verify both `.db` and `.wal` files are extracted together.",
+        "Open database in SQLite forensic browser (e.g. `sqlitebrowser` or `wal-parser`).",
+        "Query message table for uncommitted records residing in the WAL file.",
+        "Extract latitude/longitude coordinates and verify on open GIS mapping platforms."
+      ],
+      "outputExample": "Corroborated: SMS received and transmitted 23 seconds before transaction authorization.",
+      "codeSnippet": {
+        "language": "sql",
+        "caption": "Forensic SQL Query for Deleted SMS Artifacts",
+        "code": "-- Query SMS database for authentication verification codes\nSELECT _id, address, date, datetime(date/1000, 'unixepoch') AS utc_time, body \nFROM sms \nWHERE body LIKE '%OTP%' OR body LIKE '%code%'\nORDER BY date DESC;"
+      }
+    },
+    "memory": {
+      "mnemonic": "S-C-A-W-G",
+      "keywords": ["SMS", "Call Logs", "Apps", "WAL Files", "Geolocation"],
+      "commonMistakes": [
+        "Analyzing the master `.db` file without copying its companion `-wal` file, missing all recent uncommitted transactions and chats."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Smartphone artifact analysis extracts SMS verification codes, call histories, app databases, and geolocation records from SQLite databases and WAL journals.",
+      "fiveMarkAnswer": "Explain the forensic importance of SQLite and WAL files in mobile analysis: Modern mobile apps store communications and records in SQLite databases. The Write-Ahead Log (`-wal`) records changes before they are committed to the main database file. When a user deletes a message, it frequently remains recoverable in the WAL file until a database checkpoint occurs. SQLite databases also store EXIF GPS coordinates and cell tower logs."
+    },
+    "quiz": [
+      {
+        "id": "cf15-q1",
+        "question": "Why is it vital to acquire the companion `-wal` file alongside an SQLite database during mobile forensics?",
+        "options": [
+          "The WAL file contains the disk encryption password",
+          "The WAL file holds recent uncommitted transactions and frequently retains deleted messages",
+          "The WAL file is the only file containing GPS coordinates",
+          "Without the WAL file, the device cannot power on"
+        ],
+        "correctIndex": 1,
+        "explanation": "The Write-Ahead Log holds recent changes before they are written to the main database, often retaining deleted records."
+      }
+    ]
+  },
+  {
+    "id": "cf16-iot-embedded-cctv-forensics",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-4",
+    "title": "IoT & Embedded Forensics: Smart CCTV, Flash & Cloud Feeds",
+    "understanding": {
+      "definition": "IoT and Embedded Forensics investigates specialized hardware devices (IP CCTV cameras, smart sensors, industrial controllers, drones) featuring embedded microcontrollers, System-on-Chips (SoCs), and flash memory chips (SPI, NOR/NAND). Evidence is acquired via physical chip-off, hardware serial debug interfaces (UART, JTAG), or cloud backend API logs.",
+      "rationale": "Physical cyberattacks converge with digital operations. CCTV footage, badge readers, and environmental sensors verify physical presence and corroborate or refute digital alibis.",
+      "terminology": [
+        { "term": "UART (Serial Console)", "explanation": "Universal Asynchronous Receiver-Transmitter; hardware interface providing root shell access to embedded Linux." },
+        { "term": "JTAG (Joint Test Action Group)", "explanation": "Hardware test port used by examiners to read and write directly to processor registers and flash memory." },
+        { "term": "Chip-Off Forensics", "explanation": "Physically desoldering a flash memory chip from a circuit board to read raw bits via specialized hardware programmers." }
+      ],
+      "markdownContent": "### The IoT Evidence Map\n```text\nSMART CCTV CAMERA\n       |\n       +-- Device Physical Storage (MicroSD Card / Onboard Flash)\n       |\n       +-- Embedded Memory (UART / JTAG Serial Interface)\n       |\n       +-- Mobile Companion App (User Smartphone SQLite Cache)\n       |\n       +-- Local Network Logs (RTSP Video Feeds & Router DHCP / ARP)\n       |\n       +-- Cloud Records (Vendor Video Server & Access Logs)\n```"
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "IoT Evidence Architecture",
+      "diagramSource": "graph TD\n  IoT[Smart CCTV / IoT Device] --> HW[Hardware Interface: UART Console & JTAG]\n  IoT --> Flash[Onboard Flash / MicroSD: Ring Buffer Video Files]\n  IoT --> Net[Network: RTSP Streams & Router PCAP]\n  IoT --> Cloud[Cloud Platform: AWS/Azure Video Archive & API Access]\n  HW & Flash & Net & Cloud --> Report[Correlated Physical Presence Evidence]",
+      "explanation": "Multi-tier extraction framework across IoT hardware, embedded flash, network transport, and cloud platforms."
+    },
+    "application": {
+      "industry": "Physical & Cyber Security Convergence",
+      "scenario": "In the ABC Bank breach, investigators needed to verify if the employee was physically present at the server room terminal. Examiners extracted firmware and local flash storage from the Smart CCTV camera covering the server room corridor.",
+      "inputExample": "Target: Hikvision Smart IP Camera (Model: DS-2CD2143G2-I) | Flash: 128MB SPI NAND",
+      "processSteps": [
+        "Connect logic analyzer to PCB UART pins (TX, RX, GND) to capture bootloader messages.",
+        "Acquire raw flash memory dump from the onboard MicroSD ring buffer.",
+        "Extract video stream container fragments using `ffmpeg`.",
+        "Correlate CCTV video timestamps with badge swipe access controller logs."
+      ],
+      "outputExample": "Video Frame Extracted: Employee identified entering server vault at 14:10:00 UTC.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Reconstructing Video Frames with FFmpeg",
+        "code": "# Carve and repair damaged video fragments from raw CCTV flash image\nffmpeg -f h264 -i /evidence/cctv_flash.raw -vcodec copy /evidence/server_room_1410.mp4"
+      }
+    },
+    "memory": {
+      "mnemonic": "U-J-C-R-C",
+      "keywords": ["UART", "JTAG", "Chip-Off", "RTSP", "Cloud Feeds"],
+      "commonMistakes": [
+        "Applying excessive heat during chip-off desoldering, destroying the silicon flash die.",
+        "Assuming CCTV device clocks are synchronized to NTP; embedded devices often suffer severe clock drift."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "IoT forensics acquires evidence from embedded flash storage, hardware interfaces (UART, JTAG), and cloud companion platforms to reconstruct physical device operations.",
+      "fiveMarkAnswer": "Describe the IoT evidence extraction map: An IoT device (e.g. smart CCTV) yields evidence across 5 vectors: 1) Physical device storage (onboard flash, MicroSD ring buffers); 2) Embedded hardware interfaces (UART serial consoles, JTAG memory dumps); 3) Companion mobile apps on user smartphones; 4) Local network traffic (RTSP streams, DHCP logs); 5) Cloud platform APIs and remote backup servers."
+    },
+    "quiz": [
+      {
+        "id": "cf16-q1",
+        "question": "Which hardware serial interface is commonly found as test pins on IoT circuit boards to gain root shell access?",
+        "options": ["UART", "HDMI", "SATA", "PCIe"],
+        "correctIndex": 0,
+        "explanation": "UART (Universal Asynchronous Receiver-Transmitter) provides serial console communication to embedded microcontrollers."
+      }
+    ]
+  },
+  {
+    "id": "cf17-ediscovery-case-management",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-5",
+    "title": "Large-Scale Case Management & E-Discovery (EDRM)",
+    "understanding": {
+      "definition": "The Electronic Discovery Reference Model (EDRM) is a standardized framework for managing electronic evidence across large-scale legal, regulatory, and corporate investigations. It guides evidence handling through nine progressive stages: Information Governance, Identification, Preservation, Collection, Processing, Review, Analysis, Production, and Presentation.",
+      "rationale": "Enterprise cyber investigations involve hundreds of endpoints and terabytes of data. Without disciplined case management and EDRM pipelines, discovery costs escalate uncontrollably and critical evidence is lost.",
+      "terminology": [
+        { "term": "Legal Hold", "explanation": "A formal notification directing an organization's custodians to preserve all relevant electronic records and suspend routine deletion routines." },
+        { "term": "De-duplication", "explanation": "The computational removal of redundant identical files across custodians based on cryptographic MD5/SHA-256 hashes." },
+        { "term": "Privilege Review", "explanation": "Filtering attorney-client privileged communications to prevent improper disclosure during legal production." }
+      ],
+      "markdownContent": "### The EDRM 9-Stage Pipeline\n```text\n[Information Governance]\n          |\n[Identification] -> [Preservation] -> [Collection]\n                                          |\n                 +------------------------+\n                 |\n                 v\n           [Processing] -> [Review] -> [Analysis] -> [Production] -> [Presentation]\n```\n\n| EDRM Stage | Technical Objective | ABC Bank Investigation Application |\n| :--- | :--- | :--- |\n| **1. Identification** | Map scope of digital assets | Identified 42 custodian laptops, 8 servers, and M365 email |\n| **2. Preservation** | Issue legal holds | Suspended auto-deletion of Exchange message trace logs |\n| **3. Collection** | Acquire defensible images | Collected forensic images of 8 prioritized critical endpoints |\n| **4. Processing** | De-duplicate & extract text | Reduced 14 TB of raw data down to 1.8 TB unique text corpus |\n| **5. Review & Analysis** | Legal & technical tagging | Filtered privileged legal emails; tagged transaction fraud records |\n| **6. Production** | Export in court format | Produced Concordance / TIFF load files with Bates numbering |"
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "EDRM Pipeline Stages",
+      "diagramSource": "graph LR\n  Gov[Governance] --> Ident[Identification]\n  Ident --> Pres[Preservation]\n  Pres --> Coll[Collection]\n  Coll --> Proc[Processing: De-dupe & OCR]\n  Proc --> Rev[Review: Privilege Filter]\n  Rev --> Ana[Analysis: Pattern & Intent]\n  Ana --> Prod[Production: Bates Numbering]\n  Prod --> Presen[Presentation: Trial Court]",
+      "explanation": "Nine-stage EDRM framework standardizing electronic discovery from information governance to courtroom presentation."
+    },
+    "application": {
+      "industry": "Corporate Legal & E-Discovery",
+      "scenario": "During the bank breach discovery process, legal counsel processed 250,000 emails across 12 executives. Applying hash-based de-duplication eliminated 65% of duplicate email threads, reducing review costs significantly.",
+      "inputExample": "Raw Corpus: 250,000 PST/OST emails (1.4 TB) | De-duplication: SHA-256 MD5",
+      "processSteps": [
+        "Ingest PST archives into E-Discovery platform (e.g., Relativity or Nuix).",
+        "Perform global de-duplication across custodians based on email message IDs and hashes.",
+        "Execute keyword search strings (`'RTGS'`, `'transfer'`, `'invoice'`).",
+        "Apply Bates numbering labels onto responsive produced documents."
+      ],
+      "outputExample": "Unique Responsive Documents: 14,200 records produced under Bates stamp ABC-00001 to ABC-14200.",
+      "codeSnippet": {
+        "language": "python",
+        "caption": "Hash-Based De-Duplication Script",
+        "code": "# Python de-duplication across evidence files\nimport hashlib, os\n\ndef deduplicate(file_list):\n    seen_hashes = set()\n    unique_files = []\n    for f in file_list:\n        h = hashlib.sha256(open(f, 'rb').read()).hexdigest()\n        if h not in seen_hashes:\n            seen_hashes.add(h)\n            unique_files.append(f)\n    return unique_files"
+      }
+    },
+    "memory": {
+      "mnemonic": "I-I-P-C-P-R-A-P-P",
+      "keywords": ["Information Governance", "Identification", "Preservation", "Collection", "Processing", "Review", "Analysis", "Production", "Presentation"],
+      "commonMistakes": [
+        "Failing to issue an immediate legal hold, allowing automated mailbox retention policies to permanently purge critical emails."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "The Electronic Discovery Reference Model (EDRM) standardizes the legal discovery lifecycle from identification and preservation through processing, review, and court production.",
+      "fiveMarkAnswer": "Detail the EDRM framework: The Electronic Discovery Reference Model organizes discovery into 9 phases: 1) Information Governance; 2) Identification of data sources; 3) Preservation via legal holds; 4) Defensible Collection; 5) Processing (OCR, de-duplication, text indexing); 6) Review for relevance and attorney-client privilege; 7) Analysis of key patterns; 8) Production with Bates stamping; 9) Presentation in legal proceedings."
+    },
+    "quiz": [
+      {
+        "id": "cf17-q1",
+        "question": "What is the primary objective of the 'Processing' stage in the EDRM framework?",
+        "options": [
+          "Cross-examining expert witnesses in court",
+          "Reducing data volume through de-duplication, OCR, and indexing for efficient attorney review",
+          "Seizing hardware devices from suspects",
+          "Resetting user passwords"
+        ],
+        "correctIndex": 1,
+        "explanation": "Processing reduces data volume via de-duplication, extracts text/metadata, and prepares files for review."
+      }
+    ]
+  },
+  {
+    "id": "cf18-forensic-report-drafting",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-5",
+    "title": "Forensic Report Writing & Defensible Methodologies",
+    "understanding": {
+      "definition": "A Digital Forensic Report is a formal, court-admissible scientific document detailing the scope, evidence inventory, acquisition methodologies, analytical findings, limitations, and conclusions of a digital investigation. It adheres to ISO/IEC 27042 standards and must rigorously distinguish between Confirmed Observations, Supported Inferences, and Unverified Hypotheses.",
+      "rationale": "Judges and juries lack technical expertise. An investigation succeeds only if the written report presents complex technical data with clarity, objectivity, transparent methodology, and zero speculation.",
+      "terminology": [
+        { "term": "Confirmed Observation", "explanation": "An undeniable technical fact directly verified from an artifact (e.g. 'A file named update.exe exists in C:\\Downloads')." },
+        { "term": "Supported Inference", "explanation": "A logical deduction backed by correlated evidence (e.g. 'The program ran at 08:42:15 UTC as evidenced by Prefetch and LNK artifacts')." },
+        { "term": "Unverified Hypothesis", "explanation": "A potential explanation that lacks conclusive evidentiary proof (e.g. 'The employee knowingly conspired with attackers')." }
+      ],
+      "markdownContent": "### Standard Forensic Report Architecture\n1. **Executive Summary**: Non-technical overview of investigation scope and key conclusions.\n2. **Case Information**: Case number, jurisdiction, dates, lead investigators.\n3. **Evidence Inventory**: Master register of hardware, serial numbers, acquisition methods, and SHA-256 hashes.\n4. **Tools & Methodology**: List of hardware write-blockers, software versions, and NIST validation references.\n5. **Forensic Analysis & Findings**: Chronological breakdown of facts supported by exhibits.\n6. **Technical Limitations**: Explicit statement of encrypted files, gaps, or anti-forensic countermeasures.\n7. **Conclusions & Opinions**: Scientific opinions stated within a reasonable degree of scientific certainty.\n8. **Appendices & Section 65B Certificates**: Evidence custody receipts and legal certificates."
+    },
+    "visualization": {
+      "diagramType": "flowchart",
+      "diagramTitle": "Evidence Evaluation Hierarchy in Forensic Reporting",
+      "diagramSource": "graph TD\n  Evidence[Digital Artifacts & Telemetry] --> Fact[Confirmed Observation: Verifiable Bitstream Fact]\n  Fact --> Inference[Supported Inference: Corroborated by Multiple Artifacts]\n  Inference --> Limit[Identify Technical Limitations: Gaps & Assumptions]\n  Limit --> Conclusion[Courtroom Defensible Forensic Conclusion]\n  Hypothesis[Unverified Hypothesis: Lacks Evidentiary Proof] -.->|EXCLUDED from Conclusions| Reject[Reject / Flag as Speculative]",
+      "explanation": "Strict epistemic hierarchy ensuring that only verified observations and corroborated inferences reach the final conclusion."
+    },
+    "application": {
+      "industry": "Court Testimony & Corporate Governance",
+      "scenario": "The lead investigator authored the final report for the ABC Bank trial. The defense attempted to argue that the report assumed employee guilt. The judge upheld the report because the investigator strictly classified employee intent as an 'Unverified Hypothesis' while documenting technical actions as 'Confirmed Observations'.",
+      "inputExample": "Case: ABC-2026-CF-01 | Title: ₹5 Crore Cyberattack Forensic Report",
+      "processSteps": [
+        "Compile evidence register table detailing Items E-01 through E-08.",
+        "Document tool calibration and NIST CFTT compliance references.",
+        "Draft factual findings citing specific exhibit numbers and timestamps.",
+        "Separate executive summary from technical exhibit appendices.",
+        "Sign and date statutory electronic evidence certificate."
+      ],
+      "outputExample": "Final Report: 48 pages | Admissibility: Full court acceptance.",
+      "codeSnippet": {
+        "language": "markdown",
+        "caption": "Sample Report Findings Excerpt",
+        "code": "### 4.2 Application Execution Analysis\n- **Confirmed Observation**: Registry key USBSTOR records SanDisk USB (S/N: 4C53...) connected at 14:02:10 UTC.\n- **Supported Inference**: File Customer_Accounts.xlsx was accessed at 14:03:00 UTC based on LNK file timestamps.\n- **Technical Limitation**: No evidence proves files were transferred to the USB drive due to absence of shellbag transfers."
+      }
+    },
+    "memory": {
+      "mnemonic": "E-I-M-F-L-C",
+      "keywords": ["Executive Summary", "Inventory", "Methodology", "Findings", "Limitations", "Conclusions"],
+      "commonMistakes": [
+        "Drawing legal conclusions of guilt or liability; examiners must testify to facts and technical actions, leaving legal determinations to the court.",
+        "Omitting technical limitations or anti-forensic obstacles encountered during the investigation."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "A digital forensic report is a structured, court-admissible document detailing evidence inventory, tools, chronological findings, limitations, and conclusions based on ISO/IEC 27042 standards.",
+      "fiveMarkAnswer": "List key components of a defensible forensic report: 1) Executive Summary (high-level non-technical findings); 2) Evidence Inventory (serial numbers, acquisition methods, SHA-256 hashes); 3) Tools and Methodologies (NIST CFTT validated tools); 4) Chronological Findings (separating confirmed observations from inferences); 5) Technical Limitations (encrypted volumes, wiped clusters); 6) Conclusions; 7) Statutory Certificates (Section 65B)."
+    },
+    "quiz": [
+      {
+        "id": "cf18-q1",
+        "question": "In a court-admissible forensic report, how should an examiner classify a suspicion that an employee intentionally assisted attackers, without direct communication proof?",
+        "options": ["Confirmed Fact", "Supported Inference", "Unverified Hypothesis", "Judicial Finding"],
+        "correctIndex": 2,
+        "explanation": "A suspicion lacking direct evidentiary corroboration must strictly be labeled an Unverified Hypothesis and excluded from definitive findings."
+      }
+    ]
+  },
+  {
+    "id": "cf19-expert-witness-court-ethics",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-5",
+    "title": "Expert Witness Testimony, Cross-Examination & Ethics",
+    "understanding": {
+      "definition": "Expert Witness Testimony is the formal scientific opinion presented in a court of law by a qualified forensic practitioner. Governed by the Daubert and Frye standards and professional codes of ethics, the expert's overriding duty is complete impartiality and loyalty to the scientific truth, rather than acting as an advocate for the party paying their fees.",
+      "rationale": "Under rigorous cross-examination, opposing counsel will seek to expose procedural flaws, tool bugs, subjective bias, or unsupported conclusions. Ethical integrity and technical objectivity are the expert's primary defense.",
+      "terminology": [
+        { "term": "Daubert Standard", "explanation": "Judicial assessment of expert witness scientific testimony: testability, peer review, error rate, standards, and general acceptance." },
+        { "term": "Advocacy Trap", "explanation": "The dangerous loss of objectivity where an expert witness begins arguing to win the case for their client rather than testifying neutrally to facts." },
+        { "term": "Cross-Examination", "explanation": "Interrogation of a witness by the opposing party to challenge credibility, methodology, consistency, and potential bias." }
+      ],
+      "markdownContent": "### Key Cross-Examination Traps & Defensible Responses\n1. **The 'USB Means Theft' Trap**:\n   - *Counsel*: *'The registry proves my client's USB was plugged in, so they stole the bank files, correct?'*\n   - *Defensible Answer*: *'The USBSTOR registry proves the drive was connected at 14:02 UTC. It does not independently prove files were copied to that drive, as no corresponding shellbags or link files confirm file movement.'*\n2. **The 'Hash Proves Author' Trap**:\n   - *Counsel*: *'Since the SHA-256 hash matches the malware, this proves my client wrote it, right?'*\n   - *Defensible Answer*: *'No. The matching hash proves the file on the drive is identical to the known sample. It proves content integrity, not authorship.'*"
+    },
+    "visualization": {
+      "diagramType": "sequence",
+      "diagramTitle": "Expert Witness Courtroom Testimony Protocol",
+      "diagramSource": "sequenceDiagram\n  autonumber\n  participant J as Judge / Jury\n  participant P as Retaining Counsel\n  participant W as Forensic Expert Witness\n  participant D as Opposing Counsel\n  P->>W: Direct Examination: Present Methodology & Facts\n  W->>J: Explain Findings using Neutral Science\n  D->>W: Cross-Examination: Challenge Tool Error & Assumptions\n  W->>J: Maintain Impartiality & Reiterate Technical Boundaries\n  J->>W: Clarifying Questions on Scientific Reliability",
+      "explanation": "Illustrates how an objective expert witness maintains nonpartisan scientific neutrality throughout direct and cross-examination."
+    },
+    "application": {
+      "industry": "Judicial & Trial Proceedings",
+      "scenario": "In the ABC Bank trial, opposing counsel aggressively questioned whether a suspicious process (`unknown.exe`) alone proved a cyberattack. The expert testified impartially: *'An unlisted process name warrants investigation, but malware infection is established only by our findings of injected shellcode and active C2 network sockets.'*",
+      "inputExample": "Cross-Examination: Question on tool reliability and bias",
+      "processSteps": [
+        "Review contemporaneous bench notes and verified hash records prior to trial.",
+        "Answer questions directly, neutrally, and within the scope of qualified expertise.",
+        "Refuse to speculate on matters outside the physical evidence.",
+        "Concede limitations openly when asked about gaps or uncertainties."
+      ],
+      "outputExample": "Judicial Evaluation: Testimony cited in final judgment as credible and impartial.",
+      "codeSnippet": {
+        "language": "text",
+        "caption": "Expert Witness Ethical Pledge",
+        "code": "I affirm that my testimony is based on validated scientific principles, that I have adhered to objective forensic standards, and that my overriding allegiance is to the truth and the administration of justice."
+      }
+    },
+    "memory": {
+      "mnemonic": "N-I-D-E",
+      "keywords": ["Neutrality", "Impartiality", "Daubert Criteria", "Ethical Integrity"],
+      "commonMistakes": [
+        "Becoming defensive or argumentative during cross-examination.",
+        "Exaggerating technical findings to please the retaining attorney."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "An expert witness provides impartial, scientific testimony to assist the court, adhering to ethical neutrality and the Daubert admissibility standard.",
+      "fiveMarkAnswer": "Explain the role and ethics of an expert witness: The expert's primary duty is to the court, not the retaining client. Under the Daubert standard, testimony must be based on testable methods, peer-reviewed science, known error rates, and general acceptance. During cross-examination, experts must resist advocacy, state boundaries of certainty, distinguish facts from inferences, and concede limitations."
+    },
+    "quiz": [
+      {
+        "id": "cf19-q1",
+        "question": "What is the primary ethical obligation of a digital forensic expert witness during court testimony?",
+        "options": [
+          "To secure a conviction for the prosecuting team",
+          "To serve as an impartial assistant to the court adhering to objective scientific truth",
+          "To defend the client's position regardless of evidence",
+          "To maximize the consulting fee"
+        ],
+        "correctIndex": 1,
+        "explanation": "The expert witness owes absolute loyalty to the court and scientific truth, not the retaining party."
+      }
+    ]
+  },
+  {
+    "id": "cf20-authentication-biometrics-cftt",
+    "subjectId": "cyber-forensics",
+    "unitId": "unit-5",
+    "title": "Digital Authentication, Biometrics & Tool Validation (NIST)",
+    "understanding": {
+      "definition": "Digital Authentication verifies the identity of users and the authenticity of electronic records. Biometric Forensics analyzes physical characteristics (fingerprints, facial geometry, iris) and behavioral traits (keystroke dynamics, mouse gestures) evaluated via False Acceptance Rate (FAR) and False Rejection Rate (FRR). Tool Validation under the NIST Computer Forensic Tool Testing (CFTT) program empirically tests forensic software and hardware against rigorous test assertions to verify reliability and known error rates.",
+      "rationale": "Forensic conclusions are only as reliable as the tools used to extract them. Without NIST CFTT validation and rigorous biometric error-rate evaluation, defense attorneys can easily invalidate forensic evidence in court.",
+      "terminology": [
+        { "term": "False Acceptance Rate (FAR)", "explanation": "The probability that a biometric system incorrectly accepts an imposter (Type II Error - Security Risk)." },
+        { "term": "False Rejection Rate (FRR)", "explanation": "The probability that a biometric system incorrectly rejects a genuine user (Type I Error - Usability Risk)." },
+        { "term": "Equal Error Rate (EER / CER)", "explanation": "The crossover point where FAR equals FRR, used as a benchmark for biometric accuracy." },
+        { "term": "NIST CFTT", "explanation": "National Institute of Standards and Technology Computer Forensic Tool Testing project testing disk imaging, write-blocking, and mobile tools." }
+      ],
+      "markdownContent": "### The Biometric Performance Trade-Off\n```text\nHigh Security (Strict Threshold): Low FAR, High FRR (Rejects legitimate users)\nBalanced Security (EER / CER):    FAR == FRR (Optimal commercial benchmark)\nHigh Usability (Lenient Threshold): Low FRR, High FAR (Admits attackers)\n```\n\n### The NIST CFTT Tool Validation Methodology\n1. **Establish Test Assertions**: Formal specifications of what the tool MUST and MUST NOT do (e.g. 'A write-blocker shall not allow any write command to modify the target drive').\n2. **Generate Controlled Test Data**: Known ground-truth disk images with predefined deleted files and corrupted sectors.\n3. **Execute Tool under Test**: Perform extraction under controlled conditions.\n4. **Compare Expected vs Actual Results**: Automated diffing of outputs.\n5. **Document Anomalies & Error Rates**: Published in public NIST CFTT reports."
+    },
+    "visualization": {
+      "diagramType": "architecture",
+      "diagramTitle": "Biometric FAR vs FRR Curve and NIST CFTT Protocol",
+      "diagramSource": "graph TD\n  subgraph Biometrics [Biometric Accuracy Curve]\n    FAR[FAR: Type II Imposter Accepted]\n    FRR[FRR: Type I Genuine Rejected]\n    EER[Crossover Equal Error Rate EER]\n    FAR --- EER --- FRR\n  end\n  subgraph CFTT [NIST CFTT Validation]\n    Assert[NIST Test Assertions] --> TestData[Known Ground-Truth Test Image]\n    TestData --> Exec[Execute Forensic Tool]\n    Exec --> Compare[Compare Expected vs Actual Output]\n    Compare --> ErrorRate[Publish Known Error Rate & Anomaly Report]\n  end",
+      "explanation": "Illustrates biometric accuracy trade-offs alongside the NIST CFTT empirical tool testing methodology."
+    },
+    "application": {
+      "industry": "Quality Assurance & Forensic Lab Accreditation",
+      "scenario": "Before deploying a new version of Autopsy and Tableau write-blockers in the ABC Bank investigation, the laboratory validated the tools against NIST CFTT test assertions for ATA write-blocking and deleted file recovery.",
+      "inputExample": "Tool: Tableau T8u Forensic USB 3.0 Bridge | NIST CFTT Reference: Test Plan for Hardware Write-Blockers",
+      "processSteps": [
+        "Attach reference test drive containing known SHA-256 hash.",
+        "Attempt deliberate write commands (e.g. `dd if=/dev/urandom of=/dev/sdb`).",
+        "Verify write-blocker returns I/O error or drops write commands.",
+        "Re-hash drive to confirm zero bytes were modified.",
+        "Document tool serial number and test results in lab calibration registry."
+      ],
+      "outputExample": "Validation Result: 0 bytes modified. Tableau T8u PASSED NIST Assertions.",
+      "codeSnippet": {
+        "language": "bash",
+        "caption": "Hardware Write-Blocker Validation Test",
+        "code": "# Validate write-blocker by attempting a write\ndd if=/dev/urandom of=/dev/sdb count=100 bs=512 conv=notrunc\n# Verify return code is non-zero (Operation not permitted) and re-verify hash"
+      },
+      "numericalExample": {
+        "problem": "A biometric fingerprint scanner is tested with 50,000 imposter attempts and 20,000 genuine attempts. The system erroneously accepts 10 imposters and rejects 100 genuine users. Calculate FAR and FRR.",
+        "formula": "FAR = (False Acceptances / Imposter Attempts) * 100%; FRR = (False Rejections / Genuine Attempts) * 100%",
+        "solution": "FAR = (10 / 50,000) * 100% = 0.02%. FRR = (100 / 20,000) * 100% = 0.50%."
+      }
+    },
+    "memory": {
+      "mnemonic": "F-A-R-F-R-R-C",
+      "keywords": ["FAR", "FRR", "EER", "NIST CFTT", "Test Assertions"],
+      "commonMistakes": [
+        "Believing a biometric match proves who performed an action; biometrics prove the enrolled physical trait was presented, but cannot detect coercion or duress.",
+        "Deploying unvalidated commercial tools in a court case without verifying whether their error rates have been tested against NIST CFTT standards."
+      ]
+    },
+    "exam": {
+      "shortDefinition": "Digital authentication and biometric forensics measure FAR and FRR, while the NIST CFTT program verifies the reliability and error rates of digital forensic software and hardware.",
+      "fiveMarkAnswer": "Explain Biometric Evaluation and NIST CFTT: Biometric accuracy is measured by False Acceptance Rate (FAR - imposter accepted, security flaw) and False Rejection Rate (FRR - genuine user rejected, usability flaw). Their intersection is the Equal Error Rate (EER). NIST CFTT (Computer Forensic Tool Testing) empirically validates forensic tools by defining test assertions, running tools against ground-truth datasets, and measuring deviation to establish court-admissible error rates."
+    },
+    "quiz": [
+      {
+        "id": "cf20-q1",
+        "question": "What is the point on a biometric accuracy curve where the False Acceptance Rate exactly equals the False Rejection Rate?",
+        "options": ["Maximum Error Point", "Equal Error Rate (EER / CER)", "Zero Tolerance Threshold", "Daubert Boundary"],
+        "correctIndex": 1,
+        "explanation": "The Equal Error Rate (EER), also called Crossover Error Rate (CER), is where FAR and FRR intersect."
+      }
+    ]
+  }
+]

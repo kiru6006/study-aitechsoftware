@@ -1,0 +1,187 @@
+[
+  {
+    "id": "unit-1",
+    "subjectId": "cyber-forensics",
+    "unitNumber": 1,
+    "title": "Foundations, Legal Compliance and Evidence Acquisition",
+    "officialTitle": "Unit-1 (Teaching Hours: 12) Foundations, Legal Compliance and Acquisition",
+    "hours": 12,
+    "summary": "Covers digital forensic science fundamentals, the eight-stage forensic lifecycle, cyber laws, statutory admissibility, search warrants, Chain of Custody documentation, cryptographic hash verification, and dead vs live forensic imaging standards.",
+    "memoryCode": "I-P-C-E-A-D-P-R",
+    "memoryCodeMeaning": "Identification, Preservation, Collection, Examination, Analysis, Documentation, Presentation, Review",
+    "topics": [
+      {
+        "id": "cf-u1-t1",
+        "unitId": "unit-1",
+        "title": "Digital Forensic Fundamentals & Eight-Stage Lifecycle",
+        "conceptIds": ["cf1-forensic-fundamentals-lifecycle"]
+      },
+      {
+        "id": "cf-u1-t2",
+        "unitId": "unit-1",
+        "title": "Legal Compliance, Evidence Admissibility & Cyber Law",
+        "conceptIds": ["cf2-legal-compliance-admissibility"]
+      },
+      {
+        "id": "cf-u1-t3",
+        "unitId": "unit-1",
+        "title": "Chain of Custody, Documentation & Hash Verification",
+        "conceptIds": ["cf3-chain-of-custody-hashing"]
+      },
+      {
+        "id": "cf-u1-t4",
+        "unitId": "unit-1",
+        "title": "Forensic Imaging: Live vs Dead, Physical vs Logical",
+        "conceptIds": ["cf4-forensic-imaging-standards"]
+      }
+    ]
+  },
+  {
+    "id": "unit-2",
+    "subjectId": "cyber-forensics",
+    "unitNumber": 2,
+    "title": "File Systems and Artifact Collection",
+    "officialTitle": "Unit-2 (Teaching Hours: 12) File Systems and Artifact Collection",
+    "hours": 12,
+    "summary": "Details storage architecture (FAT, NTFS, ext4, APFS), metadata structures, deleted file recovery mechanisms, slack and unallocated space, signature-based data carving, Windows OS execution artifacts (Registry, LNK, Jump Lists, Prefetch), and The Sleuth Kit (TSK) command analysis.",
+    "memoryCode": "F-D-C-W-T",
+    "memoryCodeMeaning": "File Systems, Deleted Files, Carving, Windows Artifacts, Tools (TSK & Autopsy)",
+    "topics": [
+      {
+        "id": "cf-u2-t1",
+        "unitId": "unit-2",
+        "title": "File Systems Architecture, Metadata & Allocation",
+        "conceptIds": ["cf5-filesystem-structures-metadata"]
+      },
+      {
+        "id": "cf-u2-t2",
+        "unitId": "unit-2",
+        "title": "Deleted File Recovery, Slack Space & Data Carving",
+        "conceptIds": ["cf6-deleted-recovery-carving"]
+      },
+      {
+        "id": "cf-u2-t3",
+        "unitId": "unit-2",
+        "title": "Windows Artifacts: Registry, LNK, Jump Lists & Prefetch",
+        "conceptIds": ["cf7-windows-forensic-artifacts"]
+      },
+      {
+        "id": "cf-u2-t4",
+        "unitId": "unit-2",
+        "title": "Autopsy & The Sleuth Kit (mmls, fsstat, fls, istat, icat)",
+        "conceptIds": ["cf8-sleuthkit-autopsy-analysis"]
+      }
+    ]
+  },
+  {
+    "id": "unit-3",
+    "subjectId": "cyber-forensics",
+    "unitNumber": 3,
+    "title": "Advanced Volatile Analysis and Network Artifacts",
+    "officialTitle": "Unit-3 (Teaching Hours: 12) Advanced Volatile Analysis and Network Artifacts",
+    "hours": 12,
+    "summary": "Examines volatile RAM triage, memory forensics with Volatility Framework, hidden processes and rootkit detection, event log correlation, Super Timeline synthesis, network traffic extraction (PCAP vs NetFlow), email artifacts (PST/OST), and multi-cloud forensic challenges.",
+    "memoryCode": "L-M-T-A-N",
+    "memoryCodeMeaning": "Live Investigation, Memory Forensics, Timeline Correlation, Artifacts (Email/Browser), Network Analysis",
+    "topics": [
+      {
+        "id": "cf-u3-t1",
+        "unitId": "unit-3",
+        "title": "Live Triage & Volatile Memory Preservation",
+        "conceptIds": ["cf9-volatile-memory-triage"]
+      },
+      {
+        "id": "cf-u3-t2",
+        "unitId": "unit-3",
+        "title": "Memory Forensics: Volatility Framework & Process Tree",
+        "conceptIds": ["cf10-volatility-process-rootkits"]
+      },
+      {
+        "id": "cf-u3-t3",
+        "unitId": "unit-3",
+        "title": "Super Timelines & Normalized Event Log Correlation",
+        "conceptIds": ["cf11-super-timelines-log-analysis"]
+      },
+      {
+        "id": "cf-u3-t4",
+        "unitId": "unit-3",
+        "title": "Network Forensics: PCAP vs NetFlow, Browser & Cloud",
+        "conceptIds": ["cf12-network-browser-cloud-forensics"]
+      }
+    ]
+  },
+  {
+    "id": "unit-4",
+    "subjectId": "cyber-forensics",
+    "unitNumber": 4,
+    "title": "Specialized Device Forensics",
+    "officialTitle": "Unit-4 (Teaching Hours: 12) Specialized Device Forensics",
+    "hours": 12,
+    "summary": "Explores mobile device security architectures (Android vs iOS sandbox), extraction paradigms (logical, file system, physical), smartphone artifacts (SMS, calls, app SQLite databases, GPS geotags), embedded firmware acquisition, IoT forensics (smart CCTV, sensors), and privacy safeguards.",
+    "memoryCode": "M-A-D-I-L",
+    "memoryCodeMeaning": "Mobile OS Architecture, Acquisition Methods, Device Data, IoT Forensics, Legal & Privacy Safeguards",
+    "topics": [
+      {
+        "id": "cf-u4-t1",
+        "unitId": "unit-4",
+        "title": "Android vs iOS Architecture & Security Sandboxing",
+        "conceptIds": ["cf13-mobile-os-architecture-security"]
+      },
+      {
+        "id": "cf-u4-t2",
+        "unitId": "unit-4",
+        "title": "Mobile Acquisition: Logical, File System & Physical",
+        "conceptIds": ["cf14-mobile-acquisition-methods"]
+      },
+      {
+        "id": "cf-u4-t3",
+        "unitId": "unit-4",
+        "title": "Smartphone Artifacts: SMS, Calls, SQLite & Geolocation",
+        "conceptIds": ["cf15-smartphone-app-artifacts"]
+      },
+      {
+        "id": "cf-u4-t4",
+        "unitId": "unit-4",
+        "title": "IoT & Embedded Forensics: Smart CCTV, Flash & Cloud Feeds",
+        "conceptIds": ["cf16-iot-embedded-cctv-forensics"]
+      }
+    ]
+  },
+  {
+    "id": "unit-5",
+    "subjectId": "cyber-forensics",
+    "unitNumber": 5,
+    "title": "Case Management, Reporting and Advanced Methodologies",
+    "officialTitle": "Unit-5 (Teaching Hours: 12) Case Management, Reporting and Advanced Methodologies",
+    "hours": 12,
+    "summary": "Focuses on large-scale forensic case management, the E-Discovery Reference Model (EDRM), court-admissible forensic report drafting, expert witness testimony, cross-examination defense, digital authentication standards, biometric forensics (FAR/FRR), and NIST CFTT tool validation.",
+    "memoryCode": "C-R-E-V",
+    "memoryCodeMeaning": "Case Management (EDRM), Reporting Standards, Expert Witness & Ethics, Validation (NIST CFTT & Biometrics)",
+    "topics": [
+      {
+        "id": "cf-u5-t1",
+        "unitId": "unit-5",
+        "title": "Large-Scale Case Management & E-Discovery (EDRM)",
+        "conceptIds": ["cf17-ediscovery-case-management"]
+      },
+      {
+        "id": "cf-u5-t2",
+        "unitId": "unit-5",
+        "title": "Forensic Report Writing & Defensible Methodologies",
+        "conceptIds": ["cf18-forensic-report-drafting"]
+      },
+      {
+        "id": "cf-u5-t3",
+        "unitId": "unit-5",
+        "title": "Expert Witness Testimony, Cross-Examination & Ethics",
+        "conceptIds": ["cf19-expert-witness-court-ethics"]
+      },
+      {
+        "id": "cf-u5-t4",
+        "unitId": "unit-5",
+        "title": "Digital Authentication, Biometrics & Tool Validation (NIST)",
+        "conceptIds": ["cf20-authentication-biometrics-cftt"]
+      }
+    ]
+  }
+]
